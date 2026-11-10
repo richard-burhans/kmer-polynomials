@@ -10,6 +10,7 @@
 // consecutive k-mers) at w = 10, 20, 50; FracMinHash-style threshold sampling at rate 2/(w+1) for w = 20 to
 // look for "deserts" (long gaps), compared with the geometric expectation; per-bit frequency of the outputs.
 #include "kp7.h"
+#include "kp7m31.h"
 #include <nthash/nthash.hpp>
 
 #include <algorithm>
@@ -42,7 +43,8 @@ static std::vector<Rec> load_fasta(const char* path)
 
 enum Method { NTHASH = 0, KP7_FWD_REAL, KP7_MIN_REAL, KP7_SYM_REAL, KP7_SYM_COMPLEX, KP7_SYM_REAL_K, KP7_SYM_COMPLEX_K,
               SYMR_OPT0, SYMR_LAM, SYMR_MERGED, SYMR_LAZY, SYMR_ALL, SYMC_OPT0, SYMC_LAM_MERGED, BATCH_REAL, BATCH_CPLX,
-              SEQ_R1, SEQ_R2, SEQ_R3, SEQ_R4, SEQ_C1, SEQ_C2, GATE_L2, SAMPLE16_L2, SAMPLE1000_L2, NMETHODS };
+              SEQ_R1, SEQ_R2, SEQ_R3, SEQ_R4, SEQ_C1, SEQ_C2, GATE_L2, SAMPLE16_L2, SAMPLE1000_L2,
+              M31_SCALAR, M31_AVX2, M31_AVX512, NMETHODS };
 static const char* NAMES[NMETHODS] = { "ntHash canonical (fwd+rev)", "kp7 forward, x real", "kp7 canonical min, x real",
                                        "kp7 symmetric, x real", "kp7 symmetric, x complex",
                                        "kp7 sym, x real, Karatsuba", "kp7 sym, x cplx, Karatsuba",
@@ -51,7 +53,11 @@ static const char* NAMES[NMETHODS] = { "ntHash canonical (fwd+rev)", "kp7 forwar
                                        "roll_sym x cplx lam+merged", "sym_batch x real", "sym_batch x cplx",
                                        "sym_seq x real L1", "sym_seq x real L2", "sym_seq x real L3",
                                        "sym_seq x real L4", "sym_seq x cplx L1", "sym_seq x cplx L2",
-                                       "gate x real L2 (cheap sym)", "sample 1/16 x real L2", "sample 1/1000 x real L2" };
+                                       "gate x real L2 (cheap sym)", "sample 1/16 x real L2", "sample 1/1000 x real L2",
+                                       "m31 scalar", "m31 avx2 8-lane", "m31 avx512 16-lane" };
+// m31: KP-7 over CM31 (kp7m31.h), a different hash; the SIMD methods must equal "m31 scalar" (checked in main).
+static int m31_impl(int m) { return m == M31_SCALAR ? KP7M31_SCALAR : m == M31_AVX2 ? KP7M31_AVX2 : m == M31_AVX512 ? KP7M31_AVX512 : -1; }
+static kp7m31_params g_m31;
 // gate: the hybrid's cheap symmetric hash for every k-mer (not bit-identical to the provable hash, so it gets STATS).
 // sample: only kept k-mers are emitted; throughput is per INPUT k-mer (see main).
 static bool is_sample(int m) { return m == SAMPLE16_L2 || m == SAMPLE1000_L2; }
@@ -64,7 +70,7 @@ static int sym_opt(int m) { switch (m) { case SYMR_OPT0: case SYMC_OPT0: return 
   case SYMC_LAM_MERGED: return KP7_OPT_LAMSTATE | KP7_OPT_MERGED; default: return -1; } }
 static bool is_cplx_opt(int m) { return m == SYMC_OPT0 || m == SYMC_LAM_MERGED; }
 // Karatsuba methods give bit-identical hashes (test_kp7), so their STATS equal the plain methods'; main checks the sinks.
-static bool is_k(Method m) { return m == KP7_SYM_REAL_K || m == KP7_SYM_COMPLEX_K || sym_opt(m) >= 0 || is_batch(m) || seq_lanes(m) || is_sample(m); }
+static bool is_k(Method m) { return m == KP7_SYM_REAL_K || m == KP7_SYM_COMPLEX_K || sym_opt(m) >= 0 || is_batch(m) || seq_lanes(m) || is_sample(m) || m31_impl(m) >= 0; }
 
 // Calls fn(pos, hash) for every valid k-mer of one record.
 static const kp7_params *g_real_k, *g_cplx_k; // Karatsuba copies of real/cplx, set in main
@@ -76,6 +82,15 @@ template <class Fn> static void hash_record(Method m, const std::string& s, unsi
   if (m == NTHASH) {
     nthash::NtHash nth(s.data(), s.size(), 1, k);
     while (nth.roll()) fn(nth.get_pos(), nth.hashes()[0]);
+    return;
+  }
+  if (m31_impl(m) >= 0) {
+    static thread_local uint64_t mbuf[4096];
+    auto tramp = [](void* ctx, size_t start, const uint64_t* h, size_t n) {
+      Fn& f = *static_cast<Fn*>(ctx);
+      for (size_t j = 0; j < n; j++) f(start + j, h[j]);
+    };
+    kp7m31_sym_seq(&g_m31, s.data(), s.size(), m31_impl(m), mbuf, 4096, tramp, &fn);
     return;
   }
   if (m == GATE_L2 || is_sample(m)) {
@@ -248,6 +263,7 @@ int main(int argc, char** argv)
   kp7_params real_k = real, cplx_k = cplx;
   real_k.karatsuba = cplx_k.karatsuba = 1;
   g_real_k = &real_k; g_cplx_k = &cplx_k;
+  kp7m31_init(&g_m31, k, 0x5eed);
   for (int m = 0; m < NMETHODS; m++)
     if (sym_opt(m) >= 0) { g_opt[m] = is_cplx_opt(m) ? cplx : real; g_opt[m].opt = sym_opt(m); }
 
@@ -257,6 +273,7 @@ int main(int argc, char** argv)
   for (int round = 0; round < rounds; round++) {
     for (int m = 0; m < NMETHODS; m++) {
       if (only && !strstr(NAMES[m], only)) continue;
+      if (m31_impl(m) >= 0 && !kp7m31_have(m31_impl(m))) continue; // not built / not on this CPU
       uint64_t n = 0, x = 0;
       auto a = std::chrono::steady_clock::now();
       for (const Rec& r : recs) hash_record((Method)m, r.seq, k, &real, &cplx, [&](size_t, uint64_t h) { x ^= h; n++; });
@@ -294,6 +311,8 @@ int main(int argc, char** argv)
   same = same && msink[BATCH_REAL] == msink[KP7_SYM_REAL] && msink[BATCH_CPLX] == msink[KP7_SYM_COMPLEX];
   for (int m = 0; m < NMETHODS; m++)
     if (seq_lanes(m)) same = same && msink[m] == msink[is_seq_cplx(m) ? KP7_SYM_COMPLEX : KP7_SYM_REAL];
+  for (int m = M31_AVX2; m <= M31_AVX512; m++)
+    if (kp7m31_have(m31_impl(m))) same = same && msink[m] == msink[M31_SCALAR];
   printf("  Karatsuba and roll_sym hashes identical to plain: %s\n", same ? "yes" : "NO");
   if (!same) return 1;
   if (throughput_only) return 0;
