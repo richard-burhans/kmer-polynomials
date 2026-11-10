@@ -51,3 +51,45 @@ def test_hash_is_strand_symmetric():
     p = params()
     h1, h2 = sym_hash(c, p), sym_hash(rc_codes(c), p)
     assert np.array_equal(h1[0], h2[0]) and np.array_equal(h1[1], h2[1])
+
+
+# ── the Eisenstein variant: F_q, q = 2^61 - 1, one 8-byte element per entry ──────────────────────────────────────
+
+from recon import fq61, kp7e_hash, recon61  # noqa: E402
+
+
+def sides_e(n=20000, d=300, seed=5):
+    a, b, _, _, _ = sides(n, d, seed)
+    p = kp7e_hash.params()
+    mk = lambda c: recon61.SideE.build(c, kp7e_hash.sym_hash(c, p), mix64(c))
+    return a, b, mk(a), mk(b), p
+
+
+def test_eisenstein_exact_recovery():
+    a, b, A, B, _ = sides_e()
+    res = recon61.reconcile(A, B, 8, 16, 2)
+    assert np.array_equal(res.a_minus_b, np.setdiff1d(a, b))
+    assert np.array_equal(res.b_minus_a, np.setdiff1d(b, a))
+
+
+def test_eisenstein_overflow_splits_and_still_exact():
+    a, b, A, B, _ = sides_e(d=3000)
+    res = recon61.reconcile(A, B, 6, 8, 2)
+    assert res.splits > 0 and res.rounds > 1
+    assert np.array_equal(res.a_minus_b, np.setdiff1d(a, b))
+    assert np.array_equal(res.b_minus_a, np.setdiff1d(b, a))
+
+
+def test_eisenstein_sketch_is_linear():
+    a, _, A, _, p = sides_e()
+    mask = np.random.default_rng(1).random(a.size) < 0.4
+    bk = np.arange(1 << 8)
+    full, nf = recon61.power_sketch(A, 8, bk, 6)
+    mk = lambda c: recon61.SideE.build(c, kp7e_hash.sym_hash(c, p), mix64(c))
+    s1, n1 = recon61.power_sketch(mk(a[mask]), 8, bk, 6)
+    s2, n2 = recon61.power_sketch(mk(a[~mask]), 8, bk, 6)
+    assert np.array_equal(full, fq61.add(s1, s2)) and np.array_equal(nf, n1 + n2)
+
+
+def test_eisenstein_hash_strand_symmetric_and_matches_c():
+    assert kp7e_hash.self_test(2000) == 0
