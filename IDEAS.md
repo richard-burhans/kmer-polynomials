@@ -147,6 +147,10 @@ elements per genome.
 *Check:* KOMPa vs KOMPb (two haplotypes of one plant). Recover the k-mer difference, verify it against a brute-force
 set difference, and measure sketch size and time against difference size.
 
+**Status 2026-11-10: prototyped** ([results](results/kp9_kompa_kompb_2026-11-10.md)). Recovery is exact. For KOMPa vs
+KOMPb chr7, D is 42% of the set, so the sketch is as large as the set and KP-9 does not help. For a near-identical
+pair (chr7 with 1,000 SNPs) the sketch is 1.13 MB against 308 MB.
+
 ### KP-10. Power-sum sketches: linear, mergeable, decodable
 
 Pⱼ = Σ_{s∈S} h(s)ʲ for j = 1…m.
