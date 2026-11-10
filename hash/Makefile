@@ -5,7 +5,7 @@ OPT = -O3 -march=native
 CFLAGS = $(OPT) -Wall -Wextra
 NTHASH ?= /home/rcb112/project/claude/bench/data/kmer_poly_work/ntHash
 
-all: test_kp7 bench
+all: test_kp7 test_kp7m31 bench
 
 kp7.o: kp7.c kp7.h
 	$(CC) $(CFLAGS) -c kp7.c -o $@
@@ -13,8 +13,16 @@ kp7.o: kp7.c kp7.h
 test_kp7: test_kp7.c kp7.o
 	$(CC) $(CFLAGS) test_kp7.c kp7.o -o $@
 
-test: test_kp7
+# CM31 (p = 2^31 - 1) scalar / AVX2 / AVX-512; the AVX-512 path is built only when -march targets it
+kp7m31.o: kp7m31.c kp7m31.h
+	$(CC) $(CFLAGS) -c kp7m31.c -o $@
+
+test_kp7m31: test_kp7m31.c kp7m31.o
+	$(CC) $(CFLAGS) test_kp7m31.c kp7m31.o -o $@
+
+test: test_kp7 test_kp7m31
 	./test_kp7
+	./test_kp7m31
 
 # break one rolling term; the tests must fail
 mutation: test_kp7.c kp7.c kp7.h
@@ -28,9 +36,13 @@ mutation: test_kp7.c kp7.c kp7.h
 	@if ./test_kp7_mutant > mutant.out; then echo "SEQ MUTANT SURVIVED"; exit 1; else echo "seq mutant killed: $$(tail -1 mutant.out)"; fi
 	$(CC) $(CFLAGS) -DKP7_MUTATE_GATE test_kp7.c kp7.c -o test_kp7_mutant
 	@if ./test_kp7_mutant > mutant.out; then echo "GATE MUTANT SURVIVED"; exit 1; else echo "gate mutant killed: $$(tail -1 mutant.out)"; fi
+	$(CC) $(CFLAGS) -DKP7M31_MUTATE_ODD test_kp7m31.c kp7m31.c -o test_kp7_mutant
+	@if ./test_kp7_mutant > mutant.out; then echo "M31 ODD-LANE MUTANT SURVIVED"; exit 1; else echo "m31 odd-lane mutant killed: $$(tail -1 mutant.out)"; fi
+	$(CC) $(CFLAGS) -DKP7M31_MUTATE_BLEND test_kp7m31.c kp7m31.c -o test_kp7_mutant
+	@if ./test_kp7_mutant > mutant.out; then echo "M31 BLEND MUTANT SURVIVED"; exit 1; else echo "m31 blend mutant killed: $$(tail -1 mutant.out)"; fi
 
-bench: bench.cpp kp7.o
-	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include bench.cpp kp7.o $(NTHASH)/build_o3/libnthash.a -o $@
+bench: bench.cpp kp7.o kp7m31.o
+	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include bench.cpp kp7.o kp7m31.o $(NTHASH)/build_o3/libnthash.a -o $@
 
 clean:
-	rm -f *.o test_kp7 test_kp7_mutant mutant.out bench
+	rm -f *.o test_kp7 test_kp7m31 test_kp7_mutant mutant.out bench

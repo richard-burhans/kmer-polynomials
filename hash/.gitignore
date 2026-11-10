@@ -4,3 +4,4 @@ test_kp7
 test_kp7_mutant
 mutant.out
 bench
+test_kp7m31
