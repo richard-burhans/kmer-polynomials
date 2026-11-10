@@ -52,6 +52,8 @@ The inner product Re⟨p, q⟩ = Σ Re(aⱼ b̄ⱼ) scores +1 per match, −1 pe
 
 *Check:* does the 2/4 weighting help or hurt any real task (seed matching, clustering) compared with Hamming?
 
+**Eisenstein revisit (results/ideas_eisenstein_2026-11-10.md):** in ℂ the squared distances become 1 (transitions) / 3 (A–C, G–T) / 4 (complements). On cannabis NC_044378.1, 61–65% of real substitutions are transitions (Ts/Tv 1.6–1.8), so the mean cost of a real substitution falls from about 2.4 to about 1.9.
+
 ### KP-2. Edits as polynomial operations
 
 - substitution of a by b at position j: p + (b − a) xʲ
@@ -71,6 +73,8 @@ in this form, or is it only a restatement?
 
 **Status 2026-11-10 (results/ideas_algebra_2026-11-10.md):** hash-only navigation (16 successor candidates from F(u) alone, provable false-positive bound ≤ 12·|S|·k/q per node) is exact on 13.5 M cs10 31-mers (0 false, 0 missed, identical unitig structure), but 7.4× slower than packed codes and 2× the storage for k ≤ 32. ntHash's linear rolling allows the same trick, without a bound. Mostly a restatement; its niche is hash-only, large-k graphs.
 
+**Eisenstein revisit:** at KP-3, F is 8 bytes, so storage is even with packed codes at k ≤ 32 and half at 32 < k ≤ 64. Navigation is still 4–6× slower (laila: 1,211–1,326 against 205–312 ns/node), and exact at k = 31, 47 and 63.
+
 ### KP-4. Rotations, the DFT and Parseval lower bounds
 
 Mod xᵏ − 1, multiplying by x rotates the k-mer, and the DFT turns rotation into a phase change. So |DFT| is
@@ -86,6 +90,8 @@ mismatch threshold?
 
 **Status 2026-11-10: tested, not useful.** Low-frequency energy is about white noise (m=8 carries 0.26–0.30 of ‖p−q‖², against 8/31). On seed-sharing near neighbours the bound prunes 21% of pairs at d=3 where 77% could be pruned, and 3% of 71% at d=5. Exact 2-bit popcount Hamming is cheaper and exact (results/ideas_spectral_2026-11-10.md).
 
+**Eisenstein revisit:** unchanged. White noise (0.257 of the energy in 8 coefficients, against 0.258); pruning about the same. Thresholds on the weighted metric prune more (48% of 79% at W = 6) but still miss most.
+
 ### KP-5. RC palindromes and inverted repeats
 
 A reverse-complement palindrome satisfies p(x) = −x^{k−1} p(1/x): an anti-self-reciprocal polynomial. That can be
@@ -94,6 +100,8 @@ tested algebraically, possibly as a rolling test over a whole sequence.
 *Check:* compare speed and simplicity against existing palindrome and inverted-repeat finders.
 
 ---
+
+**Eisenstein revisit:** unchanged. The palindrome identity needs only complement = negation.
 
 ## 2. The arithmetic: hashing in F_{q²}
 
@@ -262,6 +270,8 @@ computation?
 
 ---
 
+**Eisenstein revisit:** unchanged. Indexed by k-mer code, so the encoding never enters.
+
 ## 4. Whole sequences
 
 ### KP-12. All k-mer hashes of a sequence, both strands at once
@@ -281,6 +291,8 @@ For our work, this could rank diagonals or offsets between two pieces before las
 
 **Status 2026-11-10: tested, not a pre-filter.** Against the KOMPa chr7 chains, the best setting (soft-mask zeroed, z ≥ 10) has 97% precision but only 56% aligned-base recall per 100 kb window. Indels fragment diagonals; band summing and 4-indicator counts are worse. It is 35× cheaper than lastz per segment pair but does not replace it. Niche: high-precision anchors (results/ideas_spectral_2026-11-10.md).
 
+**Eisenstein revisit:** recall drops slightly (soft-masked z ≥ 10: precision 0.971 → 0.991, weighted recall 0.635 → 0.576). The background variance rises (0.5 → 0.625). Still not a pre-filter.
+
 ### KP-14. Spaced seeds as masks
 
 A 0/1 mask polynomial applied coefficient by coefficient gives spaced k-mers, and KP-11 composes them.
@@ -288,6 +300,8 @@ A 0/1 mask polynomial applied coefficient by coefficient gives spaced k-mers, an
 **Status 2026-11-10 (results/ideas_algebra_2026-11-10.md):** rolling with one multiply per strand plus table adds per block (ideas/algebra/spaced.h), tested bit-identical. Runs at 0.47× ntHash2's SeedNtHash. Unlike SeedNtHash, which warns that non-symmetric seeds give inconsistent reverse-complement hashing, the symmetric form (F_m+λ)(R_m+λ) is strand-symmetric for ANY mask; with a non-palindromic mask it matches the exact double-stranded SNP sensitivity, and SeedNtHash does not.
 
 ---
+
+**Eisenstein revisit:** 2× the Gaussian speed; 0.78× SeedNtHash with one mask, 0.71× with two (laila). Still exactly strand-consistent for any mask, where SeedNtHash isn't for non-palindromic masks.
 
 ## 5. Experiments, in suggested order
 

@@ -1,0 +1,46 @@
+ntHash c26bd4572a19de81e30d55042dbd33c1fd21d4b6 built with: g++ -O3 -march=native -std=c++17 -> /scratch/rico/gpu/galaxy/database/jobs_directory/052/52047/working/w/kp/hash/../../ntHash/build_o3/libnthash.a
+gcc -O3 -march=native -Wall -Wextra -c ../../hash/kp7e.c -o kp7e.o
+gcc -O3 -march=native -Wall -Wextra -DDBG_K=31 dbg_e.c kp7e.o -o dbg_e31
+gcc -O3 -march=native -Wall -Wextra -DDBG_K=47 dbg_e.c kp7e.o -o dbg_e47
+gcc -O3 -march=native -Wall -Wextra -DDBG_K=63 dbg_e.c kp7e.o -o dbg_e63
+gcc -O3 -march=native -Wall -Wextra -c spaced_e.c -o spaced_e.o
+gcc -O3 -march=native -Wall -Wextra -c ../../hash/kp7.c -o kp7.o
+gcc -O3 -march=native -Wall -Wextra -c ../algebra/spaced.c -o spaced_g.o
+g++ -O3 -march=native -std=c++17 -I/scratch/rico/gpu/galaxy/database/jobs_directory/052/52047/working/w/kp/ideas/eisenstein/../../../ntHash/include bench_spaced_e.cpp spaced_e.o spaced_g.o kp7e.o kp7.o /scratch/rico/gpu/galaxy/database/jobs_directory/052/52047/working/w/kp/ideas/eisenstein/../../../ntHash/build_o3/libnthash.a -o bench_spaced_e
+=== run_1: cd kp/ideas/eisenstein && ./dbg_e31 "$DATA" 20000000
+k 31, bases 20000000, distinct k-mers 13530525 (built in 1.8 s); hashes equal to 0: 0
+exact (packed codes, 8 B/node): 13608457 edges, 13391419 non-branching, 2.77 s (204.9 ns/node)
+hash-only (Eisenstein F, 8 B/node): true 13608457, false via wrong guess 0, false with right guess 0, missed 0,
+  predecessor hits via wrong guess 0, nodes whose degrees differ 0, non-branching 13391419, 16.38 s (1210.7 ns/node)
+provable bound on expected false successors: <= 0.0295; key-table bytes per node: packed 8, hash 8
+=== run_2: cd kp/ideas/eisenstein && ./dbg_e47 "$DATA" 20000000
+k 47, bases 20000000, distinct k-mers 14292098 (built in 2.2 s); hashes equal to 0: 0
+exact (packed codes, 16 B/node): 14329963 edges, 14222007 non-branching, 4.42 s (309.3 ns/node)
+hash-only (Eisenstein F, 8 B/node): true 14329963, false via wrong guess 0, false with right guess 0, missed 0,
+  predecessor hits via wrong guess 0, nodes whose degrees differ 0, non-branching 14222007, 18.82 s (1316.7 ns/node)
+provable bound on expected false successors: <= 0.05; key-table bytes per node: packed 16, hash 8
+=== run_3: cd kp/ideas/eisenstein && ./dbg_e63 "$DATA" 20000000
+k 63, bases 20000000, distinct k-mers 14712782 (built in 2.4 s); hashes equal to 0: 0
+exact (packed codes, 16 B/node): 14734711 edges, 14671373 non-branching, 4.59 s (312.2 ns/node)
+hash-only (Eisenstein F, 8 B/node): true 14734711, false via wrong guess 0, false with right guess 0, missed 0,
+  predecessor hits via wrong guess 0, nodes whose degrees differ 0, non-branching 14671373, 19.50 s (1325.5 ns/node)
+provable bound on expected false successors: <= 0.071; key-table bytes per node: packed 16, hash 8
+=== run_4: cd kp/ideas/eisenstein && ./bench_spaced_e "$DATA" 60000000 3
+bases 58823517, rounds 3
+masks 1: Gaussian 41282360 hashes 3.763 s (11.0 M/s)  Eisenstein 41282360 1.926 s (21.4 M/s)  SeedNtHash 41849577 1.505 s (27.8 M/s)  Gaussian/nt 0.40x  Eisenstein/nt 0.78x  (sinks 6ae99c7b41cca1a3 0c1dc92209c099a9 883d056c2e08f269)
+[ntHash::SeedNtHash] WARNING: Seed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+[ntHash::SeedNtHash] WARNING: Seed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+[ntHash::SeedNtHash] WARNING: Seed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+masks 2: Gaussian 82564720 hashes 8.208 s (10.1 M/s)  Eisenstein 82564720 4.153 s (19.9 M/s)  SeedNtHash 83699154 2.966 s (28.2 M/s)  Gaussian/nt 0.36x  Eisenstein/nt 0.71x  (sinks 4afa8de2902e83f7 0d9a324823880e68 dbf30e74ed718b03)
+SNP rate 0.001 mask 0: windows 41282360, unchanged: Gaussian 0.97635  Eisenstein 0.97635  SeedNtHash 0.97635  exact(care positions of both strands) 0.97635
+[ntHash::SeedNtHash] WARNING: Seed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+[ntHash::SeedNtHash] WARNING: Seed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+SNP rate 0.001 mask 1: windows 41282360, unchanged: Gaussian 0.97150  Eisenstein 0.97150  SeedNtHash 0.98025  exact(care positions of both strands) 0.97150
+SNP rate 0.010 mask 0: windows 41282360, unchanged: Gaussian 0.78574  Eisenstein 0.78574  SeedNtHash 0.78574  exact(care positions of both strands) 0.78574
+[ntHash::SeedNtHash] WARNING: Seed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+[ntHash::SeedNtHash] WARNING: Seed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+SNP rate 0.010 mask 1: windows 41282360, unchanged: Gaussian 0.74724  Eisenstein 0.74724  SeedNtHash 0.81795  exact(care positions of both strands) 0.74724
+SNP rate 0.050 mask 0: windows 41282360, unchanged: Gaussian 0.29189  Eisenstein 0.29189  SeedNtHash 0.29189  exact(care positions of both strands) 0.29189
+[ntHash::SeedNtHash] WARNING: Seed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+[ntHash::SeedNtHash] WARNING: Seed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+SNP rate 0.050 mask 1: windows 41282360, unchanged: Gaussian 0.22572  Eisenstein 0.22572  SeedNtHash 0.35843  exact(care positions of both strands) 0.22572
