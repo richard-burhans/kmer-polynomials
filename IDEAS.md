@@ -170,9 +170,15 @@ kazemi_2022_nthash2).
   results/kp7_hybrid_2026-11-10.md).
 
 **ntHash has, KP-7 does not (yet):** spaced seeds (KP-14 is an idea with no code), multiple hash values per k-mer,
-and raw full-hashing speed. The best provable-for-every-k-mer version runs at 0.91× ntHash (CM31 AVX-512,
-results/kp7_m31_simd_2026-11-10.md). In the sketch setting, hybrid v2 runs about 2× faster than ntHash at 1/1000
-sampling (results/kp7_pack_hybrid_2026-11-10.md), but that comes from how the hash is computed, not from the hash.
+and raw full-hashing speed. **Speed figures must use BATCHED ntHash** (hash/ntbatch.h, bit-identical to NtHash::roll),
+which is 2.1× faster than the library's per-k-mer roll() on laila: 11.3 against 23.6 cycles/k-mer
+(results/kp7_next_steps_2026-11-10.md). Against batched ntHash:
+- the best provable-for-every-k-mer version (CM31 AVX-512) is 0.44×; it was 0.91× against library ntHash
+  (results/kp7_m31_simd_2026-11-10.md)
+- in the sketch setting, hybrid v2 with chunk-table evaluation is 1.17× at 1/1000 sampling and 1.06× at 1/100; it
+  breaks even near 1/72 (earlier "about 2× faster" figures were against library ntHash)
+
+These speeds come from how the hash is computed, not from the hash itself.
 
 **Bottom line for a paper:** the case for KP-7 rests on guarantees and algebra (a provable collision bound,
 provably exact strand canonicalization, and a hash that is native to exact set reconciliation), not on speed.
