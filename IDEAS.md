@@ -140,6 +140,8 @@ Next steps (results/kp7_next_steps_2026-11-10.md): v2 with chunk-table evaluatio
 
 Kept-k-mer evaluation (results/kp7_kept_eval_2026-11-10.md): 142 → 64 cycles per kept k-mer (CM31 tables, batched). v2 now beats batched ntHash at sampling sparser than about 1/36 (it was 1/71), and beats the CM31 SIMD every-k-mer hash below about 1/4 (it was 1/8.5).
 
+Eisenstein encoding (ω ∈ F_q, one field element per hash): provable every-k-mer hashing at 24.6 cycles/k-mer on laila (0.46× batched ntHash, beating CM31 AVX-512 without SIMD); v2 sampler at about 29 cycles per kept k-mer, beating batched ntHash below about 1/19 (1.21× at 1/1000, 0.96× at 1/16). Bound about 2k/q, as Gaussian x-real (results/kp7_eisenstein_2026-11-10.md).
+
 *Check (KP-6 + KP-7):* compare against ntHash on cs10 for throughput, uniformity of minimizer selection (density and
 spacing between chosen positions), and collision rate.
 
@@ -311,6 +313,6 @@ A 0/1 mask polynomial applied coefficient by coefficient gives spaced k-mers, an
   With this map, A–G and C–T (transitions) both cost 2, and so do A–C and G–T (transversions). Only complements
   cost more, so the metric does not separate transitions from transversions. Would a different root assignment
   do that while keeping complement = negation?
-  **Answered 2026-11-10:** yes. With complement = negation, transitions always share |A+C|, and they separate from the A–C/G–T transversions iff Re(A·C̄) ≠ 0; fourth roots are exactly the orthogonal case that cannot. Sixth roots (A=1, C=ω, G=−ω, T=−1, Eisenstein) give squared distances 1 / 3 / 4 (transitions / A–C,G–T / complements). ω lies in F_q for q = 2⁶¹−1 and 2³¹−1 (both ≡ 1 mod 3), so this encoding keeps every hash value in F_q, one element instead of two, with the strand-symmetric product still exact (results/ideas_algebra_2026-11-10.md). An Eisenstein KP-7 roller is a promising speed follow-up.
+  **Answered 2026-11-10:** yes. With complement = negation, transitions always share |A+C|, and they separate from the A–C/G–T transversions iff Re(A·C̄) ≠ 0; fourth roots are exactly the orthogonal case that cannot. Sixth roots (A=1, C=ω, G=−ω, T=−1, Eisenstein) give squared distances 1 / 3 / 4 (transitions / A–C,G–T / complements). ω lies in F_q for q = 2⁶¹−1 and 2³¹−1 (both ≡ 1 mod 3), so this encoding keeps every hash value in F_q, one element instead of two, with the strand-symmetric product still exact (results/ideas_algebra_2026-11-10.md). **Built and measured 2026-11-10 (results/kp7_eisenstein_2026-11-10.md):** the Eisenstein roller is 3 multiplies per k-mer: provable every-k-mer hashing at 24.6 cycles (2 lanes, scalar), against 47.5 for the Gaussian 61-bit version and 25.8 for CM31 AVX-512. The v2 sampler costs about 29 cycles per kept k-mer (CM31: 64) and beats batched ntHash below about 1/19.
 - How large must m be in KP-9/KP-10 for two real haplotypes at k = 21 or 31?
 - What does the k-mer difference between two haplotypes look like? Is it dominated by SNPs (k k-mers per SNP)?
