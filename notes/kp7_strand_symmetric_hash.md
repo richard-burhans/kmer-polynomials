@@ -37,8 +37,9 @@ forward hash. It needs no comparison, unlike canonical min(F, R).
 **Corrected twice, 2026-11-10.** The first version said this hash avoids the "sketching deserts" of Marçais et al.
 2024. The first correction swung too far, saying any strand-symmetric hash creates them. What the paper actually says
 (marcais_2024_knonical, source lines 514 and 574): canonicalization, i.e. folding a k-mer with its reverse complement,
-can negate the window guarantee of methods that HAVE one (syncmers and the other guaranteed schemes), producing deserts
-orders of magnitude larger. It has "no visible effect" on FRACTIONAL (FracMinHash-style hash-threshold) sampling,
+can negate the window guarantee of methods that HAVE one (syncmers and the other guaranteed schemes), producing much
+larger deserts. The paper's Table 2 caption says "orders of magnitude", but its own table shows 5–8× for three of five
+methods at k = 31 (Mykkeltveit 5.5×, syncmer 0 5.4×, syncmer 1 7.6×, chromosome 1); the caption holds at k = 15. It has "no visible effect" on FRACTIONAL (FracMinHash-style hash-threshold) sampling,
 which has no guarantee to lose. So:
 - in window-guaranteed schemes, a strand-symmetric hash (this one, min(F, R), or fwd + rev) cannot avoid the
   canonicalization deserts;
