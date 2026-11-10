@@ -1,0 +1,92 @@
+# 2026-11-10T13:30:52-05:00 host claude-cannabis-genome cpu:  Intel(R) Xeon(R) Processor
+# gcc: gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0; flags: -O3 -march=native
+# kp7 commit: eb4262f; input: /home/rcb112/project/claude/bench/data/kmer_poly_work/cs10.fa (893674209 bytes)
+ntHash canonical, k=8: 32896 distinct values over 65536 k-mers (32896 double-stranded classes)
+loaded 221 records, 876147649 bases in 10.5 s; k=31, rounds=5
+  round 0 ntHash canonical (fwd+rev)     2.955 s  249.3 M k-mers/s
+  round 0 kp7 forward, x real            5.195 s  141.8 M k-mers/s
+  round 0 kp7 canonical min, x real      5.755 s  128.0 M k-mers/s
+  round 0 kp7 symmetric, x real          7.622 s  96.6 M k-mers/s
+  round 0 kp7 symmetric, x complex       8.388 s  87.8 M k-mers/s
+  round 0 kp7 sym, x real, Karatsuba     7.498 s  98.2 M k-mers/s
+  round 0 kp7 sym, x cplx, Karatsuba     8.513 s  86.5 M k-mers/s
+  round 0 roll_sym x real opt0           7.231 s  101.9 M k-mers/s
+  round 0 roll_sym x real lamstate       7.878 s  93.5 M k-mers/s
+  round 0 roll_sym x real merged         6.956 s  105.9 M k-mers/s
+  round 0 roll_sym x real lazy           7.096 s  103.8 M k-mers/s
+  round 0 roll_sym x real all three      6.614 s  111.4 M k-mers/s
+  round 0 roll_sym x cplx opt0           8.962 s  82.2 M k-mers/s
+  round 0 roll_sym x cplx lam+merged     7.543 s  97.6 M k-mers/s
+  round 1 ntHash canonical (fwd+rev)     3.118 s  236.2 M k-mers/s
+  round 1 kp7 forward, x real            5.651 s  130.3 M k-mers/s
+  round 1 kp7 canonical min, x real      5.745 s  128.2 M k-mers/s
+  round 1 kp7 symmetric, x real          7.817 s  94.2 M k-mers/s
+  round 1 kp7 symmetric, x complex       8.627 s  85.4 M k-mers/s
+  round 1 kp7 sym, x real, Karatsuba     7.811 s  94.3 M k-mers/s
+  round 1 kp7 sym, x cplx, Karatsuba     8.972 s  82.1 M k-mers/s
+  round 1 roll_sym x real opt0           7.304 s  100.8 M k-mers/s
+  round 1 roll_sym x real lamstate       7.516 s  98.0 M k-mers/s
+  round 1 roll_sym x real merged         6.543 s  112.6 M k-mers/s
+  round 1 roll_sym x real lazy           6.716 s  109.7 M k-mers/s
+  round 1 roll_sym x real all three      6.261 s  117.6 M k-mers/s
+  round 1 roll_sym x cplx opt0           7.879 s  93.5 M k-mers/s
+  round 1 roll_sym x cplx lam+merged     7.266 s  101.4 M k-mers/s
+  round 2 ntHash canonical (fwd+rev)     3.018 s  244.1 M k-mers/s
+  round 2 kp7 forward, x real            5.495 s  134.0 M k-mers/s
+  round 2 kp7 canonical min, x real      5.848 s  125.9 M k-mers/s
+  round 2 kp7 symmetric, x real          7.655 s  96.2 M k-mers/s
+  round 2 kp7 symmetric, x complex       8.605 s  85.6 M k-mers/s
+  round 2 kp7 sym, x real, Karatsuba     7.811 s  94.3 M k-mers/s
+  round 2 kp7 sym, x cplx, Karatsuba     8.881 s  82.9 M k-mers/s
+  round 2 roll_sym x real opt0           7.370 s  99.9 M k-mers/s
+  round 2 roll_sym x real lamstate       7.530 s  97.8 M k-mers/s
+  round 2 roll_sym x real merged         6.417 s  114.8 M k-mers/s
+  round 2 roll_sym x real lazy           6.842 s  107.6 M k-mers/s
+  round 2 roll_sym x real all three      6.464 s  113.9 M k-mers/s
+  round 2 roll_sym x cplx opt0           8.167 s  90.2 M k-mers/s
+  round 2 roll_sym x cplx lam+merged     7.209 s  102.2 M k-mers/s
+  round 3 ntHash canonical (fwd+rev)     2.995 s  245.9 M k-mers/s
+  round 3 kp7 forward, x real            5.465 s  134.8 M k-mers/s
+  round 3 kp7 canonical min, x real      5.549 s  132.7 M k-mers/s
+  round 3 kp7 symmetric, x real          7.502 s  98.2 M k-mers/s
+  round 3 kp7 symmetric, x complex       8.414 s  87.5 M k-mers/s
+  round 3 kp7 sym, x real, Karatsuba     7.493 s  98.3 M k-mers/s
+  round 3 kp7 sym, x cplx, Karatsuba     8.528 s  86.4 M k-mers/s
+  round 3 roll_sym x real opt0           7.131 s  103.3 M k-mers/s
+  round 3 roll_sym x real lamstate       7.626 s  96.6 M k-mers/s
+  round 3 roll_sym x real merged         6.899 s  106.8 M k-mers/s
+  round 3 roll_sym x real lazy           7.008 s  105.1 M k-mers/s
+  round 3 roll_sym x real all three      6.538 s  112.7 M k-mers/s
+  round 3 roll_sym x cplx opt0           8.352 s  88.2 M k-mers/s
+  round 3 roll_sym x cplx lam+merged     7.116 s  103.5 M k-mers/s
+  round 4 ntHash canonical (fwd+rev)     3.009 s  244.8 M k-mers/s
+  round 4 kp7 forward, x real            5.422 s  135.8 M k-mers/s
+  round 4 kp7 canonical min, x real      5.687 s  129.5 M k-mers/s
+  round 4 kp7 symmetric, x real          7.855 s  93.8 M k-mers/s
+  round 4 kp7 symmetric, x complex       8.684 s  84.8 M k-mers/s
+  round 4 kp7 sym, x real, Karatsuba     7.561 s  97.4 M k-mers/s
+  round 4 kp7 sym, x cplx, Karatsuba     8.591 s  85.7 M k-mers/s
+  round 4 roll_sym x real opt0           7.295 s  101.0 M k-mers/s
+  round 4 roll_sym x real lamstate       7.731 s  95.3 M k-mers/s
+  round 4 roll_sym x real merged         6.609 s  111.4 M k-mers/s
+  round 4 roll_sym x real lazy           6.872 s  107.2 M k-mers/s
+  round 4 roll_sym x real all three      6.404 s  115.0 M k-mers/s
+  round 4 roll_sym x cplx opt0           8.293 s  88.8 M k-mers/s
+  round 4 roll_sym x cplx lam+merged     7.753 s  95.0 M k-mers/s
+
+THROUGHPUT (median of 5 interleaved rounds; sink 6a561a1adb43f83c)
+  ntHash canonical (fwd+rev)     k-mers 736547799  median 3.009 s  244.8 M k-mers/s
+  kp7 forward, x real            k-mers 736547799  median 5.465 s  134.8 M k-mers/s
+  kp7 canonical min, x real      k-mers 736547799  median 5.745 s  128.2 M k-mers/s
+  kp7 symmetric, x real          k-mers 736547799  median 7.655 s  96.2 M k-mers/s
+  kp7 symmetric, x complex       k-mers 736547799  median 8.605 s  85.6 M k-mers/s
+  kp7 sym, x real, Karatsuba     k-mers 736547799  median 7.561 s  97.4 M k-mers/s
+  kp7 sym, x cplx, Karatsuba     k-mers 736547799  median 8.591 s  85.7 M k-mers/s
+  roll_sym x real opt0           k-mers 736547799  median 7.295 s  101.0 M k-mers/s
+  roll_sym x real lamstate       k-mers 736547799  median 7.626 s  96.6 M k-mers/s
+  roll_sym x real merged         k-mers 736547799  median 6.609 s  111.4 M k-mers/s
+  roll_sym x real lazy           k-mers 736547799  median 6.872 s  107.2 M k-mers/s
+  roll_sym x real all three      k-mers 736547799  median 6.464 s  113.9 M k-mers/s
+  roll_sym x cplx opt0           k-mers 736547799  median 8.293 s  88.8 M k-mers/s
+  roll_sym x cplx lam+merged     k-mers 736547799  median 7.266 s  101.4 M k-mers/s
+  Karatsuba and roll_sym hashes identical to plain: yes
