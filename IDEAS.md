@@ -24,10 +24,12 @@ Identities (the reason for this choice):
 - reverse: x^{k−1} p(1/x)
 - reverse complement: rc(p)(x) = −x^{k−1} p(1/x)
 
-**Prior art to check first:** this exact map (complement = negation, ±1 and ±i) is Anastassiou's complex DNA
-representation from genomic signal processing (around 2001). That field evaluates p at roots of unity, i.e. takes the
-DFT, for example the period-3 signal of coding exons at x = e^{2πi/3}. The encoding is not new. What might be new is
-the polynomial-algebra layer built on it below.
+**Prior art (corrected 2026-11-10 after the papers were read in full):** the map is NOT Anastassiou's. His complex
+representation makes complement a conjugation, and ours makes it a negation. Ours matches the "trigonometric" mapping
+in Das et al. 2021 (das_2021_dna-encoding) at θ = π/4, up to a rotation; Das, Nanda & Das 2017 introduced it. Genomic
+signal processing evaluates such encodings at roots of unity, i.e. takes the DFT (for example the period-3 signal of
+coding exons at x = e^{2πi/3}). The encoding is not new. What might be new is the polynomial-algebra layer built on it
+below.
 
 ---
 

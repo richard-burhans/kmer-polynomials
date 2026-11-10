@@ -32,8 +32,13 @@ double-stranded k-mers collide with probability ≤ about 2k / q² over random (
     R_{j+1} = x·(R_j + s_j·x^{k−1}) − s_{j+k}
 
 Precompute x⁻¹ and x^{k−1}. The symmetric hash then costs 2 additions and 1 multiplication per k-mer more than the
-forward hash. It needs no comparison, unlike canonical min(F, R), which Marçais et al. 2024 show creates "sketching
-deserts".
+forward hash. It needs no comparison, unlike canonical min(F, R).
+
+**Corrected 2026-11-10:** an earlier version said this avoids the "sketching deserts" of Marçais et al. 2024. It does
+not. Their deserts come from folding a k-mer together with its reverse complement, and ANY strand-symmetric hash,
+including this one, is such a folding; min(F, R) and fwd + rev are others. ntHash2 also already uses fwd + rev as its
+canonical hash. So KP-7's novelty is only the exact product form (F + λ)(R + λ) (the quadratic factor over F_{q²}),
+which is injective on double-stranded classes with a provable collision bound. It is not freedom from deserts.
 
 ## Next
 
