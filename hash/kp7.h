@@ -16,6 +16,11 @@
  *   KP7_XCOMPLEX  x in F_{q^2}. Collision probability <= (k-1)/q^2. Twice the multiplications.
  * lam is always a random element of F_{q^2}.
  *
+ * Karatsuba (params.karatsuba = 1): (a+bi)(c+di) has imaginary part (a+b)(c+d) - ac - bd, so 3 widening
+ * multiplies instead of 4. Exact in 128 bits: a+b, c+d < 2^62, the product is < 2^124 (red() accepts it), and
+ * (a+b)(c+d) >= ac + bd, so the subtraction never wraps. It gives bit-identical values (test_kp7 checks this).
+ * It applies to the symmetric product and, for KP7_XCOMPLEX, to the rolling multiplies.
+ *
  * 64-bit output: fold(z) = re ^ rotl64(im, 32). re and im are each in [0, q), i.e. 61 bits. The rotation
  * puts im's three always-zero top bits (61..63) at positions 29..31, where re's bits are live, and puts im's
  * live bits 29..31 at positions 61..63, where re's bits are always zero. So every output bit is the XOR of at
@@ -39,6 +44,7 @@ enum { KP7_XREAL = 0, KP7_XCOMPLEX = 1 };
 typedef struct {
   unsigned k;
   int variant;
+  int karatsuba;   /* 1: F_{q^2} products use 3 widening multiplies (Karatsuba) instead of 4; same values */
   kp7_fe x, xinv, lam;
   kp7_fe out_f[4], in_f[4]; /* -s*x^{-1},  s*x^{k-1} */
   kp7_fe out_r[4], in_r[4]; /*  s*x^{k},   -s        */
@@ -60,6 +66,7 @@ uint64_t kp7_subq(uint64_t a, uint64_t b);
 uint64_t kp7_mulq(uint64_t a, uint64_t b);
 kp7_fe kp7_add(kp7_fe a, kp7_fe b);
 kp7_fe kp7_mul(kp7_fe a, kp7_fe b);
+kp7_fe kp7_mul_karatsuba(kp7_fe a, kp7_fe b);
 kp7_fe kp7_inv(kp7_fe a);
 kp7_fe kp7_base(int code); /* 0..3 = A C G T */
 int kp7_code(char c);      /* A C G T (either case) -> 0..3, else -1 */

@@ -130,9 +130,54 @@ static void test_field(void)
   CHECK(kp7_mulq(KP7_Q - 1, KP7_Q - 1) == 1, "(-1)^2 != 1");
 }
 
+/* 4: Karatsuba gives bit-identical products and hashes */
+static uint64_t sm(uint64_t* s)
+{
+  uint64_t z = (*s += 0x9E3779B97F4A7C15ULL);
+  z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ULL; z = (z ^ (z >> 27)) * 0x94D049BB133111EBULL;
+  return z ^ (z >> 31);
+}
+static void test_karatsuba(void)
+{
+  const uint64_t edge[] = { 0, 1, 2, KP7_Q - 2, KP7_Q - 1, (KP7_Q - 1) / 2, 1ULL << 60 };
+  const int ne = sizeof edge / sizeof edge[0];
+  for (int a = 0; a < ne; a++) for (int b = 0; b < ne; b++) for (int c = 0; c < ne; c++) for (int d = 0; d < ne; d++) {
+    kp7_fe x = { edge[a], edge[b] }, y = { edge[c], edge[d] };
+    CHECK(fe_eq(kp7_mul(x, y), kp7_mul_karatsuba(x, y)), "karatsuba edge (%d,%d)x(%d,%d)", a, b, c, d);
+  }
+  uint64_t s = 42;
+  for (int n = 0; n < 1000000; n++) {
+    kp7_fe x = { sm(&s) % KP7_Q, sm(&s) % KP7_Q }, y = { sm(&s) % KP7_Q, sm(&s) % KP7_Q };
+    CHECK(fe_eq(kp7_mul(x, y), kp7_mul_karatsuba(x, y)), "karatsuba random %d", n);
+  }
+  const size_t len = 100000;
+  char* seq = malloc(len);
+  for (size_t i = 0; i < len; i++) seq[i] = "ACGTN"[sm(&s) % 1000 == 0 ? 4 : sm(&s) % 4]; /* ~97% of 31-mer windows N-free */
+  for (int variant = 0; variant < 2; variant++) {
+    kp7_params p0, p1;
+    kp7_init(&p0, 31, variant, 99);
+    kp7_init(&p1, 31, variant, 99);
+    p1.karatsuba = 1;
+    kp7_roller r0, r1;
+    kp7_start(&r0, &p0, seq, len);
+    kp7_start(&r1, &p1, seq, len);
+    uint64_t h0, h1, n = 0;
+    for (;;) {
+      int a = kp7_roll64(&r0, KP7_OUT_SYM, &h0), b = kp7_roll64(&r1, KP7_OUT_SYM, &h1);
+      CHECK(a == b, "karatsuba roll lengths differ");
+      if (!a || !b) break;
+      CHECK(h0 == h1 && r0.pos == r1.pos, "karatsuba sym differs at %zu (variant %d)", r0.pos, variant);
+      n++;
+    }
+    CHECK(n > 90000, "karatsuba roll compared only %llu windows", (unsigned long long)n);
+  }
+  free(seq);
+}
+
 int main(void)
 {
   test_field();
+  test_karatsuba();
   for (int variant = 0; variant < 2; variant++) {
     test_rolling(variant, 31, 200000, 7 + variant);
     test_rolling(variant, 8, 50000, 9 + variant);

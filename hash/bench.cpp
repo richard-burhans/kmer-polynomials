@@ -1,6 +1,6 @@
 // KP-6/KP-7 against ntHash: throughput, minimizer density and gaps, context-free sampling gaps, bit uniformity.
 //
-//   bench <fasta> [k=31] [rounds=5]      (hash/run_bench.sh supplies cs10)
+//   bench <fasta> [k=31] [rounds=5] [throughput]   (hash/run_bench.sh supplies cs10; `throughput` skips the stats)
 //   bench --nthash-classes                exhaustive k=8 class count for ntHash's canonical (fwd + rev)
 //
 // Every method sees identical bytes: the FASTA is loaded once, upper-cased (case-blind), split per record.
@@ -39,11 +39,16 @@ static std::vector<Rec> load_fasta(const char* path)
   return recs;
 }
 
-enum Method { NTHASH = 0, KP7_FWD_REAL, KP7_MIN_REAL, KP7_SYM_REAL, KP7_SYM_COMPLEX, NMETHODS };
+enum Method { NTHASH = 0, KP7_FWD_REAL, KP7_MIN_REAL, KP7_SYM_REAL, KP7_SYM_COMPLEX, KP7_SYM_REAL_K, KP7_SYM_COMPLEX_K,
+              NMETHODS };
 static const char* NAMES[NMETHODS] = { "ntHash canonical (fwd+rev)", "kp7 forward, x real", "kp7 canonical min, x real",
-                                       "kp7 symmetric, x real", "kp7 symmetric, x complex" };
+                                       "kp7 symmetric, x real", "kp7 symmetric, x complex",
+                                       "kp7 sym, x real, Karatsuba", "kp7 sym, x cplx, Karatsuba" };
+// Karatsuba methods give bit-identical hashes (test_kp7), so their STATS equal the plain methods'; main checks the sinks.
+static bool is_k(Method m) { return m == KP7_SYM_REAL_K || m == KP7_SYM_COMPLEX_K; }
 
 // Calls fn(pos, hash) for every valid k-mer of one record.
+static const kp7_params *g_real_k, *g_cplx_k; // Karatsuba copies of real/cplx, set in main
 template <class Fn> static void hash_record(Method m, const std::string& s, unsigned k, const kp7_params* real,
                                             const kp7_params* cplx, Fn&& fn)
 {
@@ -53,7 +58,7 @@ template <class Fn> static void hash_record(Method m, const std::string& s, unsi
     while (nth.roll()) fn(nth.get_pos(), nth.hashes()[0]);
     return;
   }
-  const kp7_params* p = m == KP7_SYM_COMPLEX ? cplx : real;
+  const kp7_params* p = m == KP7_SYM_COMPLEX ? cplx : m == KP7_SYM_REAL_K ? g_real_k : m == KP7_SYM_COMPLEX_K ? g_cplx_k : real;
   int mode = m == KP7_FWD_REAL ? KP7_OUT_FWD : m == KP7_MIN_REAL ? KP7_OUT_CANON_MIN : KP7_OUT_SYM;
   kp7_roller r;
   kp7_start(&r, p, s.data(), s.size());
@@ -162,6 +167,7 @@ int main(int argc, char** argv)
   if (argc < 2) { fprintf(stderr, "usage: bench <fasta> [k] [rounds]\n"); return 2; }
   unsigned k = argc > 2 ? (unsigned)atoi(argv[2]) : 31;
   int rounds = argc > 3 ? atoi(argv[3]) : 5;
+  bool throughput_only = argc > 4 && !strcmp(argv[4], "throughput");
   auto t0 = std::chrono::steady_clock::now();
   std::vector<Rec> recs = load_fasta(argv[1]);
   size_t bases = 0;
@@ -172,10 +178,13 @@ int main(int argc, char** argv)
   kp7_params real, cplx;
   kp7_init(&real, k, KP7_XREAL, 0x5eed);
   kp7_init(&cplx, k, KP7_XCOMPLEX, 0x5eed);
+  kp7_params real_k = real, cplx_k = cplx;
+  real_k.karatsuba = cplx_k.karatsuba = 1;
+  g_real_k = &real_k; g_cplx_k = &cplx_k;
 
   // throughput: interleaved rounds
   std::vector<std::vector<double>> secs(NMETHODS);
-  uint64_t counts[NMETHODS] = { 0 }, sink = 0;
+  uint64_t counts[NMETHODS] = { 0 }, sink = 0, msink[NMETHODS] = { 0 };
   for (int round = 0; round < rounds; round++) {
     for (int m = 0; m < NMETHODS; m++) {
       uint64_t n = 0, x = 0;
@@ -185,6 +194,7 @@ int main(int argc, char** argv)
       secs[m].push_back(s);
       counts[m] = n;
       sink ^= x;
+      msink[m] = x;
       printf("  round %d %-28s %.3f s  %.1f M k-mers/s\n", round, NAMES[m], s, n / s / 1e6);
       fflush(stdout);
     }
@@ -198,8 +208,14 @@ int main(int argc, char** argv)
            counts[m] / med / 1e6);
   }
 
+  // the Karatsuba methods must reproduce the plain ones exactly (xor of every hash)
+  bool same = msink[KP7_SYM_REAL_K] == msink[KP7_SYM_REAL] && msink[KP7_SYM_COMPLEX_K] == msink[KP7_SYM_COMPLEX];
+  printf("  Karatsuba hashes identical to plain: %s\n", same ? "yes" : "NO");
+  if (!same) return 1;
+  if (throughput_only) return 0;
   printf("\nSTATS\n");
   for (int m = 0; m < NMETHODS; m++) {
+    if (is_k((Method)m)) continue;
     Stats st = stats_for((Method)m, recs, k, &real, &cplx);
     double maxdev = 0;
     for (int b = 0; b < 64; b++) maxdev = std::max(maxdev, std::fabs((double)st.bits[b] / st.kmers - 0.5));

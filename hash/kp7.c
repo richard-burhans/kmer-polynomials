@@ -6,7 +6,7 @@ static const unsigned __int128 Q2 = (unsigned __int128)KP7_Q * KP7_Q;
 
 /* ---- field arithmetic (inline in this translation unit, exported wrappers below) ---- */
 
-static inline uint64_t red(unsigned __int128 p) /* p < 2^123 */
+static inline uint64_t red(unsigned __int128 p) /* p < 2^124: p >> 61 < 2^63, so the first sum fits 64 bits */
 {
   uint64_t r = ((uint64_t)p & Q) + (uint64_t)(p >> 61);
   r = (r & Q) + (r >> 61);
@@ -24,6 +24,19 @@ static inline kp7_fe fmul(kp7_fe a, kp7_fe b)
   kp7_fe r = { red(ac + (Q2 - bd)), red(ad + bc) };
   return r;
 }
+/* Karatsuba: 3 widening multiplies; see kp7.h */
+static inline kp7_fe fmul_k(kp7_fe a, kp7_fe b)
+{
+  unsigned __int128 ac = (unsigned __int128)a.re * b.re, bd = (unsigned __int128)a.im * b.im;
+  unsigned __int128 s = (unsigned __int128)(a.re + a.im) * (b.re + b.im); /* sums < 2^62, product < 2^124 */
+#ifdef KP7_MUTATE_K /* test-only: drop one Karatsuba term; `make mutation` expects the tests to FAIL */
+  kp7_fe r = { red(ac + (Q2 - bd)), red(s - ac) };
+#else
+  kp7_fe r = { red(ac + (Q2 - bd)), red(s - ac - bd) };                   /* s >= ac + bd: ad + bc >= 0 */
+#endif
+  return r;
+}
+static inline kp7_fe fmul_p(const kp7_params* p, kp7_fe a, kp7_fe b) { return p->karatsuba ? fmul_k(a, b) : fmul(a, b); }
 static inline kp7_fe fmul_real(kp7_fe a, uint64_t x) { kp7_fe r = { mulq(a.re, x), mulq(a.im, x) }; return r; }
 static inline uint64_t fold(kp7_fe z) { return z.re ^ ((z.im << 32) | (z.im >> 32)); }
 
@@ -39,6 +52,7 @@ uint64_t kp7_subq(uint64_t a, uint64_t b) { return subq(a, b); }
 uint64_t kp7_mulq(uint64_t a, uint64_t b) { return mulq(a, b); }
 kp7_fe kp7_add(kp7_fe a, kp7_fe b) { return fadd(a, b); }
 kp7_fe kp7_mul(kp7_fe a, kp7_fe b) { return fmul(a, b); }
+kp7_fe kp7_mul_karatsuba(kp7_fe a, kp7_fe b) { return fmul_k(a, b); }
 uint64_t kp7_fold(kp7_fe z) { return fold(z); }
 
 kp7_fe kp7_inv(kp7_fe a)
@@ -89,6 +103,7 @@ void kp7_init(kp7_params* p, unsigned k, int variant, uint64_t seed)
   uint64_t s = seed;
   p->k = k;
   p->variant = variant;
+  p->karatsuba = 0;
   p->x.re = rand_q(&s);
   p->x.im = variant == KP7_XREAL ? 0 : rand_q(&s);
   p->lam.re = rand_q(&s);
@@ -128,7 +143,7 @@ int kp7_direct(const kp7_params* p, const char* kmer, kp7_fe* F, kp7_fe* R)
   return 1;
 }
 
-kp7_fe kp7_sym(const kp7_params* p, kp7_fe F, kp7_fe R) { return fmul(fadd(F, p->lam), fadd(R, p->lam)); }
+kp7_fe kp7_sym(const kp7_params* p, kp7_fe F, kp7_fe R) { return fmul_p(p, fadd(F, p->lam), fadd(R, p->lam)); }
 
 /* ---- rolling ---- */
 
@@ -165,8 +180,8 @@ int kp7_roll(kp7_roller* r)
     r->F = fadd(fadd(fmul_real(r->F, p->xinv.re), p->out_f[co]), p->in_f[ci]);
     r->R = fadd(fadd(fmul_real(r->R, p->x.re), p->out_r[co]), p->in_r[ci]);
   } else {
-    r->F = fadd(fadd(fmul(r->F, p->xinv), p->out_f[co]), p->in_f[ci]);
-    r->R = fadd(fadd(fmul(r->R, p->x), p->out_r[co]), p->in_r[ci]);
+    r->F = fadd(fadd(fmul_p(p, r->F, p->xinv), p->out_f[co]), p->in_f[ci]);
+    r->R = fadd(fadd(fmul_p(p, r->R, p->x), p->out_r[co]), p->in_r[ci]);
   }
   r->pos++;
   return 1;
@@ -178,7 +193,7 @@ int kp7_roll64(kp7_roller* r, int mode, uint64_t* out)
   switch (mode) {
   case KP7_OUT_FWD: *out = fold(r->F); break;
   case KP7_OUT_CANON_MIN: { uint64_t a = fold(r->F), b = fold(r->R); *out = a < b ? a : b; } break;
-  default: *out = fold(fmul(fadd(r->F, r->p->lam), fadd(r->R, r->p->lam))); break;
+  default: *out = fold(fmul_p(r->p, fadd(r->F, r->p->lam), fadd(r->R, r->p->lam))); break;
   }
   return 1;
 }
