@@ -1,5 +1,6 @@
 /* KP-6 / KP-7 rolling hashes; see kp7.h. */
 #include "kp7.h"
+#include <string.h>
 
 #define Q KP7_Q
 static const unsigned __int128 Q2 = (unsigned __int128)KP7_Q * KP7_Q;
@@ -463,4 +464,140 @@ size_t kp7_sym_seq(const kp7_params* p, const char* seq, size_t len, int lanes, 
     }
   }
   return total;
+}
+
+/* ---- hybrid: cheap symmetric gate, provable hash for kept k-mers (see kp7.h) ---- */
+
+static inline uint64_t canon_q(uint64_t v) { return v >= Q ? v - Q : v; } /* [0, 2q) -> [0, q) */
+static inline uint64_t mix64(uint64_t x)
+{
+  x ^= x >> 32;
+  x *= 0xd6e8feb86659fd93ULL; /* odd multiplier (a known good 64-bit mixing constant) */
+  return x ^ (x >> 32);
+}
+#ifdef KP7_MUTATE_GATE /* test-only: break the symmetry of the gate; `make mutation` expects FAIL */
+static inline uint64_t gate_of(uint64_t g, uint64_t h) { return mix64(g) + h; }
+#else
+static inline uint64_t gate_of(uint64_t g, uint64_t h) { return mix64(g) + mix64(h); }
+#endif
+
+uint64_t kp7_gate(const kp7_params* p, kp7_fe F, kp7_fe R)
+{
+  return gate_of(fold(fadd(F, p->lam)), fold(fadd(R, p->lam)));
+}
+
+static inline uint64_t rot32(uint64_t v) { return (v << 32) | (v >> 32); } /* fold's rotation */
+
+/* MODE 0: out[q] = gate for every k-mer. MODE 1: keep gate < thr, with the provable hash. x real, lazy state. */
+#define KP7_DEF_HYBRID(NAME, L, MODE)                                                                                 \
+  static size_t NAME(const kp7_params* p, const char* s, size_t nk, size_t base, uint64_t thr, uint64_t* out,         \
+                     size_t* opos)                                                                                    \
+  {                                                                                                                  \
+    const size_t k = p->k, seg = nk / L, rem = nk - seg * L;                                                         \
+    const uint64_t xi = p->xinv.re, x = p->x.re;                                                                     \
+    const kp7_fe *tf = p->tfl, *tr = p->trl;                                                                         \
+    uint64_t gr[L], gi[L], hr[L], hi[L];                                                                             \
+    /* MODE 1: lane l writes its kept k-mers into its own region [l*seg, ...) so each block's output stays in */     \
+    /* position order; the regions are joined at the end. The last lane's region also holds the remainder. */        \
+    size_t kl[L] = { 0 };                                                                                            \
+    (void)thr; (void)opos; (void)base;                                                                               \
+    for (int l = 0; l < L; l++) {                                                                                    \
+      kp7_fe G, H;                                                                                                   \
+      lane_init(p, s + l * seg, &G, &H);                                                                             \
+      gr[l] = G.re; gi[l] = G.im; hr[l] = H.re; hi[l] = H.im;                                                        \
+    }                                                                                                                \
+    for (size_t i = 0; i < seg; i++) {                                                                               \
+      for (int l = 0; l < L; l++) {                                                                                  \
+        size_t q = l * seg + i;                                                                                      \
+        uint64_t g = canon_q(gr[l]) ^ rot32(canon_q(gi[l])), h = canon_q(hr[l]) ^ rot32(canon_q(hi[l]));             \
+        uint64_t gt = gate_of(g, h);                                                                                 \
+        if (MODE == 0) out[q] = gt;                                                                                  \
+        else if (gt < thr) {                                                                                         \
+          kp7_fe a = { gr[l], gi[l] }, b = { hr[l], hi[l] };                                                         \
+          size_t w = l * seg + kl[l]++;                                                                              \
+          out[w] = fold(fmul_wide(a, b));                                                                            \
+          opos[w] = base + q;                                                                                        \
+        }                                                                                                            \
+        if (i + 1 < seg) {                                                                                           \
+          int idx = CODE[(unsigned char)s[q]] * 4 + CODE[(unsigned char)s[q + k]];                                   \
+          gr[l] = mulq(gr[l], xi) + tf[idx].re; gi[l] = mulq(gi[l], xi) + tf[idx].im;                                \
+          hr[l] = mulq(hr[l], x) + tr[idx].re;  hi[l] = mulq(hi[l], x) + tr[idx].im;                                 \
+        }                                                                                                            \
+      }                                                                                                              \
+    }                                                                                                                \
+    for (size_t j = 0, q = L * seg - 1; j < rem; j++, q++) {                                                         \
+      int idx = CODE[(unsigned char)s[q]] * 4 + CODE[(unsigned char)s[q + k]];                                       \
+      gr[L - 1] = mulq(gr[L - 1], xi) + tf[idx].re; gi[L - 1] = mulq(gi[L - 1], xi) + tf[idx].im;                    \
+      hr[L - 1] = mulq(hr[L - 1], x) + tr[idx].re;  hi[L - 1] = mulq(hi[L - 1], x) + tr[idx].im;                     \
+      uint64_t g = canon_q(gr[L - 1]) ^ rot32(canon_q(gi[L - 1])), h = canon_q(hr[L - 1]) ^ rot32(canon_q(hi[L - 1]));\
+      uint64_t gt = gate_of(g, h);                                                                                   \
+      if (MODE == 0) out[q + 1] = gt;                                                                                \
+      else if (gt < thr) {                                                                                           \
+        kp7_fe a = { gr[L - 1], gi[L - 1] }, b = { hr[L - 1], hi[L - 1] };                                           \
+        size_t w = (L - 1) * seg + kl[L - 1]++;                                                                      \
+        out[w] = fold(fmul_wide(a, b));                                                                              \
+        opos[w] = base + q + 1;                                                                                      \
+      }                                                                                                              \
+    }                                                                                                                \
+    if (MODE == 0) return nk;                                                                                        \
+    size_t kept = kl[0];                                                                                             \
+    for (int l = 1; l < L; l++) {                                                                                    \
+      memmove(out + kept, out + l * seg, kl[l] * sizeof *out);                                                       \
+      memmove(opos + kept, opos + l * seg, kl[l] * sizeof *opos);                                                    \
+      kept += kl[l];                                                                                                 \
+    }                                                                                                                \
+    return kept;                                                                                                     \
+  }
+KP7_DEF_HYBRID(gate_1, 1, 0)
+KP7_DEF_HYBRID(gate_2, 2, 0)
+KP7_DEF_HYBRID(sample_1, 1, 1)
+KP7_DEF_HYBRID(sample_2, 2, 1)
+
+/* walk N-free runs in blocks, as kp7_sym_seq does */
+#define KP7_FOR_BLOCKS(BODY)                                                                                          \
+  size_t i = 0;                                                                                                      \
+  while (i < len) {                                                                                                  \
+    while (i < len && CODE[(unsigned char)seq[i]] < 0) i++;                                                          \
+    size_t a = i;                                                                                                    \
+    while (i < len && CODE[(unsigned char)seq[i]] >= 0) i++;                                                         \
+    size_t run = i - a;                                                                                              \
+    if (run < k) continue;                                                                                           \
+    size_t nk = run - k + 1;                                                                                         \
+    for (size_t off = 0; off < nk; off += cap) {                                                                     \
+      size_t n = nk - off < cap ? nk - off : cap;                                                                    \
+      const char* s = seq + a + off;                                                                                 \
+      int L = lanes >= 2 && n >= 2 ? 2 : 1;                                                                          \
+      BODY                                                                                                           \
+    }                                                                                                                \
+  }
+
+size_t kp7_gate_seq(const kp7_params* p, const char* seq, size_t len, int lanes, uint64_t* buf, size_t cap,
+                    kp7_emit_fn emit, void* ctx)
+{
+  if (!code_ready) code_init();
+  if (p->variant != KP7_XREAL) return 0;
+  const size_t k = p->k;
+  size_t total = 0;
+  KP7_FOR_BLOCKS({
+    if (L == 2) gate_2(p, s, n, 0, 0, buf, NULL); else gate_1(p, s, n, 0, 0, buf, NULL);
+    emit(ctx, a + off, buf, n);
+    total += n;
+  })
+  return total;
+}
+
+size_t kp7_sym_sample(const kp7_params* p, const char* seq, size_t len, int lanes, uint64_t threshold, size_t* pos_buf,
+                      uint64_t* hash_buf, size_t cap, kp7_emit_pairs_fn emit, void* ctx)
+{
+  if (!code_ready) code_init();
+  if (p->variant != KP7_XREAL) return 0;
+  const size_t k = p->k;
+  size_t kept_total = 0;
+  KP7_FOR_BLOCKS({
+    size_t kept = L == 2 ? sample_2(p, s, n, a + off, threshold, hash_buf, pos_buf)
+                         : sample_1(p, s, n, a + off, threshold, hash_buf, pos_buf);
+    if (kept) emit(ctx, pos_buf, hash_buf, kept);
+    kept_total += kept;
+  })
+  return kept_total;
 }

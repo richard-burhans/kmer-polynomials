@@ -42,7 +42,7 @@ static std::vector<Rec> load_fasta(const char* path)
 
 enum Method { NTHASH = 0, KP7_FWD_REAL, KP7_MIN_REAL, KP7_SYM_REAL, KP7_SYM_COMPLEX, KP7_SYM_REAL_K, KP7_SYM_COMPLEX_K,
               SYMR_OPT0, SYMR_LAM, SYMR_MERGED, SYMR_LAZY, SYMR_ALL, SYMC_OPT0, SYMC_LAM_MERGED, BATCH_REAL, BATCH_CPLX,
-              SEQ_R1, SEQ_R2, SEQ_R3, SEQ_R4, SEQ_C1, SEQ_C2, NMETHODS };
+              SEQ_R1, SEQ_R2, SEQ_R3, SEQ_R4, SEQ_C1, SEQ_C2, GATE_L2, SAMPLE16_L2, SAMPLE1000_L2, NMETHODS };
 static const char* NAMES[NMETHODS] = { "ntHash canonical (fwd+rev)", "kp7 forward, x real", "kp7 canonical min, x real",
                                        "kp7 symmetric, x real", "kp7 symmetric, x complex",
                                        "kp7 sym, x real, Karatsuba", "kp7 sym, x cplx, Karatsuba",
@@ -50,7 +50,11 @@ static const char* NAMES[NMETHODS] = { "ntHash canonical (fwd+rev)", "kp7 forwar
                                        "roll_sym x real lazy", "roll_sym x real all three", "roll_sym x cplx opt0",
                                        "roll_sym x cplx lam+merged", "sym_batch x real", "sym_batch x cplx",
                                        "sym_seq x real L1", "sym_seq x real L2", "sym_seq x real L3",
-                                       "sym_seq x real L4", "sym_seq x cplx L1", "sym_seq x cplx L2" };
+                                       "sym_seq x real L4", "sym_seq x cplx L1", "sym_seq x cplx L2",
+                                       "gate x real L2 (cheap sym)", "sample 1/16 x real L2", "sample 1/1000 x real L2" };
+// gate: the hybrid's cheap symmetric hash for every k-mer (not bit-identical to the provable hash, so it gets STATS).
+// sample: only kept k-mers are emitted; throughput is per INPUT k-mer (see main).
+static bool is_sample(int m) { return m == SAMPLE16_L2 || m == SAMPLE1000_L2; }
 static int seq_lanes(int m) { return m >= SEQ_R1 && m <= SEQ_R4 ? m - SEQ_R1 + 1 : m == SEQ_C1 ? 1 : m == SEQ_C2 ? 2 : 0; }
 static bool is_seq_cplx(int m) { return m == SEQ_C1 || m == SEQ_C2; }
 static bool is_batch(int m) { return m == BATCH_REAL || m == BATCH_CPLX; }
@@ -60,7 +64,7 @@ static int sym_opt(int m) { switch (m) { case SYMR_OPT0: case SYMC_OPT0: return 
   case SYMC_LAM_MERGED: return KP7_OPT_LAMSTATE | KP7_OPT_MERGED; default: return -1; } }
 static bool is_cplx_opt(int m) { return m == SYMC_OPT0 || m == SYMC_LAM_MERGED; }
 // Karatsuba methods give bit-identical hashes (test_kp7), so their STATS equal the plain methods'; main checks the sinks.
-static bool is_k(Method m) { return m == KP7_SYM_REAL_K || m == KP7_SYM_COMPLEX_K || sym_opt(m) >= 0 || is_batch(m) || seq_lanes(m); }
+static bool is_k(Method m) { return m == KP7_SYM_REAL_K || m == KP7_SYM_COMPLEX_K || sym_opt(m) >= 0 || is_batch(m) || seq_lanes(m) || is_sample(m); }
 
 // Calls fn(pos, hash) for every valid k-mer of one record.
 static const kp7_params *g_real_k, *g_cplx_k; // Karatsuba copies of real/cplx, set in main
@@ -72,6 +76,25 @@ template <class Fn> static void hash_record(Method m, const std::string& s, unsi
   if (m == NTHASH) {
     nthash::NtHash nth(s.data(), s.size(), 1, k);
     while (nth.roll()) fn(nth.get_pos(), nth.hashes()[0]);
+    return;
+  }
+  if (m == GATE_L2 || is_sample(m)) {
+    static thread_local uint64_t gbuf[4096];
+    static thread_local size_t pbuf[4096];
+    if (m == GATE_L2) {
+      auto tramp = [](void* ctx, size_t start, const uint64_t* h, size_t n) {
+        Fn& f = *static_cast<Fn*>(ctx);
+        for (size_t j = 0; j < n; j++) f(start + j, h[j]);
+      };
+      kp7_gate_seq(real, s.data(), s.size(), 2, gbuf, 4096, tramp, &fn);
+    } else {
+      auto tramp = [](void* ctx, const size_t* pos, const uint64_t* h, size_t n) {
+        Fn& f = *static_cast<Fn*>(ctx);
+        for (size_t j = 0; j < n; j++) f(pos[j], h[j]);
+      };
+      uint64_t thr = m == SAMPLE16_L2 ? (1ULL << 60) : (uint64_t)(18446744073709551615.0 / 1000.0);
+      kp7_sym_sample(real, s.data(), s.size(), 2, thr, pbuf, gbuf, 4096, tramp, &fn);
+    }
     return;
   }
   if (seq_lanes(m)) {
@@ -242,10 +265,17 @@ int main(int argc, char** argv)
       counts[m] = n;
       sink ^= x;
       msink[m] = x;
-      printf("  round %d %-30s %.3f s  %.1f M k-mers/s\n", round, NAMES[m], s, n / s / 1e6);
+      uint64_t per = is_sample(m) && counts[NTHASH] ? counts[NTHASH] : n; // sample: rate per input k-mer
+      printf("  round %d %-30s %.3f s  %.1f M k-mers/s\n", round, NAMES[m], s, per / s / 1e6);
       fflush(stdout);
     }
   }
+  // sample methods emit only the kept k-mers: report their rate per INPUT k-mer (ntHash's count) and the kept count
+  for (int m = 0; m < NMETHODS; m++)
+    if (is_sample(m) && !secs[m].empty()) printf("  %s kept %llu k-mers\n", NAMES[m], (unsigned long long)counts[m]);
+  uint64_t input_kmers = counts[NTHASH] ? counts[NTHASH] : counts[SEQ_R2];
+  for (int m = 0; m < NMETHODS; m++)
+    if (is_sample(m)) counts[m] = input_kmers;
   printf("\nTHROUGHPUT (median of %d interleaved rounds; sink %016llx)\n", rounds, (unsigned long long)sink);
   for (int m = 0; m < NMETHODS; m++) {
     if (secs[m].empty()) continue;

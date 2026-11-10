@@ -26,6 +26,8 @@ mutation: test_kp7.c kp7.c kp7.h
 	@if ./test_kp7_mutant > mutant.out; then echo "OPT MUTANT SURVIVED"; exit 1; else echo "opt mutant killed: $$(tail -1 mutant.out)"; fi
 	$(CC) $(CFLAGS) -DKP7_MUTATE_SEQ test_kp7.c kp7.c -o test_kp7_mutant
 	@if ./test_kp7_mutant > mutant.out; then echo "SEQ MUTANT SURVIVED"; exit 1; else echo "seq mutant killed: $$(tail -1 mutant.out)"; fi
+	$(CC) $(CFLAGS) -DKP7_MUTATE_GATE test_kp7.c kp7.c -o test_kp7_mutant
+	@if ./test_kp7_mutant > mutant.out; then echo "GATE MUTANT SURVIVED"; exit 1; else echo "gate mutant killed: $$(tail -1 mutant.out)"; fi
 
 bench: bench.cpp kp7.o
 	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include bench.cpp kp7.o $(NTHASH)/build_o3/libnthash.a -o $@

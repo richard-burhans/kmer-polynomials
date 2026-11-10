@@ -327,6 +327,118 @@ static void test_sym_seq(void)
   free(rare); free(freq); free(runs);
 }
 
+/* 8: the hybrid. gate == reference gate everywhere; gate symmetric; exhaustive distinctness; sampling exact */
+typedef struct { kp7_roller r0; const kp7_params* p; uint64_t bad, n; } gate_ctx;
+static void gate_emit(void* vctx, size_t start, const uint64_t* h, size_t n)
+{
+  gate_ctx* c = vctx;
+  uint64_t h0;
+  for (size_t j = 0; j < n; j++) {
+    if (!kp7_roll64(&c->r0, KP7_OUT_FWD, &h0)) { c->bad++; return; }
+    if (c->r0.pos != start + j || h[j] != kp7_gate(c->p, c->r0.F, c->r0.R)) c->bad++;
+    c->n++;
+  }
+}
+typedef struct { const kp7_params* p; const char* seq; size_t len; uint64_t thr; size_t* pos; uint64_t* h; size_t n, cap_; } samp_ctx;
+static void samp_emit(void* vctx, const size_t* pos, const uint64_t* h, size_t n)
+{
+  samp_ctx* c = vctx;
+  for (size_t j = 0; j < n; j++) { c->pos[c->n] = pos[j]; c->h[c->n] = h[j]; c->n++; }
+}
+static void test_hybrid(void)
+{
+  uint64_t s = 555;
+  const size_t len = 30000;
+  char* seqs[3] = { malloc(len), malloc(len), malloc(len) };
+  for (size_t i = 0; i < len; i++) {
+    seqs[0][i] = "ACGTN"[sm(&s) % 1000 == 0 ? 4 : sm(&s) % 4];
+    seqs[1][i] = "ACGTN"[sm(&s) % 25 == 0 ? 4 : sm(&s) % 4];
+    seqs[2][i] = (i / 997) % 3 == 1 && i % 997 < 40 ? 'N' : "ACGT"[sm(&s) % 4];
+  }
+  seqs[1][0] = 'N';
+  kp7_params p;
+  kp7_init(&p, 31, KP7_XREAL, 2468);
+  const size_t caps[4] = { 1, 3, 64, 4096 };
+  /* (a) gate_seq equals the reference gate, for both lane counts and several block sizes */
+  for (int q = 0; q < 3; q++)
+    for (int lanes = 1; lanes <= 2; lanes++)
+      for (int c = 0; c < 4; c++) {
+        gate_ctx g = { { 0 }, &p, 0, 0 };
+        kp7_start(&g.r0, &p, seqs[q], len);
+        uint64_t* buf = malloc(caps[c] * sizeof *buf);
+        size_t total = kp7_gate_seq(&p, seqs[q], len, lanes, buf, caps[c], gate_emit, &g);
+        uint64_t h0;
+        if (kp7_roll64(&g.r0, KP7_OUT_FWD, &h0)) g.bad++;
+        CHECK(!g.bad && total == g.n && total > 0, "gate_seq differs: seq %d lanes %d cap %zu (%llu bad)", q, lanes, caps[c],
+              (unsigned long long)g.bad);
+        free(buf);
+      }
+  /* (b) symmetry: gate(s) == gate(rc s) on every window of seq 0 */
+  {
+    char w[32], wr[32];
+    uint64_t bad = 0;
+    for (size_t i = 0; i + 31 <= len; i++) {
+      memcpy(w, seqs[0] + i, 31); w[31] = 0;
+      kp7_fe F, R, F2, R2;
+      if (!kp7_direct(&p, w, &F, &R)) continue;
+      rc(w, wr, 31);
+      kp7_direct(&p, wr, &F2, &R2);
+      if (kp7_gate(&p, F, R) != kp7_gate(&p, F2, R2)) bad++;
+    }
+    CHECK(!bad, "gate not strand-symmetric on %llu windows", (unsigned long long)bad);
+  }
+  /* (c) exhaustive: one gate value per double-stranded class at k = 7 and 8 (heuristic quality, 64-bit gate) */
+  for (unsigned k = 7; k <= 8; k++) {
+    kp7_params pk;
+    kp7_init(&pk, k, KP7_XREAL, 13579);
+    size_t nk = (size_t)1 << (2 * k), classes = k == 7 ? 8192 : 32896, distinct = 0;
+    uint64_t* v = malloc(nk * sizeof *v);
+    char w[16];
+    for (size_t code = 0; code < nk; code++) {
+      for (unsigned t = 0; t < k; t++) w[t] = "ACGT"[(code >> (2 * t)) & 3];
+      w[k] = 0;
+      kp7_fe F, R;
+      kp7_direct(&pk, w, &F, &R);
+      v[code] = kp7_gate(&pk, F, R);
+    }
+    /* sort and count distinct */
+    for (size_t gap = nk / 2; gap > 0; gap /= 2) /* shell sort, small n */
+      for (size_t i = gap; i < nk; i++) for (size_t j = i; j >= gap && v[j - gap] > v[j]; j -= gap) { uint64_t t = v[j]; v[j] = v[j - gap]; v[j - gap] = t; }
+    for (size_t i = 0; i < nk; i++) if (i == 0 || v[i] != v[i - 1]) distinct++;
+    printf("  gate k=%u: distinct %zu (classes %zu)\n", k, distinct, classes);
+    CHECK(distinct == classes, "gate k=%u: %zu distinct values for %zu classes", k, distinct, classes);
+    free(v);
+  }
+  /* (d) sampling: kept set == {gate < thr} with provable hashes equal to kp7_roll64(SYM) */
+  const uint64_t thrs[3] = { 0, 1ULL << 60, ~0ULL };
+  for (int q = 0; q < 3; q++)
+    for (int lanes = 1; lanes <= 2; lanes++)
+      for (int t = 0; t < 3; t++)
+        for (int c = 0; c < 4; c++) {
+          samp_ctx sc = { &p, seqs[q], len, thrs[t], malloc(len * sizeof(size_t)), malloc(len * sizeof(uint64_t)), 0, 0 };
+          size_t* pb = malloc(caps[c] * sizeof *pb);
+          uint64_t* hb = malloc(caps[c] * sizeof *hb);
+          size_t kept = kp7_sym_sample(&p, seqs[q], len, lanes, thrs[t], pb, hb, caps[c], samp_emit, &sc);
+          /* reference */
+          kp7_roller r0;
+          kp7_start(&r0, &p, seqs[q], len);
+          uint64_t hs, bad = 0;
+          size_t j = 0, expect = 0;
+          while (kp7_roll64(&r0, KP7_OUT_SYM, &hs)) {
+            if (kp7_gate(&p, r0.F, r0.R) >= thrs[t]) continue;
+            expect++;
+            if (j >= sc.n || sc.pos[j] != r0.pos || sc.h[j] != hs) bad++;
+            j++;
+          }
+          CHECK(!bad && kept == expect && sc.n == expect, "sym_sample differs: seq %d lanes %d thr %d cap %zu (%llu bad, kept %zu want %zu)",
+                q, lanes, t, caps[c], (unsigned long long)bad, kept, expect);
+          if (t == 1 && c == 3 && lanes == 1)
+            printf("  sample seq %d at 1/16: kept %zu of %llu (%.4f)\n", q, kept, (unsigned long long)(r0.pos + 1), (double)kept / (r0.pos + 1));
+          free(sc.pos); free(sc.h); free(pb); free(hb);
+        }
+  free(seqs[0]); free(seqs[1]); free(seqs[2]);
+}
+
 int main(void)
 {
   test_field();
@@ -334,6 +446,7 @@ int main(void)
   test_roll_sym();
   test_sym_batch();
   test_sym_seq();
+  test_hybrid();
   for (int variant = 0; variant < 2; variant++) {
     test_rolling(variant, 31, 200000, 7 + variant);
     test_rolling(variant, 8, 50000, 9 + variant);

@@ -125,6 +125,23 @@ typedef void (*kp7_emit_fn)(void* ctx, size_t start, const uint64_t* hashes, siz
 size_t kp7_sym_seq(const kp7_params* p, const char* seq, size_t len, int lanes, uint64_t* buf, size_t cap,
                    kp7_emit_fn emit, void* ctx);
 
+/* Hybrid (option 2). A CHEAP strand-symmetric gate for every k-mer,
+ *   gate(s) = mix(fold(G)) + mix(fold(H)) mod 2^64,   G = F + lam, H = R + lam (both canonical),
+ * where mix is a one-multiply 64-bit scrambler. It is symmetric because rc swaps G and H. Unlike the field sum F + R
+ * (degenerate, notes/kp7_strand_symmetric_hash.md) it has no algebraic structure, so its collisions are heuristic,
+ * as for ntHash's fwd + rev; test_kp7 checks it exhaustively at k = 7 and 8. The PROVABLE symmetric hash
+ * (F + lam)(R + lam) is computed only where it is needed:
+ *   kp7_gate_seq    emits gate(s) for every k-mer (a fast symmetric hash with no proof).
+ *   kp7_sym_sample  keeps the k-mers with gate(s) < threshold (FracMinHash rate threshold / 2^64) and emits their
+ *                   positions and PROVABLE symmetric hashes, bit-identical to kp7_roll64(.., KP7_OUT_SYM, ..).
+ * Both: KP7_XREAL only (returns 0 for KP7_XCOMPLEX), lanes 1..2, blocks of at most `cap` k-mers as in kp7_sym_seq. */
+uint64_t kp7_gate(const kp7_params* p, kp7_fe F, kp7_fe R); /* reference: the gate from canonical F, R */
+size_t kp7_gate_seq(const kp7_params* p, const char* seq, size_t len, int lanes, uint64_t* buf, size_t cap,
+                    kp7_emit_fn emit, void* ctx);
+typedef void (*kp7_emit_pairs_fn)(void* ctx, const size_t* pos, const uint64_t* hashes, size_t n);
+size_t kp7_sym_sample(const kp7_params* p, const char* seq, size_t len, int lanes, uint64_t threshold, size_t* pos_buf,
+                      uint64_t* hash_buf, size_t cap, kp7_emit_pairs_fn emit, void* ctx);
+
 #ifdef __cplusplus
 }
 #endif
