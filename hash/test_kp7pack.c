@@ -90,6 +90,18 @@ static void test_symmetry(void)
     }
   }
   CHECK(!bad && n > 10000, "gate symmetry: %llu bad of %llu", (unsigned long long)bad, (unsigned long long)n);
+  /* the seeded gate: symmetric for any seed, and seed 0 is the plain gate */
+  uint64_t sbad = 0, ss = 77;
+  for (int rep = 0; rep < 20000; rep++) {
+    for (unsigned t = 0; t < 31; t++) w[t] = "ACGT"[sm(&ss) % 4];
+    w[31] = 0;
+    uint64_t f, r, f2, r2, seed = sm(&ss);
+    kp7pack_codes(w, 31, &f, &r);
+    rc(w, wr, 31);
+    kp7pack_codes(wr, 31, &f2, &r2);
+    if (kp7pack_gate_seeded(f, r, seed) != kp7pack_gate_seeded(f2, r2, seed) || kp7pack_gate_seeded(f, r, 0) != kp7pack_gate(f, r)) sbad++;
+  }
+  CHECK(!sbad, "seeded gate: %llu bad", (unsigned long long)sbad);
 }
 
 /* 3: exhaustive, one gate value per double-stranded class at k = 7, 8 */

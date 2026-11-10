@@ -30,6 +30,7 @@ static inline uint64_t gate(uint64_t f, uint64_t r) { return mix(f) + mix(r); }
 #endif
 
 uint64_t kp7pack_gate(uint64_t fwd, uint64_t rc) { return gate(fwd, rc); }
+uint64_t kp7pack_gate_seeded(uint64_t fwd, uint64_t rc, uint64_t seed) { return gate(fwd ^ seed, rc ^ seed); }
 
 int kp7pack_codes(const char* kmer, unsigned k, uint64_t* fwd, uint64_t* rc)
 {

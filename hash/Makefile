@@ -67,3 +67,7 @@ mutation_pack: test_kp7pack.c kp7pack.c kp7pack.h kp7.c kp7.h
 
 bench_pack: bench_pack.cpp kp7pack.o kp7.o
 	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include bench_pack.cpp kp7pack.o kp7.o $(NTHASH)/build_o3/libnthash.a -o $@
+
+# multi-seed sampling statistics (KP-7 next steps, item 3)
+stats_seeds: stats_seeds.cpp kp7pack.o kp7.o
+	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include stats_seeds.cpp kp7pack.o kp7.o $(NTHASH)/build_o3/libnthash.a -o $@

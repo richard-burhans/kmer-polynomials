@@ -25,6 +25,9 @@ extern "C" {
 
 /* the gate of one k-mer from its packed codes (reference) */
 uint64_t kp7pack_gate(uint64_t fwd, uint64_t rc);
+/* a seeded gate, mix(fwd ^ seed) + mix(rc ^ seed): still strand-symmetric; seed 0 is kp7pack_gate. For multi-seed
+ * sampling statistics (stats_seeds.cpp). */
+uint64_t kp7pack_gate_seeded(uint64_t fwd, uint64_t rc, uint64_t seed);
 /* packed codes of one k-mer by direct construction; returns 0 if it has a non-ACGT base. k <= 32. */
 int kp7pack_codes(const char* kmer, unsigned k, uint64_t* fwd, uint64_t* rc);
 
