@@ -275,12 +275,65 @@ static void test_sym_batch(void)
   free(rare); free(freq); free(runs);
 }
 
+/* 7: kp7_sym_seq (interleaved lanes): same hashes and positions as kp7_roll64(SYM) */
+typedef struct { const char* seq; size_t len; kp7_roller r0; uint64_t bad, n; } seq_ctx;
+static void seq_emit(void* vctx, size_t start, const uint64_t* h, size_t n)
+{
+  seq_ctx* c = vctx;
+  uint64_t h0;
+  for (size_t j = 0; j < n; j++) {
+    if (!kp7_roll64(&c->r0, KP7_OUT_SYM, &h0)) { c->bad++; return; }
+    if (h0 != h[j] || c->r0.pos != start + j) c->bad++;
+    c->n++;
+  }
+}
+static void seq_case(const char* seq, size_t len, int variant, int lanes, size_t cap, const char* label)
+{
+  kp7_params p;
+  kp7_init(&p, 31, variant, 777);
+  seq_ctx c = { seq, len, { 0 }, 0, 0 };
+  kp7_start(&c.r0, &p, seq, len);
+  uint64_t* buf = malloc(cap * sizeof *buf);
+  size_t total = kp7_sym_seq(&p, seq, len, lanes, buf, cap, seq_emit, &c);
+  uint64_t h0;
+  if (kp7_roll64(&c.r0, KP7_OUT_SYM, &h0)) c.bad++; /* the reference had more k-mers */
+  CHECK(!c.bad && total == c.n, "sym_seq differs: %s variant %d lanes %d cap %zu (%llu bad, %zu vs %llu)", label, variant,
+        lanes, cap, (unsigned long long)c.bad, total, (unsigned long long)c.n);
+  free(buf);
+}
+static void test_sym_seq(void)
+{
+  uint64_t s = 1234;
+  const size_t len = 30000;
+  char* rare = malloc(len); char* freq = malloc(len); char* runs = malloc(len);
+  for (size_t i = 0; i < len; i++) {
+    rare[i] = "ACGTN"[sm(&s) % 1000 == 0 ? 4 : sm(&s) % 4];
+    freq[i] = "ACGTN"[sm(&s) % 25 == 0 ? 4 : sm(&s) % 4];
+    runs[i] = (i / 997) % 3 == 1 && i % 997 < 40 ? 'N' : "ACGT"[sm(&s) % 4];
+  }
+  freq[0] = 'N';
+  rare[31] = 'N';
+  const char* exact = "ACGTACGTACGTACGTACGTACGTACGTACG";
+  const size_t caps[5] = { 1, 3, 5, 64, 4096 };
+  for (int variant = 0; variant < 2; variant++)
+    for (int lanes = 1; lanes <= (variant ? 2 : 4); lanes++)
+      for (int c = 0; c < 5; c++) {
+        seq_case(rare, len, variant, lanes, caps[c], "rare N");
+        seq_case(freq, len, variant, lanes, caps[c], "frequent N");
+        seq_case(runs, len, variant, lanes, caps[c], "N runs");
+        seq_case(exact, 31, variant, lanes, caps[c], "length k");
+        seq_case(exact, 30, variant, lanes, caps[c], "shorter than k");
+      }
+  free(rare); free(freq); free(runs);
+}
+
 int main(void)
 {
   test_field();
   test_karatsuba();
   test_roll_sym();
   test_sym_batch();
+  test_sym_seq();
   for (int variant = 0; variant < 2; variant++) {
     test_rolling(variant, 31, 200000, 7 + variant);
     test_rolling(variant, 8, 50000, 9 + variant);

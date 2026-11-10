@@ -114,6 +114,17 @@ int kp7_roll_sym(kp7_roller* r, uint64_t* out);
  * params.opt; params.karatsuba still applies to KP7_XCOMPLEX. Do not mix it with kp7_roll/kp7_roll_sym on one roller. */
 size_t kp7_sym_batch(kp7_roller* r, uint64_t* out, size_t max);
 
+/* Interleaved symmetric hashing of a whole sequence (step 2): each maximal N-free run is cut into blocks of at most
+ * `cap` k-mers, and each block into `lanes` contiguous stretches rolled in the SAME loop iteration, so their serial
+ * multiply-reduce-add chains overlap. A lane starts from a direct evaluation (k multiplies per lane per block).
+ * For every block it calls emit(ctx, start, buf, n) with the hashes of the n consecutive k-mers starting at
+ * sequence position `start`. buf must hold `cap` hashes. lanes: 1..4 for KP7_XREAL (lazy reduction), 1..2 for
+ * KP7_XCOMPLEX; other values are clamped. Bit-identical to kp7_roll64(.., KP7_OUT_SYM, ..) (test_kp7). Returns the
+ * number of k-mers hashed. */
+typedef void (*kp7_emit_fn)(void* ctx, size_t start, const uint64_t* hashes, size_t n);
+size_t kp7_sym_seq(const kp7_params* p, const char* seq, size_t len, int lanes, uint64_t* buf, size_t cap,
+                   kp7_emit_fn emit, void* ctx);
+
 #ifdef __cplusplus
 }
 #endif

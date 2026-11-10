@@ -344,3 +344,123 @@ size_t kp7_sym_batch(kp7_roller* r, uint64_t* out, size_t max)
     return n;
   }
 }
+
+/* ---- interleaved symmetric hashing (step 2; see kp7.h) ---- */
+
+#ifdef KP7_MUTATE_SEQ /* test-only: the last lane's remainder lands one slot early; `make mutation` expects FAIL */
+#define KP7_MUTATE_REM_OFF -1
+#else
+#define KP7_MUTATE_REM_OFF
+#endif
+
+/* lane start: canonical G = F + lam, H = R + lam of the k-mer at s (no N, checked by the caller) */
+static inline void lane_init(const kp7_params* p, const char* s, kp7_fe* G, kp7_fe* H)
+{
+  kp7_fe F, R;
+  kp7_direct(p, s, &F, &R);
+  *G = fadd(F, p->lam);
+  *H = fadd(R, p->lam);
+}
+
+/* x real, L lanes. s: first k-mer of an N-free stretch holding nk >= L k-mers. Lanes cover [l*seg, (l+1)*seg); the
+ * last lane also takes the remainder. A lane advances only while its next k-mer is still in its stretch, so it
+ * never reads past s[nk + k - 2]. */
+#define KP7_DEF_BLOCK_REAL(L)                                                                                         \
+  static void block_real_##L(const kp7_params* p, const char* s, size_t nk, uint64_t* out)                           \
+  {                                                                                                                  \
+    const size_t k = p->k, seg = nk / L, rem = nk - seg * L;                                                         \
+    const uint64_t xi = p->xinv.re, x = p->x.re;                                                                     \
+    const kp7_fe *tf = p->tfl, *tr = p->trl;                                                                         \
+    uint64_t gr[L], gi[L], hr[L], hi[L];                                                                             \
+    for (int l = 0; l < L; l++) {                                                                                    \
+      kp7_fe G, H;                                                                                                   \
+      lane_init(p, s + l * seg, &G, &H);                                                                             \
+      gr[l] = G.re; gi[l] = G.im; hr[l] = H.re; hi[l] = H.im;                                                        \
+    }                                                                                                                \
+    for (size_t i = 0; i < seg; i++) {                                                                               \
+      for (int l = 0; l < L; l++) {                                                                                  \
+        size_t q = l * seg + i;                                                                                      \
+        kp7_fe a = { gr[l], gi[l] }, b = { hr[l], hi[l] };                                                           \
+        out[q] = fold(fmul_wide(a, b));                                                                              \
+        if (i + 1 < seg) {                                                                                           \
+          int idx = CODE[(unsigned char)s[q]] * 4 + CODE[(unsigned char)s[q + k]];                                   \
+          gr[l] = mulq(gr[l], xi) + tf[idx].re; gi[l] = mulq(gi[l], xi) + tf[idx].im;                                \
+          hr[l] = mulq(hr[l], x) + tr[idx].re;  hi[l] = mulq(hi[l], x) + tr[idx].im;                                 \
+        }                                                                                                            \
+      }                                                                                                              \
+    }                                                                                                                \
+    /* the last lane continues through the remainder */                                                              \
+    for (size_t j = 0, q = L * seg - 1; j < rem; j++, q++) {                                                         \
+      int idx = CODE[(unsigned char)s[q]] * 4 + CODE[(unsigned char)s[q + k]];                                       \
+      gr[L - 1] = mulq(gr[L - 1], xi) + tf[idx].re; gi[L - 1] = mulq(gi[L - 1], xi) + tf[idx].im;                    \
+      hr[L - 1] = mulq(hr[L - 1], x) + tr[idx].re;  hi[L - 1] = mulq(hi[L - 1], x) + tr[idx].im;                     \
+      kp7_fe a = { gr[L - 1], gi[L - 1] }, b = { hr[L - 1], hi[L - 1] };                                             \
+      out[q + 1 KP7_MUTATE_REM_OFF] = fold(fmul_wide(a, b));                                                          \
+    }                                                                                                                \
+  }
+KP7_DEF_BLOCK_REAL(1)
+KP7_DEF_BLOCK_REAL(2)
+KP7_DEF_BLOCK_REAL(3)
+KP7_DEF_BLOCK_REAL(4)
+
+/* x complex, L lanes, canonical arithmetic (lazy reduction does not apply) */
+#define KP7_DEF_BLOCK_CPLX(L)                                                                                         \
+  static void block_cplx_##L(const kp7_params* p, const char* s, size_t nk, uint64_t* out)                           \
+  {                                                                                                                  \
+    const size_t k = p->k, seg = nk / L, rem = nk - seg * L;                                                         \
+    kp7_fe G[L], H[L];                                                                                               \
+    for (int l = 0; l < L; l++) lane_init(p, s + l * seg, &G[l], &H[l]);                                             \
+    for (size_t i = 0; i < seg; i++) {                                                                               \
+      for (int l = 0; l < L; l++) {                                                                                  \
+        size_t q = l * seg + i;                                                                                      \
+        out[q] = fold(fmul_p(p, G[l], H[l]));                                                                        \
+        if (i + 1 < seg) {                                                                                           \
+          int idx = CODE[(unsigned char)s[q]] * 4 + CODE[(unsigned char)s[q + k]];                                   \
+          G[l] = fadd(fmul_p(p, G[l], p->xinv), p->tfl[idx]);                                                        \
+          H[l] = fadd(fmul_p(p, H[l], p->x), p->trl[idx]);                                                           \
+        }                                                                                                            \
+      }                                                                                                              \
+    }                                                                                                                \
+    for (size_t j = 0, q = L * seg - 1; j < rem; j++, q++) {                                                         \
+      int idx = CODE[(unsigned char)s[q]] * 4 + CODE[(unsigned char)s[q + k]];                                       \
+      G[L - 1] = fadd(fmul_p(p, G[L - 1], p->xinv), p->tfl[idx]);                                                    \
+      H[L - 1] = fadd(fmul_p(p, H[L - 1], p->x), p->trl[idx]);                                                       \
+      out[q + 1] = fold(fmul_p(p, G[L - 1], H[L - 1]));                                                              \
+    }                                                                                                                \
+  }
+KP7_DEF_BLOCK_CPLX(1)
+KP7_DEF_BLOCK_CPLX(2)
+
+size_t kp7_sym_seq(const kp7_params* p, const char* seq, size_t len, int lanes, uint64_t* buf, size_t cap,
+                   kp7_emit_fn emit, void* ctx)
+{
+  if (!code_ready) code_init();
+  const size_t k = p->k;
+  const int cplx = p->variant != KP7_XREAL;
+  if (lanes < 1) lanes = 1;
+  if (lanes > (cplx ? 2 : 4)) lanes = cplx ? 2 : 4;
+  size_t total = 0, i = 0;
+  while (i < len) {
+    while (i < len && CODE[(unsigned char)seq[i]] < 0) i++; /* skip N */
+    size_t a = i;
+    while (i < len && CODE[(unsigned char)seq[i]] >= 0) i++;
+    size_t run = i - a;
+    if (run < k) continue;
+    size_t nk = run - k + 1;
+    for (size_t off = 0; off < nk; off += cap) {
+      size_t n = nk - off < cap ? nk - off : cap;
+      const char* s = seq + a + off;
+      int L = (size_t)lanes <= n ? lanes : 1; /* every lane needs at least one k-mer */
+      if (cplx) { if (L == 2) block_cplx_2(p, s, n, buf); else block_cplx_1(p, s, n, buf); }
+      else switch (L) {
+        case 4: block_real_4(p, s, n, buf); break;
+        case 3: block_real_3(p, s, n, buf); break;
+        case 2: block_real_2(p, s, n, buf); break;
+        default: block_real_1(p, s, n, buf); break;
+      }
+      emit(ctx, a + off, buf, n);
+      total += n;
+    }
+  }
+  return total;
+}
