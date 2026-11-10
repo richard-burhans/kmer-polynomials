@@ -38,6 +38,37 @@ size_t kp7pack_gate_seq(unsigned k, const char* seq, size_t len, uint64_t* buf, 
 size_t kp7pack_sample(const kp7_params* p, const char* seq, size_t len, uint64_t threshold, size_t* pos_buf,
                       uint64_t* hash_buf, size_t cap, kp7_emit_pairs_fn emit, void* ctx);
 
+/* ---- multiply-free direct evaluation of the provable hash (next steps, item 1) ----
+ * Codes A0 C1 G2 T3 make complement 3 - c, and val(3 - c) = -val(c) (A=1, C=i, G=-i, T=-1). The rc code holds the
+ * complement of base t at digit t, and the fwd code holds base k-1-p at digit p, so with ONE shared table
+ *   N[t][d] = -val(d) * x^t                                       (canonical F_{q^2} elements)
+ *   F = sum_t N[t][digit t of rc],    R = -x^{k-1} p(1/x) = sum_p N[p][digit p of fwd].
+ * Multiplying by +-1 and +-i is a sign or a re/im swap, so N needs only the powers x^t; F and R are additions.
+ *   KP7PACK_EVAL_POS    k lookups and additions per strand (4-entry table per position)
+ *   KP7PACK_EVAL_CHUNK  ceil(k/4) lookups per strand from byte tables C[j][b] = sum_u N[4j+u][(b >> 2u) & 3]
+ *                       (8 x 256 x 16 B = 32 KB for k = 31, shared by both strands; the last chunk sums only
+ *                       positions < k, and code bits above 2k are zero)
+ *   KP7PACK_EVAL_DIRECT kp7_direct (Horner, about 2k field multiplies), the reference
+ * Each sum is accumulated without reduction and reduced once, so F and R are canonical, and the result
+ * fold(kp7_sym(F, R)) is bit-identical to kp7_roll64(.., KP7_OUT_SYM, ..). Either variant; k <= 32. */
+enum { KP7PACK_EVAL_DIRECT = 0, KP7PACK_EVAL_POS = 1, KP7PACK_EVAL_CHUNK = 2 };
+typedef struct {
+  unsigned k, nchunk;
+  kp7_fe N[32][4];
+  kp7_fe C[8][256];
+} kp7pack_tab;
+void kp7pack_tab_init(kp7pack_tab* tab, const kp7_params* p);
+/* F and R of one k-mer from its packed codes */
+void kp7pack_eval(const kp7pack_tab* tab, int mode, uint64_t fwd, uint64_t rc, kp7_fe* F, kp7_fe* R);
+/* kp7pack_sample with a chosen evaluation (tab may be NULL for KP7PACK_EVAL_DIRECT) */
+size_t kp7pack_sample_eval(const kp7_params* p, const kp7pack_tab* tab, int mode, const char* seq, size_t len,
+                           uint64_t threshold, size_t* pos_buf, uint64_t* hash_buf, size_t cap, kp7_emit_pairs_fn emit,
+                           void* ctx);
+/* the provable symmetric hash of EVERY k-mer from packed codes and chunk tables (no gate), in blocks of consecutive
+ * k-mers as kp7pack_gate_seq; bit-identical to kp7_roll64(.., KP7_OUT_SYM, ..) */
+size_t kp7pack_sym_all(const kp7_params* p, const kp7pack_tab* tab, const char* seq, size_t len, uint64_t* buf,
+                       size_t cap, kp7_emit_fn emit, void* ctx);
+
 #ifdef __cplusplus
 }
 #endif

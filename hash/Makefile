@@ -62,6 +62,8 @@ mutation_pack: test_kp7pack.c kp7pack.c kp7pack.h kp7.c kp7.h
 	@if ./test_kp7pack_mutant > mutant_pack.out; then echo "PACK GATE MUTANT SURVIVED"; exit 1; else echo "pack gate mutant killed: $$(tail -1 mutant_pack.out)"; fi
 	$(CC) $(CFLAGS) -DKP7PACK_MUTATE_RC test_kp7pack.c kp7pack.c kp7.c -o test_kp7pack_mutant
 	@if ./test_kp7pack_mutant > mutant_pack.out; then echo "PACK RC MUTANT SURVIVED"; exit 1; else echo "pack rc mutant killed: $$(tail -1 mutant_pack.out)"; fi
+	$(CC) $(CFLAGS) -DKP7PACK_MUTATE_CHUNK test_kp7pack.c kp7pack.c kp7.c -o test_kp7pack_mutant
+	@if ./test_kp7pack_mutant > mutant_pack.out; then echo "PACK CHUNK MUTANT SURVIVED"; exit 1; else echo "pack chunk mutant killed: $$(tail -1 mutant_pack.out)"; fi
 
 bench_pack: bench_pack.cpp kp7pack.o kp7.o
 	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include bench_pack.cpp kp7pack.o kp7.o $(NTHASH)/build_o3/libnthash.a -o $@

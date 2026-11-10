@@ -126,18 +126,21 @@ static void test_sample(void)
 {
   const uint64_t thrs[3] = { 0, 1ULL << 60, ~0ULL };
   const size_t caps[4] = { 1, 3, 64, 4096 };
+  static kp7pack_tab tab;
+  for (int mode = 0; mode < 3; mode++)
   for (int variant = 0; variant < 2; variant++)
     for (int kar = 0; kar < 2; kar++) {
       kp7_params p;
       kp7_init(&p, 31, variant, 8642);
       p.karatsuba = kar;
+      kp7pack_tab_init(&tab, &p);
       for (int q = 0; q < NSEQ; q++)
         for (int t = 0; t < 3; t++)
           for (int c = 0; c < 4; c++) {
             sctx sc = { malloc((LEN[q] + 1) * sizeof(size_t)), malloc((LEN[q] + 1) * sizeof(uint64_t)), 0 };
             size_t* pb = malloc(caps[c] * sizeof *pb);
             uint64_t* hb = malloc(caps[c] * sizeof *hb);
-            size_t kept = kp7pack_sample(&p, SEQ[q], LEN[q], thrs[t], pb, hb, caps[c], semit, &sc);
+            size_t kept = kp7pack_sample_eval(&p, &tab, mode, SEQ[q], LEN[q], thrs[t], pb, hb, caps[c], semit, &sc);
             kp7_roller r0;
             kp7_start(&r0, &p, SEQ[q], LEN[q]);
             uint64_t hs, bad = 0;
@@ -151,18 +154,85 @@ static void test_sample(void)
               j++;
             }
             CHECK(!bad && kept == expect && sc.n == expect,
-                  "pack sample differs: variant %d kar %d %s thr %d cap %zu (%llu bad, kept %zu want %zu)", variant, kar,
+                  "pack sample differs: mode %d variant %d kar %d %s thr %d cap %zu (%llu bad, kept %zu want %zu)", mode, variant, kar,
                   LABEL[q], t, caps[c], (unsigned long long)bad, kept, expect);
-            if (variant == 0 && kar == 0 && t == 1 && c == 3 && q == 0)
+            if (mode == 0 && variant == 0 && kar == 0 && t == 1 && c == 3 && q == 0)
               printf("  pack sample at 1/16 (%s): kept %zu (%.4f of k-mers)\n", LABEL[q], kept, (double)kept / (r0.pos + 1));
             free(sc.pos); free(sc.h); free(pb); free(hb);
           }
     }
 }
 
+/* 5: table evaluation equals kp7_direct for every k (1..32), both variants */
+static void test_eval(void)
+{
+  static kp7pack_tab tab;
+  uint64_t s = 4242, bad = 0, n = 0;
+  char w[33];
+  for (int variant = 0; variant < 2; variant++)
+    for (unsigned k = 1; k <= 32; k++) {
+      kp7_params p;
+      kp7_init(&p, k, variant, 1000 + k);
+      kp7pack_tab_init(&tab, &p);
+      for (int rep = 0; rep < 300; rep++) {
+        for (unsigned t = 0; t < k; t++) w[t] = "ACGT"[sm(&s) % 4];
+        w[k] = 0;
+        uint64_t f, r;
+        kp7pack_codes(w, k, &f, &r);
+        kp7_fe F0, R0, F1, R1, F2, R2;
+        kp7_direct(&p, w, &F0, &R0);
+        kp7pack_eval(&tab, KP7PACK_EVAL_POS, f, r, &F1, &R1);
+        kp7pack_eval(&tab, KP7PACK_EVAL_CHUNK, f, r, &F2, &R2);
+        if (F0.re != F1.re || F0.im != F1.im || R0.re != R1.re || R0.im != R1.im) bad++;
+        if (F0.re != F2.re || F0.im != F2.im || R0.re != R2.re || R0.im != R2.im) bad++;
+        n++;
+      }
+    }
+  CHECK(!bad && n == 2 * 32 * 300, "table evaluation differs from kp7_direct: %llu bad of %llu", (unsigned long long)bad,
+        (unsigned long long)n);
+}
+
+/* 6: sym_all (provable hash for every k-mer from packed codes) equals kp7_roll64(SYM), hashes and positions */
+typedef struct { kp7_roller r0; uint64_t bad, n; } actx;
+static void aemit(void* v, size_t start, const uint64_t* h, size_t n)
+{
+  actx* c = v;
+  uint64_t h0;
+  for (size_t j = 0; j < n; j++) {
+    if (!kp7_roll64(&c->r0, KP7_OUT_SYM, &h0)) { c->bad++; return; }
+    if (c->r0.pos != start + j || h0 != h[j]) c->bad++;
+    c->n++;
+  }
+}
+static void test_sym_all(void)
+{
+  static kp7pack_tab tab;
+  const size_t caps[4] = { 1, 3, 64, 4096 };
+  for (int variant = 0; variant < 2; variant++) {
+    kp7_params p;
+    kp7_init(&p, 31, variant, 97531);
+    kp7pack_tab_init(&tab, &p);
+    for (int q = 0; q < NSEQ; q++)
+      for (int c = 0; c < 4; c++) {
+        actx a;
+        a.bad = a.n = 0;
+        kp7_start(&a.r0, &p, SEQ[q], LEN[q]);
+        uint64_t* buf = malloc(caps[c] * sizeof *buf);
+        size_t total = kp7pack_sym_all(&p, &tab, SEQ[q], LEN[q], buf, caps[c], aemit, &a);
+        uint64_t h0;
+        if (kp7_roll64(&a.r0, KP7_OUT_SYM, &h0)) a.bad++;
+        CHECK(!a.bad && total == a.n, "sym_all differs: variant %d %s cap %zu (%llu bad)", variant, LABEL[q], caps[c],
+              (unsigned long long)a.bad);
+        free(buf);
+      }
+  }
+}
+
 int main(void)
 {
   make_seqs();
+  test_eval();
+  test_sym_all();
   test_gate_seq();
   test_symmetry();
   test_exhaustive();
