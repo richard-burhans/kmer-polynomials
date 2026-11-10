@@ -186,10 +186,13 @@ kazemi_2022_nthash2).
 and raw full-hashing speed. **Speed figures must use BATCHED ntHash** (hash/ntbatch.h, bit-identical to NtHash::roll),
 which is 2.1× faster than the library's per-k-mer roll() on laila: 11.3 against 23.6 cycles/k-mer
 (results/kp7_next_steps_2026-11-10.md). Against batched ntHash:
-- the best provable-for-every-k-mer version (CM31 AVX-512) is 0.44×; it was 0.91× against library ntHash
-  (results/kp7_m31_simd_2026-11-10.md)
-- in the sketch setting, hybrid v2 with chunk-table evaluation is 1.17× at 1/1000 sampling and 1.06× at 1/100; it
-  breaks even near 1/72 (earlier "about 2× faster" figures were against library ntHash)
+- **current best (Eisenstein encoding, results/kp7_eisenstein_2026-11-10.md):** provable hashing of every k-mer at
+  24.6 cycles/k-mer (2 lanes, scalar), **0.46×**; the v2 sampler is **1.21× at 1/1000**, 1.12× at 1/100 and 0.96× at
+  1/16, breaking even near **1/19**
+- earlier versions, for the record: CM31 AVX-512 every k-mer 0.44× (0.91× against library ntHash,
+  results/kp7_m31_simd_2026-11-10.md); Gaussian hybrid v2 with chunk tables 1.17× at 1/1000, break-even 1/72 then 1/36
+  after the kept-k-mer work (results/kp7_kept_eval_2026-11-10.md). Earlier "about 2× faster" figures were against
+  library ntHash.
 
 These speeds come from how the hash is computed, not from the hash itself.
 

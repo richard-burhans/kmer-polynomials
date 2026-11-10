@@ -1,0 +1,16 @@
+quarter    cplx       z6   peaks  219  precision 0.685  heavy recall 0.418  weighted recall 0.703  neg/window 0.90
+quarter    cplx       z10  peaks   66  precision 0.879  heavy recall 0.157  weighted recall 0.448  neg/window 0.07
+quarter    cplx_mask  z6   peaks  350  precision 0.577  heavy recall 0.569  weighted recall 0.783  neg/window 6.33
+quarter    cplx_mask  z10  peaks  136  precision 0.971  heavy recall 0.385  weighted recall 0.635  neg/window 0.05
+quarter    ind4       z6   peaks   77  precision 0.831  heavy recall 0.175  weighted recall 0.458  neg/window 0.10
+quarter    ind4       z10  peaks   21  precision 1.000  heavy recall 0.058  weighted recall 0.239  neg/window 0.00
+eisenstein cplx       z6   peaks  192  precision 0.703  heavy recall 0.378  weighted recall 0.673  neg/window 0.60
+eisenstein cplx       z10  peaks   57  precision 0.895  heavy recall 0.142  weighted recall 0.426  neg/window 0.05
+eisenstein cplx_mask  z6   peaks  329  precision 0.581  heavy recall 0.535  weighted recall 0.762  neg/window 5.40
+eisenstein cplx_mask  z10  peaks  113  precision 0.991  heavy recall 0.329  weighted recall 0.576  neg/window 0.05
+eisenstein ind4       z6   peaks   77  precision 0.831  heavy recall 0.175  weighted recall 0.458  neg/window 0.10
+eisenstein ind4       z10  peaks   21  precision 1.000  heavy recall 0.058  weighted recall 0.239  neg/window 0.00
+eisenstein cplx_band  z6   peaks   47  precision 0.936  heavy recall 0.108  weighted recall 0.404  neg/window 0.00
+eisenstein cplx_band  z10  peaks    9  precision 1.000  heavy recall 0.025  weighted recall 0.171  neg/window 0.00
+eisenstein cplx_mask_band z6   peaks  124  precision 0.548  heavy recall 0.172  weighted recall 0.442  neg/window 1.80
+eisenstein cplx_mask_band z10  peaks   21  precision 1.000  heavy recall 0.055  weighted recall 0.264  neg/window 0.00
