@@ -126,6 +126,8 @@ Batch loop (`kp7_sym_batch`): 158.7 M k-mers/s with x real, 0.66× ntHash; 127.1
 
 Laila hardware counters: the best version (2 lanes) is 47.4 cycles/k-mer against ntHash's 23.3. The gap is 1.6× instructions and 1.25× IPC (results/kp7_laila_counters_2026-11-10.md).
 
+CM31 SIMD (p = 2³¹ − 1, x complex): on laila, 0.87× ntHash with AVX2 and 0.91× with AVX-512, the provable symmetric hash at about 60 instructions/k-mer. The remaining gap is IPC (results/kp7_m31_simd_2026-11-10.md).
+
 *Check (KP-6 + KP-7):* compare against ntHash on cs10 for throughput, uniformity of minimizer selection (density and
 spacing between chosen positions), and collision rate.
 

@@ -1,0 +1,11 @@
+bundle 337,210 bytes, 150 members; 6 run(s)
+job 6eb67d389ce42771 submitted
+results: /home/rcb112/project/claude/bench/data/laila_perf/20261110T193821Z_kp7m31
+  job 6eb67d389ce42771 ok on handler handler_1; Intel(R) Xeon(R) Gold 6330 CPU @ 2.00GHz; kernel 6.1.0-52-amd64; perf_event_paranoid 2
+  build_exit 0; pcount_exit_run_1 0; pcount_exit_run_2 0; pcount_exit_run_3 0; pcount_exit_run_4 0; pcount_exit_run_5 0; pcount_exit_run_6 0
+  run_1: cycles=24240540320, instructions=101815843037, branches=12849678488, branch-misses=28877974, cache-references=41072705, cache-misses=10216784, ref-cycles=18602952160, L1-dcache-load-misses=47327833, task-clock=9878116815, ipc=4.2002, branch_miss_rate=0.002247, wall_s=9.898, child_exit=0, hardware_events_opened=8
+  run_2: cycles=42089566989, instructions=152783495581, branches=9106446224, branch-misses=29467671, cache-references=48756001, cache-misses=12992066, ref-cycles=32358372880, L1-dcache-load-misses=63170037, task-clock=16708463845, ipc=3.6300, branch_miss_rate=0.003236, wall_s=16.713, child_exit=0, hardware_events_opened=8
+  run_3: cycles=62931977604, instructions=194809645122, branches=8714911407, branch-misses=29309191, cache-references=48296364, cache-misses=12205690, ref-cycles=48425997840, L1-dcache-load-misses=64075766, task-clock=24764157127, ipc=3.0956, branch_miss_rate=0.003363, wall_s=24.769, child_exit=0, hardware_events_opened=8
+  run_4: cycles=26865097694, instructions=66183076576, branches=9025109950, branch-misses=31376396, cache-references=48579066, cache-misses=11954638, ref-cycles=20642294400, L1-dcache-load-misses=63755402, task-clock=10849798908, ipc=2.4635, branch_miss_rate=0.003477, wall_s=10.853, child_exit=0, hardware_events_opened=8
+  run_5: cycles=25977423885, instructions=65093902909, branches=9076044702, branch-misses=32531448, cache-references=47959295, cache-misses=10567278, ref-cycles=19937131600, L1-dcache-load-misses=61465920, task-clock=10464452743, ipc=2.5058, branch_miss_rate=0.003584, wall_s=10.505, child_exit=0, hardware_events_opened=8
+  run_6: cycles=6945203560, instructions=20749763598, branches=5470563403, branch-misses=29195730, cache-references=27217352, cache-misses=6475271, ref-cycles=6909572800, L1-dcache-load-misses=33512948, task-clock=4019941711, ipc=2.9876, branch_miss_rate=0.005337, wall_s=4.029, child_exit=0, hardware_events_opened=8

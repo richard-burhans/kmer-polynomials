@@ -1,0 +1,42 @@
+ntHash c26bd4572a19de81e30d55042dbd33c1fd21d4b6 built with: g++ -O3 -march=native -std=c++17 -> /scratch/rico/gpu/galaxy/database/jobs_directory/052/52009/working/w/hash/../ntHash/build_o3/libnthash.a
+gcc -O3 -march=native -Wall -Wextra -c kp7.c -o kp7.o
+gcc -O3 -march=native -Wall -Wextra -c kp7m31.c -o kp7m31.o
+g++ -O3 -march=native -std=c++17 -I/scratch/rico/gpu/galaxy/database/jobs_directory/052/52009/working/w/hash/../ntHash/include bench.cpp kp7.o kp7m31.o /scratch/rico/gpu/galaxy/database/jobs_directory/052/52009/working/w/hash/../ntHash/build_o3/libnthash.a -o bench
+gcc -O3 -march=native -Wall -Wextra test_kp7m31.c kp7m31.o -o test_kp7m31
+  m31 k=7: 8192 sym values for 8192 classes
+  m31 k=8: 32896 sym values for 32896 classes
+all tests passed
+=== run_1: cd hash && ./bench "$DATA" 31 1 throughput "only=ntHash"
+loaded 221 records, 876147649 bases in 3.2 s; k=31, rounds=1
+  round 0 ntHash canonical (fwd+rev)     6.643 s  110.9 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds; sink bdf82b9251d10d45)
+  ntHash canonical (fwd+rev)     k-mers 736547799  median 6.643 s  110.9 M k-mers/s
+=== run_2: cd hash && ./bench "$DATA" 31 1 throughput "only=sym_seq x real L2"
+loaded 221 records, 876147649 bases in 3.2 s; k=31, rounds=1
+  round 0 sym_seq x real L2              13.506 s  54.5 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds; sink 1baca86bb4505b2c)
+  sym_seq x real L2              k-mers 736547799  median 13.506 s  54.5 M k-mers/s
+=== run_3: cd hash && ./bench "$DATA" 31 1 throughput "only=m31 scalar"
+loaded 221 records, 876147649 bases in 3.2 s; k=31, rounds=1
+  round 0 m31 scalar                     21.565 s  34.2 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds; sink 0625214fd1d0189c)
+  m31 scalar                     k-mers 736547799  median 21.565 s  34.2 M k-mers/s
+=== run_4: cd hash && ./bench "$DATA" 31 1 throughput "only=m31 avx2 8-lane"
+loaded 221 records, 876147649 bases in 3.3 s; k=31, rounds=1
+  round 0 m31 avx2 8-lane                7.508 s  98.1 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds; sink 0625214fd1d0189c)
+  m31 avx2 8-lane                k-mers 736547799  median 7.508 s  98.1 M k-mers/s
+=== run_5: cd hash && ./bench "$DATA" 31 1 throughput "only=m31 avx512 16-lane"
+loaded 221 records, 876147649 bases in 3.2 s; k=31, rounds=1
+  round 0 m31 avx512 16-lane             7.331 s  100.5 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds; sink 0625214fd1d0189c)
+  m31 avx512 16-lane             k-mers 736547799  median 7.331 s  100.5 M k-mers/s
+=== run_6: cd hash && ./bench "$DATA" 31 1 throughput "only=__load_only__"
+loaded 221 records, 876147649 bases in 4.0 s; k=31, rounds=1
+
+THROUGHPUT (median of 1 interleaved rounds; sink 0000000000000000)
