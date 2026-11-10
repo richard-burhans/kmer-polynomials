@@ -73,3 +73,22 @@ bench_pack: bench_pack.cpp kp7pack.o kp7.o kp7m31.o
 # multi-seed sampling statistics (KP-7 next steps, item 3)
 stats_seeds: stats_seeds.cpp kp7pack.o kp7.o kp7m31.o
 	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include stats_seeds.cpp kp7pack.o kp7.o kp7m31.o $(NTHASH)/build_o3/libnthash.a -o $@
+
+# ---- Eisenstein KP-7 (kp7e: A=1, C=w, G=-w, T=-1 with w in F_q, q = 2^61 - 1; one field element per hash) ----
+kp7e.o: kp7e.c kp7e.h
+	$(CC) $(CFLAGS) -c kp7e.c -o $@
+
+test_kp7e: test_kp7e.c kp7e.o kp7pack.o kp7.o kp7m31.o
+	$(CC) $(CFLAGS) test_kp7e.c kp7e.o kp7pack.o kp7.o kp7m31.o -lm -o $@
+
+test_e: test_kp7e
+	./test_kp7e
+
+mutation_e: test_kp7e.c kp7e.c kp7e.h kp7pack.o kp7.o kp7m31.o
+	@for m in ROLL LANE TAB; do \
+	  $(CC) $(CFLAGS) -DKP7E_MUTATE_$$m test_kp7e.c kp7e.c kp7pack.o kp7.o kp7m31.o -lm -o test_kp7e_mutant || exit 1; \
+	  if ./test_kp7e_mutant > mutant_e.out; then echo "E $$m MUTANT SURVIVED"; exit 1; else echo "e $$m mutant killed: $$(tail -1 mutant_e.out)"; fi; \
+	done
+
+bench_e: bench_e.cpp kp7e.o kp7pack.o kp7.o kp7m31.o
+	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include bench_e.cpp kp7e.o kp7pack.o kp7.o kp7m31.o $(NTHASH)/build_o3/libnthash.a -o $@

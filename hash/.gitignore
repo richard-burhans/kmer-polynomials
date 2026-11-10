@@ -9,3 +9,7 @@ test_kp7pack
 test_kp7pack_mutant
 mutant_pack.out
 bench_pack
+test_kp7e
+test_kp7e_mutant
+mutant_e.out
+bench_e
