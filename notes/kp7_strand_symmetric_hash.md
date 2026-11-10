@@ -39,7 +39,10 @@ forward hash. It needs no comparison, unlike canonical min(F, R).
 (marcais_2024_knonical, source lines 514 and 574): canonicalization, i.e. folding a k-mer with its reverse complement,
 can negate the window guarantee of methods that HAVE one (syncmers and the other guaranteed schemes), producing much
 larger deserts. The paper's Table 2 caption says "orders of magnitude", but its own table shows 5–8× for three of five
-methods at k = 31 (Mykkeltveit 5.5×, syncmer 0 5.4×, syncmer 1 7.6×, chromosome 1); the caption holds at k = 15. It has "no visible effect" on FRACTIONAL (FracMinHash-style hash-threshold) sampling,
+methods at k = 31 (Mykkeltveit 5.5×, syncmer 0 5.4×, syncmer 1 7.6×, chromosome 1). At k = 15 it holds for most
+methods (Mykkeltveit 64–83×, syncmer 0 48–72×, Champarnaud and syncmer 1 > 100×) but not for syncmer k/2 (11–13×).
+Fractional sampling is not reliably unchanged either: chromosome 10 at k = 31 goes from 24.68 to 57.52 Mb, though
+the paper notes high variance for that method. It has "no visible effect" on FRACTIONAL (FracMinHash-style hash-threshold) sampling,
 which has no guarantee to lose. So:
 - in window-guaranteed schemes, a strand-symmetric hash (this one, min(F, R), or fwd + rev) cannot avoid the
   canonicalization deserts;
