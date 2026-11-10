@@ -209,6 +209,8 @@ A 0/1 mask polynomial applied coefficient by coefficient gives spaced k-mers, an
 
 ## 6. Literature to check before claiming anything
 
+**Acquisition (2026-11-10):** [literature/wantlist.md](literature/wantlist.md): 24 papers; IBLT reconciliation of k-mer sets is published (Shibuya et al. 2022); the characteristic-polynomial / power-sum form for k-mers was not found.
+
 - Anastassiou 2001, the complex DNA representation (the encoding in section 0)
 - Minsky, Trachtenberg and Zippel 2003, characteristic-polynomial set reconciliation (KP-8, KP-9)
 - whether reconciliation or power-sum sketches have already been applied to genomic k-mer sets
