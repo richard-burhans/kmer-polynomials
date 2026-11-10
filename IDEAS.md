@@ -164,8 +164,11 @@ kazemi_2022_nthash2).
 - O(1) rolling, O(1) single-base substitutions, and hashes of concatenations built from their parts: ntHash is linear
   over GF(2) (an XOR of rotated seeds), so it has all three.
 - Strand symmetry via fwd + rev: ntHash2 already uses it. KP-7 differs only in the exact product form and its field.
-- Freedom from "sketching deserts": NEITHER. Any strand-symmetric hash folds a k-mer with its reverse complement, and
-  that folding creates Marçais et al.'s deserts (marcais_2024_knonical).
+- Sketching deserts: no difference between them. Marçais et al. (marcais_2024_knonical, lines 514 and 574) show that
+  canonicalization negates the window guarantee of guaranteed schemes such as syncmers. Any strand-symmetric hash,
+  KP-7 or ntHash, folds the strands that way. Canonicalization has "no visible effect" on fractional (hash-threshold)
+  sampling, the sketch setting here. Our 5-seed statistics found every long threshold-sampling gap in repeats, for
+  every method (results/kp7_next_steps_2026-11-10.md).
 - Uniformity and minimizer density: both are equally good empirically (results/kp7_rolling_vs_nthash_2026-11-10.md,
   results/kp7_hybrid_2026-11-10.md).
 

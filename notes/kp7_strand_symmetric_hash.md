@@ -34,11 +34,18 @@ double-stranded k-mers collide with probability ≤ about 2k / q² over random (
 Precompute x⁻¹ and x^{k−1}. The symmetric hash then costs 2 additions and 1 multiplication per k-mer more than the
 forward hash. It needs no comparison, unlike canonical min(F, R).
 
-**Corrected 2026-11-10:** an earlier version said this avoids the "sketching deserts" of Marçais et al. 2024. It does
-not. Their deserts come from folding a k-mer together with its reverse complement, and ANY strand-symmetric hash,
-including this one, is such a folding; min(F, R) and fwd + rev are others. ntHash2 also already uses fwd + rev as its
-canonical hash. So KP-7's novelty is only the exact product form (F + λ)(R + λ) (the quadratic factor over F_{q²}),
-which is injective on double-stranded classes with a provable collision bound. It is not freedom from deserts.
+**Corrected twice, 2026-11-10.** The first version said this hash avoids the "sketching deserts" of Marçais et al.
+2024. The first correction swung too far, saying any strand-symmetric hash creates them. What the paper actually says
+(marcais_2024_knonical, source lines 514 and 574): canonicalization, i.e. folding a k-mer with its reverse complement,
+can negate the window guarantee of methods that HAVE one (syncmers and the other guaranteed schemes), producing deserts
+orders of magnitude larger. It has "no visible effect" on FRACTIONAL (FracMinHash-style hash-threshold) sampling,
+which has no guarantee to lose. So:
+- in window-guaranteed schemes, a strand-symmetric hash (this one, min(F, R), or fwd + rev) cannot avoid the
+  canonicalization deserts;
+- in threshold sampling, which is how this repo uses the hash for sketches, canonicalization costs nothing extra.
+
+ntHash2 already uses fwd + rev as its canonical hash. So KP-7's novelty is the exact product form (F + λ)(R + λ),
+the quadratic factor over F_{q²}, which is injective on double-stranded classes with a provable collision bound.
 
 ## Next
 
