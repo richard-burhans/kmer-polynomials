@@ -75,7 +75,9 @@ def build_diff_list(binary, a_txt, b_txt, n, seed, length, tmp):
             "-o", str(tmp / "b.iblt"))
     t1 = time.time()
     ibltseq(binary, "diff", "-i", str(tmp / "a.iblt"), "-j", str(tmp / "b.iblt"), "-o", str(tmp / "d.iblt"))
-    out = ibltseq(binary, "list", "-i", str(tmp / "d.iblt")).splitlines()
+    # list exits 1 with a partial listing when peeling fails ("[FAILURE] Error: [ValueError]"): that is a failed
+    # trial, recorded as such (the exactness check below fails), not a crash
+    out = subprocess.run([str(binary / "ibltseq"), "list", "-i", str(tmp / "d.iblt")], capture_output=True).stdout.splitlines()
     t2 = time.time()
     ia = [l[2:] for l in out if l.startswith(b"i,")]
     jb = [l[2:] for l in out if l.startswith(b"j,")]
