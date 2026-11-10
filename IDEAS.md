@@ -134,6 +134,8 @@ Hybrid v2 (packed 2-bit codes rolled by shifts, the KMC idea, plus provable hash
 
 Next steps (results/kp7_next_steps_2026-11-10.md): v2 with chunk-table evaluation reaches 9.6 cycles/k-mer at 1/1000 and 10.6 at 1/100, faster than BATCHED ntHash (11.3; the library's per-call API is 23.6), with provable hashes for kept k-mers. Use CM31 SIMD (25.9) for a provable hash on every k-mer. Over 5 seeds × 4 methods, long sampling gaps sit in soft-masked repeats for every method; none has more deserts outside repeats.
 
+Kept-k-mer evaluation (results/kp7_kept_eval_2026-11-10.md): 142 → 64 cycles per kept k-mer (CM31 tables, batched). v2 now beats batched ntHash at sampling sparser than about 1/36 (it was 1/71), and beats the CM31 SIMD every-k-mer hash below about 1/4 (it was 1/8.5).
+
 *Check (KP-6 + KP-7):* compare against ntHash on cs10 for throughput, uniformity of minimizer selection (density and
 spacing between chosen positions), and collision rate.
 
