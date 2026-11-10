@@ -1,7 +1,6 @@
 # Literature for IDEAS.md section 6
 
-**Status: OPEN, 2026-11-10. 24 papers found. 18 open-access PDFs downloaded and checked by first-page text. 6 for the
-owner to fetch. None was already in the library.**
+**Status: ACQUIRED, 2026-11-10. 24 papers found: 18 open-access PDFs downloaded, and the 6 below fetched by the owner the same day. All 24 are in `bench/data/papers/kmer_poly_oa/`, each checked by first-page text. None was already in the library.**
 
 Drop fetched PDFs in `bench/data/papers/kmer_poly_oa/`, named as in the key column. This is acquisition only; nothing is
 filed in the library yet.
@@ -27,7 +26,7 @@ filed in the library yet.
 - **Strand handling (KP-7):** Marçais, Elder and Kingsford (2024) show that canonical k-mers create "sketching deserts"
   in context-free sketches. That argues for a strand-symmetric hash rather than min(fwd, rc).
 
-## To fetch (paywalled, or the download failed), most relevant first
+## Fetched by the owner (paywalled, or the download failed), received 2026-11-10
 
 | priority | key | paper | DOI | KP | why |
 |---|---|---|---|---|---|
