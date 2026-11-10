@@ -1,0 +1,140 @@
+# 2026-11-10T14:09:15-05:00 host claude-cannabis-genome cpu:  Intel(R) Xeon(R) Processor
+# gcc: gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0; flags: -O3 -march=native
+# kp7 commit: 4fb12df; input: /home/rcb112/project/claude/bench/data/kmer_poly_work/cs10.fa (893674209 bytes)
+ntHash canonical, k=8: 32896 distinct values over 65536 k-mers (32896 double-stranded classes)
+loaded 221 records, 876147649 bases in 2.0 s; k=31, rounds=5
+  round 0 ntHash canonical (fwd+rev)     3.162 s  233.0 M k-mers/s
+  round 0 kp7 forward, x real            5.800 s  127.0 M k-mers/s
+  round 0 kp7 canonical min, x real      6.212 s  118.6 M k-mers/s
+  round 0 kp7 symmetric, x real          8.791 s  83.8 M k-mers/s
+  round 0 kp7 symmetric, x complex       10.284 s  71.6 M k-mers/s
+  round 0 kp7 sym, x real, Karatsuba     10.197 s  72.2 M k-mers/s
+  round 0 kp7 sym, x cplx, Karatsuba     9.762 s  75.5 M k-mers/s
+  round 0 roll_sym x real opt0           7.944 s  92.7 M k-mers/s
+  round 0 roll_sym x real lamstate       7.772 s  94.8 M k-mers/s
+  round 0 roll_sym x real merged         7.745 s  95.1 M k-mers/s
+  round 0 roll_sym x real lazy           7.394 s  99.6 M k-mers/s
+  round 0 roll_sym x real all three      6.620 s  111.3 M k-mers/s
+  round 0 roll_sym x cplx opt0           8.502 s  86.6 M k-mers/s
+  round 0 roll_sym x cplx lam+merged     7.309 s  100.8 M k-mers/s
+  round 0 sym_batch x real               5.704 s  129.1 M k-mers/s
+  round 0 sym_batch x cplx               6.741 s  109.3 M k-mers/s
+  round 0 sym_seq x real L1              5.804 s  126.9 M k-mers/s
+  round 0 sym_seq x real L2              5.399 s  136.4 M k-mers/s
+  round 0 sym_seq x real L3              5.836 s  126.2 M k-mers/s
+  round 0 sym_seq x real L4              5.945 s  123.9 M k-mers/s
+  round 0 sym_seq x cplx L1              7.069 s  104.2 M k-mers/s
+  round 0 sym_seq x cplx L2              6.888 s  106.9 M k-mers/s
+  round 1 ntHash canonical (fwd+rev)     3.161 s  233.0 M k-mers/s
+  round 1 kp7 forward, x real            5.675 s  129.8 M k-mers/s
+  round 1 kp7 canonical min, x real      5.928 s  124.3 M k-mers/s
+  round 1 kp7 symmetric, x real          10.499 s  70.2 M k-mers/s
+  round 1 kp7 symmetric, x complex       12.128 s  60.7 M k-mers/s
+  round 1 kp7 sym, x real, Karatsuba     10.492 s  70.2 M k-mers/s
+  round 1 kp7 sym, x cplx, Karatsuba     11.763 s  62.6 M k-mers/s
+  round 1 roll_sym x real opt0           7.794 s  94.5 M k-mers/s
+  round 1 roll_sym x real lamstate       7.547 s  97.6 M k-mers/s
+  round 1 roll_sym x real merged         7.140 s  103.2 M k-mers/s
+  round 1 roll_sym x real lazy           7.216 s  102.1 M k-mers/s
+  round 1 roll_sym x real all three      6.623 s  111.2 M k-mers/s
+  round 1 roll_sym x cplx opt0           8.332 s  88.4 M k-mers/s
+  round 1 roll_sym x cplx lam+merged     7.253 s  101.5 M k-mers/s
+  round 1 sym_batch x real               5.589 s  131.8 M k-mers/s
+  round 1 sym_batch x cplx               6.739 s  109.3 M k-mers/s
+  round 1 sym_seq x real L1              5.812 s  126.7 M k-mers/s
+  round 1 sym_seq x real L2              5.329 s  138.2 M k-mers/s
+  round 1 sym_seq x real L3              5.849 s  125.9 M k-mers/s
+  round 1 sym_seq x real L4              5.901 s  124.8 M k-mers/s
+  round 1 sym_seq x cplx L1              7.026 s  104.8 M k-mers/s
+  round 1 sym_seq x cplx L2              6.835 s  107.8 M k-mers/s
+  round 2 ntHash canonical (fwd+rev)     3.188 s  231.1 M k-mers/s
+  round 2 kp7 forward, x real            5.792 s  127.2 M k-mers/s
+  round 2 kp7 canonical min, x real      5.716 s  128.9 M k-mers/s
+  round 2 kp7 symmetric, x real          7.638 s  96.4 M k-mers/s
+  round 2 kp7 symmetric, x complex       8.644 s  85.2 M k-mers/s
+  round 2 kp7 sym, x real, Karatsuba     7.649 s  96.3 M k-mers/s
+  round 2 kp7 sym, x cplx, Karatsuba     8.899 s  82.8 M k-mers/s
+  round 2 roll_sym x real opt0           7.464 s  98.7 M k-mers/s
+  round 2 roll_sym x real lamstate       7.475 s  98.5 M k-mers/s
+  round 2 roll_sym x real merged         6.971 s  105.7 M k-mers/s
+  round 2 roll_sym x real lazy           7.017 s  105.0 M k-mers/s
+  round 2 roll_sym x real all three      6.461 s  114.0 M k-mers/s
+  round 2 roll_sym x cplx opt0           8.244 s  89.3 M k-mers/s
+  round 2 roll_sym x cplx lam+merged     7.060 s  104.3 M k-mers/s
+  round 2 sym_batch x real               5.519 s  133.4 M k-mers/s
+  round 2 sym_batch x cplx               6.752 s  109.1 M k-mers/s
+  round 2 sym_seq x real L1              5.872 s  125.4 M k-mers/s
+  round 2 sym_seq x real L2              5.594 s  131.7 M k-mers/s
+  round 2 sym_seq x real L3              5.784 s  127.3 M k-mers/s
+  round 2 sym_seq x real L4              5.882 s  125.2 M k-mers/s
+  round 2 sym_seq x cplx L1              7.091 s  103.9 M k-mers/s
+  round 2 sym_seq x cplx L2              6.866 s  107.3 M k-mers/s
+  round 3 ntHash canonical (fwd+rev)     3.314 s  222.3 M k-mers/s
+  round 3 kp7 forward, x real            5.656 s  130.2 M k-mers/s
+  round 3 kp7 canonical min, x real      5.887 s  125.1 M k-mers/s
+  round 3 kp7 symmetric, x real          7.791 s  94.5 M k-mers/s
+  round 3 kp7 symmetric, x complex       8.637 s  85.3 M k-mers/s
+  round 3 kp7 sym, x real, Karatsuba     7.644 s  96.4 M k-mers/s
+  round 3 kp7 sym, x cplx, Karatsuba     8.906 s  82.7 M k-mers/s
+  round 3 roll_sym x real opt0           7.681 s  95.9 M k-mers/s
+  round 3 roll_sym x real lamstate       7.731 s  95.3 M k-mers/s
+  round 3 roll_sym x real merged         7.197 s  102.3 M k-mers/s
+  round 3 roll_sym x real lazy           7.207 s  102.2 M k-mers/s
+  round 3 roll_sym x real all three      6.525 s  112.9 M k-mers/s
+  round 3 roll_sym x cplx opt0           8.545 s  86.2 M k-mers/s
+  round 3 roll_sym x cplx lam+merged     7.424 s  99.2 M k-mers/s
+  round 3 sym_batch x real               6.035 s  122.0 M k-mers/s
+  round 3 sym_batch x cplx               7.159 s  102.9 M k-mers/s
+  round 3 sym_seq x real L1              5.920 s  124.4 M k-mers/s
+  round 3 sym_seq x real L2              5.490 s  134.2 M k-mers/s
+  round 3 sym_seq x real L3              6.001 s  122.7 M k-mers/s
+  round 3 sym_seq x real L4              5.921 s  124.4 M k-mers/s
+  round 3 sym_seq x cplx L1              7.220 s  102.0 M k-mers/s
+  round 3 sym_seq x cplx L2              7.153 s  103.0 M k-mers/s
+  round 4 ntHash canonical (fwd+rev)     3.362 s  219.0 M k-mers/s
+  round 4 kp7 forward, x real            6.102 s  120.7 M k-mers/s
+  round 4 kp7 canonical min, x real      6.098 s  120.8 M k-mers/s
+  round 4 kp7 symmetric, x real          8.297 s  88.8 M k-mers/s
+  round 4 kp7 symmetric, x complex       9.035 s  81.5 M k-mers/s
+  round 4 kp7 sym, x real, Karatsuba     8.342 s  88.3 M k-mers/s
+  round 4 kp7 sym, x cplx, Karatsuba     10.262 s  71.8 M k-mers/s
+  round 4 roll_sym x real opt0           7.872 s  93.6 M k-mers/s
+  round 4 roll_sym x real lamstate       7.898 s  93.3 M k-mers/s
+  round 4 roll_sym x real merged         7.811 s  94.3 M k-mers/s
+  round 4 roll_sym x real lazy           7.862 s  93.7 M k-mers/s
+  round 4 roll_sym x real all three      7.224 s  102.0 M k-mers/s
+  round 4 roll_sym x cplx opt0           8.606 s  85.6 M k-mers/s
+  round 4 roll_sym x cplx lam+merged     7.508 s  98.1 M k-mers/s
+  round 4 sym_batch x real               5.805 s  126.9 M k-mers/s
+  round 4 sym_batch x cplx               7.026 s  104.8 M k-mers/s
+  round 4 sym_seq x real L1              6.000 s  122.8 M k-mers/s
+  round 4 sym_seq x real L2              5.545 s  132.8 M k-mers/s
+  round 4 sym_seq x real L3              5.913 s  124.6 M k-mers/s
+  round 4 sym_seq x real L4              5.899 s  124.9 M k-mers/s
+  round 4 sym_seq x cplx L1              7.055 s  104.4 M k-mers/s
+  round 4 sym_seq x cplx L2              6.741 s  109.3 M k-mers/s
+
+THROUGHPUT (median of 5 interleaved rounds; sink 44d4d8c8dbf4f374)
+  ntHash canonical (fwd+rev)     k-mers 736547799  median 3.188 s  231.1 M k-mers/s
+  kp7 forward, x real            k-mers 736547799  median 5.792 s  127.2 M k-mers/s
+  kp7 canonical min, x real      k-mers 736547799  median 5.928 s  124.3 M k-mers/s
+  kp7 symmetric, x real          k-mers 736547799  median 8.297 s  88.8 M k-mers/s
+  kp7 symmetric, x complex       k-mers 736547799  median 9.035 s  81.5 M k-mers/s
+  kp7 sym, x real, Karatsuba     k-mers 736547799  median 8.342 s  88.3 M k-mers/s
+  kp7 sym, x cplx, Karatsuba     k-mers 736547799  median 9.762 s  75.5 M k-mers/s
+  roll_sym x real opt0           k-mers 736547799  median 7.794 s  94.5 M k-mers/s
+  roll_sym x real lamstate       k-mers 736547799  median 7.731 s  95.3 M k-mers/s
+  roll_sym x real merged         k-mers 736547799  median 7.197 s  102.3 M k-mers/s
+  roll_sym x real lazy           k-mers 736547799  median 7.216 s  102.1 M k-mers/s
+  roll_sym x real all three      k-mers 736547799  median 6.620 s  111.3 M k-mers/s
+  roll_sym x cplx opt0           k-mers 736547799  median 8.502 s  86.6 M k-mers/s
+  roll_sym x cplx lam+merged     k-mers 736547799  median 7.309 s  100.8 M k-mers/s
+  sym_batch x real               k-mers 736547799  median 5.704 s  129.1 M k-mers/s
+  sym_batch x cplx               k-mers 736547799  median 6.752 s  109.1 M k-mers/s
+  sym_seq x real L1              k-mers 736547799  median 5.872 s  125.4 M k-mers/s
+  sym_seq x real L2              k-mers 736547799  median 5.490 s  134.2 M k-mers/s
+  sym_seq x real L3              k-mers 736547799  median 5.849 s  125.9 M k-mers/s
+  sym_seq x real L4              k-mers 736547799  median 5.901 s  124.8 M k-mers/s
+  sym_seq x cplx L1              k-mers 736547799  median 7.069 s  104.2 M k-mers/s
+  sym_seq x cplx L2              k-mers 736547799  median 6.866 s  107.3 M k-mers/s
+  Karatsuba and roll_sym hashes identical to plain: yes
