@@ -1,0 +1,8 @@
+bundle 322,316 bytes, 141 members; 3 run(s)
+job 79951b490d03db78 submitted
+results: /home/rcb112/project/claude/bench/data/laila_perf/20261110T191842Z_kp7load
+  job 79951b490d03db78 ok on handler handler_0; Intel(R) Xeon(R) Gold 6330 CPU @ 2.00GHz; kernel 6.1.0-52-amd64; perf_event_paranoid 2
+  build_exit 0; pcount_exit_run_1 0; pcount_exit_run_2 0; pcount_exit_run_3 0
+  run_1: cycles=6883541640, instructions=20732207335, branches=5470556601, branch-misses=28849086, cache-references=27344644, cache-misses=6273665, ref-cycles=5351674800, L1-dcache-load-misses=33094015, task-clock=3243254170, ipc=3.0119, branch_miss_rate=0.005274, wall_s=3.277, child_exit=0, hardware_events_opened=8
+  run_2: cycles=7001463986, instructions=20732207476, branches=5470556797, branch-misses=29119736, cache-references=27748998, cache-misses=6152594, ref-cycles=5005656640, L1-dcache-load-misses=33236148, task-clock=3016835288, ipc=2.9611, branch_miss_rate=0.005323, wall_s=3.020, child_exit=0, hardware_events_opened=8
+  run_3: cycles=6932911654, instructions=20732207944, branches=5470557393, branch-misses=29180909, cache-references=27257030, cache-misses=6185949, ref-cycles=5498523200, L1-dcache-load-misses=33042725, task-clock=3286783948, ipc=2.9904, branch_miss_rate=0.005334, wall_s=3.290, child_exit=0, hardware_events_opened=8

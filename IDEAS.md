@@ -122,6 +122,8 @@ Addition-side changes (merged tables, λ-state, lazy reduction): +18%, to 113.9 
 
 Batch loop (`kp7_sym_batch`): 158.7 M k-mers/s with x real, 0.66× ntHash; 127.1 with x complex (results/kp7_batch_2026-11-10.md).
 
+Laila hardware counters: the best version (2 lanes) is 47.4 cycles/k-mer against ntHash's 23.3. The gap is 1.6× instructions and 1.25× IPC (results/kp7_laila_counters_2026-11-10.md).
+
 *Check (KP-6 + KP-7):* compare against ntHash on cs10 for throughput, uniformity of minimizer selection (density and
 spacing between chosen positions), and collision rate.
 
