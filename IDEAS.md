@@ -112,6 +112,8 @@ Instead of canonical = min(h(s), h(rc s)), which needs an order, use symmetric f
 or the factor (t − h(s))(t − h(rc s)) = t² − e₁t + e₂, which is identical for both strands. That carries into the set
 representations of section 3 as double-stranded sets.
 
+**Status 2026-11-10:** the symmetric functions alone are degenerate (e₁ = F + R has ≤ 9^⌊k/2⌋ values, and e₂ = F·R merges a k-mer with its reverse). (F + λ)(R + λ) is exact. See notes/kp7_strand_symmetric_hash.md.
+
 *Check (KP-6 + KP-7):* compare against ntHash on cs10 for throughput, uniformity of minimizer selection (density and
 spacing between chosen positions), and collision rate.
 
