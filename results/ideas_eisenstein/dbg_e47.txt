@@ -1,0 +1,5 @@
+k 47, bases 20000000, distinct k-mers 14292098 (built in 2.9 s); hashes equal to 0: 0
+exact (packed codes, 16 B/node): 14329963 edges, 14222007 non-branching, 3.14 s (220.0 ns/node)
+hash-only (Eisenstein F, 8 B/node): true 14329963, false via wrong guess 0, false with right guess 0, missed 0,
+  predecessor hits via wrong guess 0, nodes whose degrees differ 0, non-branching 14222007, 14.81 s (1036.0 ns/node)
+provable bound on expected false successors: <= 0.05; key-table bytes per node: packed 16, hash 8
