@@ -135,6 +135,46 @@ spacing between chosen positions), and collision rate.
 
 ---
 
+### KP-7 compared with ntHash / ntHash2: what is actually different (2026-11-10)
+
+This compares the provable KP-7 hash S(s) = (F + λ)(R + λ) over F_{q²} (q = 2⁶¹ − 1 with x real, or CM31 with x complex)
+against ntHash/ntHash2 as read in their source (BirolLab/ntHash, pinned c26bd45) and papers (mohamadi_2016_nthash,
+kazemi_2022_nthash2).
+
+**Properties KP-7 has that ntHash does not:**
+
+1. **A provable per-pair collision bound.** With x₀ and λ random, distinct double-stranded k-mers collide with
+   probability ≤ about 2k/q² (Schwartz–Zippel), about 10⁻¹⁷ at k = 31. The bound holds for ANY input (repetitive,
+   adversarial), provided the seeds are drawn after the input is fixed. ntHash uses fixed seed constants, so it is a
+   single deterministic function. Its collision behaviour is empirical, and its collisions are the same in every run.
+2. **Provably exact strand canonicalization.** As a polynomial in λ, (F + λ)(R + λ) factors uniquely into F and R, so S
+   determines the unordered pair {s, rc(s)} exactly (notes/kp7_strand_symmetric_hash.md). ntHash2's fwd + rev also gave
+   one value per class at k = 8 in our exhaustive test, but only empirically. The proof also explains why the
+   algebraic shortcuts F + R and F·R are degenerate.
+3. **Hash values in a field, with the sketch in the same field.** KP-8 to KP-10 (gcd/lcm set operations,
+   characteristic-polynomial reconciliation, mergeable power-sum sketches with exact decoding) run directly on S, so
+   hashing and sketching share one end-to-end error analysis. Caveat: any hash's outputs could be embedded in a field
+   for reconciliation. The gain is the unified analysis, not a capability ntHash's outputs lack.
+4. **A tunable, known false-positive rate.** The field size (2⁶¹ − 1, or 2³¹ − 1 with x complex) and the number of
+   evaluation points set the bound directly. ntHash is fixed at 64 bits, with no stated bound.
+
+**Shared, so NOT advantages:**
+- O(1) rolling, O(1) single-base substitutions, and hashes of concatenations built from their parts: ntHash is linear
+  over GF(2) (an XOR of rotated seeds), so it has all three.
+- Strand symmetry via fwd + rev: ntHash2 already uses it. KP-7 differs only in the exact product form and its field.
+- Freedom from "sketching deserts": NEITHER. Any strand-symmetric hash folds a k-mer with its reverse complement, and
+  that folding creates Marçais et al.'s deserts (marcais_2024_knonical).
+- Uniformity and minimizer density: both are equally good empirically (results/kp7_rolling_vs_nthash_2026-11-10.md,
+  results/kp7_hybrid_2026-11-10.md).
+
+**ntHash has, KP-7 does not (yet):** spaced seeds (KP-14 is an idea with no code), multiple hash values per k-mer,
+and raw full-hashing speed. The best provable-for-every-k-mer version runs at 0.91× ntHash (CM31 AVX-512,
+results/kp7_m31_simd_2026-11-10.md). In the sketch setting, hybrid v2 runs about 2× faster than ntHash at 1/1000
+sampling (results/kp7_pack_hybrid_2026-11-10.md), but that comes from how the hash is computed, not from the hash.
+
+**Bottom line for a paper:** the case for KP-7 rests on guarantees and algebra (a provable collision bound,
+provably exact strand canonicalization, and a hash that is native to exact set reconciliation), not on speed.
+
 ## 3. Collections of k-mers
 
 ### KP-8. A set as the roots of a polynomial: set operations become algebra
