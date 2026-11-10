@@ -1,0 +1,6 @@
+# build outputs (sources, Makefile and scripts are committed)
+*.o
+test_kp7
+test_kp7_mutant
+mutant.out
+bench
