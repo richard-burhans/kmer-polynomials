@@ -6,7 +6,7 @@ CFLAGS = $(OPT) -Wall -Wextra
 HASH = ../../hash
 NTHASH ?= /home/rcb112/project/claude/bench/data/kmer_poly_work/ntHash
 
-all: test_spaced bench_spaced
+all: test_spaced bench_spaced dbg
 
 kp7.o: $(HASH)/kp7.c $(HASH)/kp7.h
 	$(CC) $(CFLAGS) -c $(HASH)/kp7.c -o $@
@@ -26,6 +26,9 @@ mutation: test_spaced.c spaced.c spaced.h kp7.o
 
 bench_spaced: bench_spaced.cpp spaced.o kp7.o
 	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include bench_spaced.cpp spaced.o kp7.o $(NTHASH)/build_o3/libnthash.a -o $@
+
+dbg: dbg.c field61.h kp7.o
+	$(CC) $(CFLAGS) dbg.c kp7.o -o $@
 
 clean:
 	rm -f *.o test_spaced test_spaced_mutant mutant.out bench_spaced dbg eisen

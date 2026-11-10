@@ -1,0 +1,5 @@
+bases 20000000, distinct 31-mers 13530525 (built in 2.2 s); folds equal to 0: 0
+exact (packed codes): 13608457 edges, 13391419 non-branching nodes, 1.89 s (139.8 ns/node)
+hash-only (16+16 candidates from F): true 13608457, false via wrong guess 0, false with right guess 0, missed 0,
+  predecessor hits via wrong guess 0, nodes whose degrees differ 0, non-branching 13391419, 14.06 s (1038.8 ns/node)
+provable bound on expected false successors over the whole set: <= 0.0295; storage per node: packed 8 bytes, hash-only 16 bytes (F)
