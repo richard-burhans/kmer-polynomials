@@ -174,10 +174,60 @@ static void test_karatsuba(void)
   free(seq);
 }
 
+/* 5: kp7_roll_sym gives the same hashes as kp7_roll64(SYM) for every option combination */
+static void test_roll_sym(void)
+{
+  uint64_t s = 7;
+  /* the wide product at its bound: parts up to 4q - 1 must match the product of the reduced parts */
+  const uint64_t big[] = { 0, KP7_Q - 1, KP7_Q, 2 * KP7_Q - 1, 3 * KP7_Q + 5, 4 * KP7_Q - 1 };
+  for (int a = 0; a < 6; a++) for (int b = 0; b < 6; b++) for (int c = 0; c < 6; c++) for (int d = 0; d < 6; d++) {
+    kp7_fe x = { big[a], big[b] }, y = { big[c], big[d] };
+    kp7_fe xr = { big[a] % KP7_Q, big[b] % KP7_Q }, yr = { big[c] % KP7_Q, big[d] % KP7_Q };
+    CHECK(fe_eq(kp7_mul_wide(x, y), kp7_mul(xr, yr)), "wide product at bound (%d,%d)x(%d,%d)", a, b, c, d);
+  }
+  for (int n = 0; n < 200000; n++) {
+    kp7_fe x = { sm(&s) % (4 * KP7_Q), sm(&s) % (4 * KP7_Q) }, y = { sm(&s) % (4 * KP7_Q), sm(&s) % (4 * KP7_Q) };
+    kp7_fe xr = { x.re % KP7_Q, x.im % KP7_Q }, yr = { y.re % KP7_Q, y.im % KP7_Q };
+    CHECK(fe_eq(kp7_mul_wide(x, y), kp7_mul(xr, yr)), "wide product random %d", n);
+  }
+  /* two sequences: rare N (long rolls) and frequent N (many restarts) */
+  const size_t len = 60000;
+  char* seqs[2] = { malloc(len), malloc(len) };
+  const unsigned nrate[2] = { 1000, 25 };
+  for (int q = 0; q < 2; q++)
+    for (size_t i = 0; i < len; i++) seqs[q][i] = "ACGTN"[sm(&s) % nrate[q] == 0 ? 4 : sm(&s) % 4];
+  for (int variant = 0; variant < 2; variant++)
+    for (int kar = 0; kar < 2; kar++)
+      for (int opt = 0; opt < 8; opt++)
+        for (int q = 0; q < 2; q++) {
+          kp7_params p0, p1;
+          kp7_init(&p0, 31, variant, 1234);
+          kp7_init(&p1, 31, variant, 1234);
+          p1.karatsuba = kar;
+          p1.opt = opt;
+          kp7_roller r0, r1;
+          kp7_start(&r0, &p0, seqs[q], len);
+          kp7_start(&r1, &p1, seqs[q], len);
+          uint64_t h0, h1, n = 0, bad = 0;
+          for (;;) {
+            int a = kp7_roll64(&r0, KP7_OUT_SYM, &h0), b = kp7_roll_sym(&r1, &h1);
+            if (a != b) { bad++; break; }
+            if (!a) break;
+            if (h0 != h1 || r0.pos != r1.pos) bad++;
+            n++;
+          }
+          CHECK(!bad, "roll_sym differs: variant %d karatsuba %d opt %d seq %d (%llu bad)", variant, kar, opt, q,
+                (unsigned long long)bad);
+          CHECK(n > (q ? 10000u : 55000u), "roll_sym compared only %llu windows (seq %d)", (unsigned long long)n, q);
+        }
+  free(seqs[0]); free(seqs[1]);
+}
+
 int main(void)
 {
   test_field();
   test_karatsuba();
+  test_roll_sym();
   for (int variant = 0; variant < 2; variant++) {
     test_rolling(variant, 31, 200000, 7 + variant);
     test_rolling(variant, 8, 50000, 9 + variant);

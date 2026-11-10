@@ -45,9 +45,13 @@ typedef struct {
   unsigned k;
   int variant;
   int karatsuba;   /* 1: F_{q^2} products use 3 widening multiplies (Karatsuba) instead of 4; same values */
+  int opt;         /* KP7_OPT_* bits for kp7_roll_sym; every combination gives the same hashes */
   kp7_fe x, xinv, lam;
   kp7_fe out_f[4], in_f[4]; /* -s*x^{-1},  s*x^{k-1} */
   kp7_fe out_r[4], in_r[4]; /*  s*x^{k},   -s        */
+  kp7_fe tf[16], tr[16];     /* merged [co*4+ci]: out_f+in_f, out_r+in_r                    (KP7_OPT_MERGED) */
+  kp7_fe tfl[16], trl[16];   /* the same plus lam(1-x^{-1}) and lam(1-x), for the G/H state (both opts) */
+  kp7_fe dl_f, dl_r;         /* lam(1-x^{-1}), lam(1-x) alone                     (KP7_OPT_LAMSTATE only) */
 } kp7_params;
 
 /* rolling state over one sequence */
@@ -58,6 +62,7 @@ typedef struct {
   size_t pos;      /* start of the current k-mer */
   int valid;       /* 1 when F, R hold the k-mer at pos */
   kp7_fe F, R;
+  kp7_fe G, H;     /* kp7_roll_sym's state: F, R, or F+lam, R+lam with KP7_OPT_LAMSTATE */
 } kp7_roller;
 
 /* field */
@@ -67,6 +72,7 @@ uint64_t kp7_mulq(uint64_t a, uint64_t b);
 kp7_fe kp7_add(kp7_fe a, kp7_fe b);
 kp7_fe kp7_mul(kp7_fe a, kp7_fe b);
 kp7_fe kp7_mul_karatsuba(kp7_fe a, kp7_fe b);
+kp7_fe kp7_mul_wide(kp7_fe a, kp7_fe b); /* parts may be in [0, 4q); result canonical */
 kp7_fe kp7_inv(kp7_fe a);
 kp7_fe kp7_base(int code); /* 0..3 = A C G T */
 int kp7_code(char c);      /* A C G T (either case) -> 0..3, else -1 */
@@ -86,6 +92,18 @@ int kp7_roll(kp7_roller* r);
 /* roll and produce the 64-bit output for one mode in the same call (what a caller would actually use) */
 enum { KP7_OUT_FWD = 0, KP7_OUT_CANON_MIN = 1, KP7_OUT_SYM = 2 };
 int kp7_roll64(kp7_roller* r, int mode, uint64_t* out);
+
+/* Symmetric hash only, with optional addition-side optimizations (params.opt bits). Bit-identical to
+ * kp7_roll64(.., KP7_OUT_SYM, ..) for every combination (test_kp7):
+ *   KP7_OPT_LAMSTATE  roll G = F + lam and H = R + lam directly. The update constant absorbs lam(1 - x^{-1}) and
+ *                     lam(1 - x), so the two "+ lam" additions per k-mer disappear.
+ *   KP7_OPT_MERGED    one 16-entry table per strand [s_out*4 + s_in] instead of two lookups and two additions.
+ *   KP7_OPT_LAZY      (x real only; ignored for x complex) the rolling additions skip their conditional
+ *                     subtraction, so the state lives in [0, 2q). The x-real multiply takes < 2q inputs
+ *                     ((2q)*q < 2^123), and the final product takes parts < 4q with a 16q^2 offset and a reduction
+ *                     (red2) valid for any 128-bit value, so the output is still canonical. */
+enum { KP7_OPT_LAMSTATE = 1, KP7_OPT_MERGED = 2, KP7_OPT_LAZY = 4 };
+int kp7_roll_sym(kp7_roller* r, uint64_t* out);
 
 #ifdef __cplusplus
 }

@@ -40,15 +40,24 @@ static std::vector<Rec> load_fasta(const char* path)
 }
 
 enum Method { NTHASH = 0, KP7_FWD_REAL, KP7_MIN_REAL, KP7_SYM_REAL, KP7_SYM_COMPLEX, KP7_SYM_REAL_K, KP7_SYM_COMPLEX_K,
-              NMETHODS };
+              SYMR_OPT0, SYMR_LAM, SYMR_MERGED, SYMR_LAZY, SYMR_ALL, SYMC_OPT0, SYMC_LAM_MERGED, NMETHODS };
 static const char* NAMES[NMETHODS] = { "ntHash canonical (fwd+rev)", "kp7 forward, x real", "kp7 canonical min, x real",
                                        "kp7 symmetric, x real", "kp7 symmetric, x complex",
-                                       "kp7 sym, x real, Karatsuba", "kp7 sym, x cplx, Karatsuba" };
+                                       "kp7 sym, x real, Karatsuba", "kp7 sym, x cplx, Karatsuba",
+                                       "roll_sym x real opt0", "roll_sym x real lamstate", "roll_sym x real merged",
+                                       "roll_sym x real lazy", "roll_sym x real all three", "roll_sym x cplx opt0",
+                                       "roll_sym x cplx lam+merged" };
+// roll_sym methods (kp7_roll_sym with params.opt) must equal the plain symmetric hashes; main checks the sinks.
+static int sym_opt(int m) { switch (m) { case SYMR_OPT0: case SYMC_OPT0: return 0; case SYMR_LAM: return KP7_OPT_LAMSTATE;
+  case SYMR_MERGED: return KP7_OPT_MERGED; case SYMR_LAZY: return KP7_OPT_LAZY; case SYMR_ALL: return 7;
+  case SYMC_LAM_MERGED: return KP7_OPT_LAMSTATE | KP7_OPT_MERGED; default: return -1; } }
+static bool is_cplx_opt(int m) { return m == SYMC_OPT0 || m == SYMC_LAM_MERGED; }
 // Karatsuba methods give bit-identical hashes (test_kp7), so their STATS equal the plain methods'; main checks the sinks.
-static bool is_k(Method m) { return m == KP7_SYM_REAL_K || m == KP7_SYM_COMPLEX_K; }
+static bool is_k(Method m) { return m == KP7_SYM_REAL_K || m == KP7_SYM_COMPLEX_K || sym_opt(m) >= 0; }
 
 // Calls fn(pos, hash) for every valid k-mer of one record.
 static const kp7_params *g_real_k, *g_cplx_k; // Karatsuba copies of real/cplx, set in main
+static kp7_params g_opt[NMETHODS];             // per roll_sym method: real or cplx with that method's opt bits
 template <class Fn> static void hash_record(Method m, const std::string& s, unsigned k, const kp7_params* real,
                                             const kp7_params* cplx, Fn&& fn)
 {
@@ -56,6 +65,13 @@ template <class Fn> static void hash_record(Method m, const std::string& s, unsi
   if (m == NTHASH) {
     nthash::NtHash nth(s.data(), s.size(), 1, k);
     while (nth.roll()) fn(nth.get_pos(), nth.hashes()[0]);
+    return;
+  }
+  if (sym_opt(m) >= 0) {
+    kp7_roller r;
+    kp7_start(&r, &g_opt[m], s.data(), s.size());
+    uint64_t h;
+    while (kp7_roll_sym(&r, &h)) fn(r.pos, h);
     return;
   }
   const kp7_params* p = m == KP7_SYM_COMPLEX ? cplx : m == KP7_SYM_REAL_K ? g_real_k : m == KP7_SYM_COMPLEX_K ? g_cplx_k : real;
@@ -181,6 +197,8 @@ int main(int argc, char** argv)
   kp7_params real_k = real, cplx_k = cplx;
   real_k.karatsuba = cplx_k.karatsuba = 1;
   g_real_k = &real_k; g_cplx_k = &cplx_k;
+  for (int m = 0; m < NMETHODS; m++)
+    if (sym_opt(m) >= 0) { g_opt[m] = is_cplx_opt(m) ? cplx : real; g_opt[m].opt = sym_opt(m); }
 
   // throughput: interleaved rounds
   std::vector<std::vector<double>> secs(NMETHODS);
@@ -195,7 +213,7 @@ int main(int argc, char** argv)
       counts[m] = n;
       sink ^= x;
       msink[m] = x;
-      printf("  round %d %-28s %.3f s  %.1f M k-mers/s\n", round, NAMES[m], s, n / s / 1e6);
+      printf("  round %d %-30s %.3f s  %.1f M k-mers/s\n", round, NAMES[m], s, n / s / 1e6);
       fflush(stdout);
     }
   }
@@ -204,13 +222,15 @@ int main(int argc, char** argv)
     std::vector<double> v = secs[m];
     std::sort(v.begin(), v.end());
     double med = v[v.size() / 2];
-    printf("  %-28s k-mers %llu  median %.3f s  %.1f M k-mers/s\n", NAMES[m], (unsigned long long)counts[m], med,
+    printf("  %-30s k-mers %llu  median %.3f s  %.1f M k-mers/s\n", NAMES[m], (unsigned long long)counts[m], med,
            counts[m] / med / 1e6);
   }
 
   // the Karatsuba methods must reproduce the plain ones exactly (xor of every hash)
   bool same = msink[KP7_SYM_REAL_K] == msink[KP7_SYM_REAL] && msink[KP7_SYM_COMPLEX_K] == msink[KP7_SYM_COMPLEX];
-  printf("  Karatsuba hashes identical to plain: %s\n", same ? "yes" : "NO");
+  for (int m = 0; m < NMETHODS; m++)
+    if (sym_opt(m) >= 0) same = same && msink[m] == msink[is_cplx_opt(m) ? KP7_SYM_COMPLEX : KP7_SYM_REAL];
+  printf("  Karatsuba and roll_sym hashes identical to plain: %s\n", same ? "yes" : "NO");
   if (!same) return 1;
   if (throughput_only) return 0;
   printf("\nSTATS\n");

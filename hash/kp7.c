@@ -12,6 +12,14 @@ static inline uint64_t red(unsigned __int128 p) /* p < 2^124: p >> 61 < 2^63, so
   r = (r & Q) + (r >> 61);
   return r >= Q ? r - Q : r;
 }
+/* any 128-bit p: the first fold stays in 128 bits ((p & Q) + (p >> 61) < 2^68), the second fits 64 bits */
+static inline uint64_t red2(unsigned __int128 p)
+{
+  unsigned __int128 t = (p & Q) + (p >> 61); /* < 2^61 + 2^67 */
+  uint64_t r = (uint64_t)(t & Q) + (uint64_t)(t >> 61);
+  r = (r & Q) + (r >> 61);
+  return r >= Q ? r - Q : r;
+}
 static inline uint64_t addq(uint64_t a, uint64_t b) { uint64_t r = a + b; return r >= Q ? r - Q : r; }
 static inline uint64_t subq(uint64_t a, uint64_t b) { return a >= b ? a - b : a + Q - b; }
 static inline uint64_t mulq(uint64_t a, uint64_t b) { return red((unsigned __int128)a * b); }
@@ -53,6 +61,8 @@ uint64_t kp7_mulq(uint64_t a, uint64_t b) { return mulq(a, b); }
 kp7_fe kp7_add(kp7_fe a, kp7_fe b) { return fadd(a, b); }
 kp7_fe kp7_mul(kp7_fe a, kp7_fe b) { return fmul(a, b); }
 kp7_fe kp7_mul_karatsuba(kp7_fe a, kp7_fe b) { return fmul_k(a, b); }
+static inline kp7_fe fmul_wide(kp7_fe a, kp7_fe b);
+kp7_fe kp7_mul_wide(kp7_fe a, kp7_fe b) { return fmul_wide(a, b); } /* test hook: parts may be < 4q */
 uint64_t kp7_fold(kp7_fe z) { return fold(z); }
 
 kp7_fe kp7_inv(kp7_fe a)
@@ -104,6 +114,7 @@ void kp7_init(kp7_params* p, unsigned k, int variant, uint64_t seed)
   p->k = k;
   p->variant = variant;
   p->karatsuba = 0;
+  p->opt = 0;
   p->x.re = rand_q(&s);
   p->x.im = variant == KP7_XREAL ? 0 : rand_q(&s);
   p->lam.re = rand_q(&s);
@@ -123,6 +134,20 @@ void kp7_init(kp7_params* p, unsigned k, int variant, uint64_t seed)
     p->in_r[c] = fneg(b);
 #endif
   }
+  kp7_fe one = { 1, 0 };
+#ifdef KP7_MUTATE_OPT /* test-only: wrong lam-state constant; `make mutation` expects the tests to FAIL */
+  p->dl_f = fmul(p->lam, fadd(one, p->xinv));
+#else
+  p->dl_f = fmul(p->lam, fadd(one, fneg(p->xinv))); /* lam(1 - x^{-1}) */
+#endif
+  p->dl_r = fmul(p->lam, fadd(one, fneg(p->x)));    /* lam(1 - x) */
+  for (int co = 0; co < 4; co++)
+    for (int ci = 0; ci < 4; ci++) {
+      p->tf[co * 4 + ci] = fadd(p->out_f[co], p->in_f[ci]);
+      p->tr[co * 4 + ci] = fadd(p->out_r[co], p->in_r[ci]);
+      p->tfl[co * 4 + ci] = fadd(p->tf[co * 4 + ci], p->dl_f);
+      p->trl[co * 4 + ci] = fadd(p->tr[co * 4 + ci], p->dl_r);
+    }
 }
 
 int kp7_direct(const kp7_params* p, const char* kmer, kp7_fe* F, kp7_fe* R)
@@ -195,5 +220,70 @@ int kp7_roll64(kp7_roller* r, int mode, uint64_t* out)
   case KP7_OUT_CANON_MIN: { uint64_t a = fold(r->F), b = fold(r->R); *out = a < b ? a : b; } break;
   default: *out = fold(fmul_p(r->p, fadd(r->F, r->p->lam), fadd(r->R, r->p->lam))); break;
   }
+  return 1;
+}
+
+/* ---- symmetric-only roller with addition-side options (see kp7.h) ---- */
+
+static inline uint64_t addq_lazy(uint64_t a, uint64_t b) { return a + b; } /* a, b < q: result < 2q */
+static inline kp7_fe fadd_lazy(kp7_fe a, kp7_fe b) { kp7_fe r = { addq_lazy(a.re, b.re), addq_lazy(a.im, b.im) }; return r; }
+/* product of two elements with parts < 4q: ac, bd, ad, bc < 16Q^2, so ac + (16Q^2 - bd) and ad + bc are < 32Q^2 < 2^127 */
+static inline kp7_fe fmul_wide(kp7_fe a, kp7_fe b)
+{
+  const unsigned __int128 Q2x16 = (unsigned __int128)16 * Q * Q;
+  unsigned __int128 ac = (unsigned __int128)a.re * b.re, bd = (unsigned __int128)a.im * b.im;
+  unsigned __int128 ad = (unsigned __int128)a.re * b.im, bc = (unsigned __int128)a.im * b.re;
+  kp7_fe r = { red2(ac + (Q2x16 - bd)), red2(ad + bc) };
+  return r;
+}
+
+int kp7_roll_sym(kp7_roller* r, uint64_t* out)
+{
+  const kp7_params* p = r->p;
+  const int opt = p->opt;
+  const int lam = opt & KP7_OPT_LAMSTATE, merged = opt & KP7_OPT_MERGED;
+  const int lazy = (opt & KP7_OPT_LAZY) && p->variant == KP7_XREAL;
+  if (!r->valid) {
+    if (!restart(r, r->pos)) return 0;
+    r->G = lam ? fadd(r->F, p->lam) : r->F;
+    r->H = lam ? fadd(r->R, p->lam) : r->R;
+  } else {
+    size_t in = r->pos + p->k;
+    if (in >= r->len) { r->valid = 0; r->pos = r->len; return 0; }
+    int ci = CODE[(unsigned char)r->seq[in]];
+    if (ci < 0) {
+      if (!restart(r, in + 1)) return 0;
+      r->G = lam ? fadd(r->F, p->lam) : r->F;
+      r->H = lam ? fadd(r->R, p->lam) : r->R;
+    } else {
+      int co = CODE[(unsigned char)r->seq[r->pos]];
+      kp7_fe g, h;
+      if (p->variant == KP7_XREAL) { g = fmul_real(r->G, p->xinv.re); h = fmul_real(r->H, p->x.re); } /* G, H < 2q ok */
+      else { g = fmul_p(p, r->G, p->xinv); h = fmul_p(p, r->H, p->x); }
+      if (merged) {
+        const kp7_fe* tf = lam ? p->tfl : p->tf;
+        const kp7_fe* tr = lam ? p->trl : p->tr;
+        if (lazy) { g = fadd_lazy(g, tf[co * 4 + ci]); h = fadd_lazy(h, tr[co * 4 + ci]); }
+        else { g = fadd(g, tf[co * 4 + ci]); h = fadd(h, tr[co * 4 + ci]); }
+      } else if (lazy) {
+        /* two lazy additions would leave [0, 3q); reduce once in the middle to stay below 2q */
+        g = fadd_lazy(fadd(g, p->out_f[co]), p->in_f[ci]);
+        h = fadd_lazy(fadd(h, p->out_r[co]), p->in_r[ci]);
+        if (lam) { g.re = g.re >= Q ? g.re - Q : g.re; g.im = g.im >= Q ? g.im - Q : g.im;
+                   h.re = h.re >= Q ? h.re - Q : h.re; h.im = h.im >= Q ? h.im - Q : h.im;
+                   g = fadd_lazy(g, p->dl_f); h = fadd_lazy(h, p->dl_r); }
+      } else {
+        g = fadd(fadd(g, p->out_f[co]), p->in_f[ci]);
+        h = fadd(fadd(h, p->out_r[co]), p->in_r[ci]);
+        if (lam) { g = fadd(g, p->dl_f); h = fadd(h, p->dl_r); }
+      }
+      r->G = g; r->H = h;
+      r->pos++;
+    }
+  }
+  kp7_fe a = lam ? r->G : (lazy ? fadd_lazy(r->G, p->lam) : fadd(r->G, p->lam));
+  kp7_fe b = lam ? r->H : (lazy ? fadd_lazy(r->H, p->lam) : fadd(r->H, p->lam));
+  /* lazy: a, b < 2q with the lam state, < 3q when lam is added lazily to a < 2q state; fmul_wide takes < 4q */
+  *out = fold(lazy ? fmul_wide(a, b) : fmul_p(p, a, b));
   return 1;
 }
