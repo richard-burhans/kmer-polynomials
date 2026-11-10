@@ -105,6 +105,12 @@ size_t kp7pack_sample_f(const kp7pack_ftab* t, int W, const char* seq, size_t le
                         uint64_t* hash_buf, size_t cap, kp7_emit_pairs_fn emit, void* ctx);
 size_t kp7pack_sample_m(const kp7pack_mtab* t, int W, const char* seq, size_t len, uint64_t threshold, size_t* pos_buf,
                         uint64_t* hash_buf, size_t cap, kp7_emit_pairs_fn emit, void* ctx);
+/* the same with a BRANCH on the gate and the fast evaluation inline (no per-k-mer stores): cheaper when few k-mers
+ * are kept, since the branch is almost never taken; W = 8 only */
+size_t kp7pack_sample_fb(const kp7pack_ftab* t, const char* seq, size_t len, uint64_t threshold, size_t* pos_buf,
+                         uint64_t* hash_buf, size_t cap, kp7_emit_pairs_fn emit, void* ctx);
+size_t kp7pack_sample_mb(const kp7pack_mtab* t, const char* seq, size_t len, uint64_t threshold, size_t* pos_buf,
+                         uint64_t* hash_buf, size_t cap, kp7_emit_pairs_fn emit, void* ctx);
 
 #ifdef __cplusplus
 }

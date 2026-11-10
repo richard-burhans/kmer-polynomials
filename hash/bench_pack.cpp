@@ -43,7 +43,7 @@ enum Method { NTHASH = 0, PACK_GATE, PACK_S16, PACK_S1000, KP7_SEQ_L2, NT_BATCH,
               CHUNK_S16, POS_S16, CHUNK_ALL,
               // kept-k-mer evaluation (results/kp7_kept_eval_2026-11-10.md): f = 61-bit, m = CM31; 8/4 = chunk bits
               F8_ALL, F4_ALL, M8_ALL, M4_ALL, M31_REF, F8_S1000, F8_S100, F8_S16, F8_S4, F4_S16, M8_S1000, M8_S100, M8_S16,
-              M8_S4, M4_S16, CHUNK_S4, NMETHODS };
+              M8_S4, M4_S16, CHUNK_S4, FB_S1000, FB_S100, FB_S16, FB_S4, MB_S1000, MB_S100, MB_S16, MB_S4, NMETHODS };
 static const char* NAMES[NMETHODS] = { "ntHash canonical (fwd+rev)", "pack gate (cheap sym)", "pack sample 1/16",
                                        "pack sample 1/1000", "kp7 sym_seq x real L2 (provable, all)",
                                        "ntHash batched (ntbatch)", "pack sample 1/100",
@@ -55,7 +55,9 @@ static const char* NAMES[NMETHODS] = { "ntHash canonical (fwd+rev)", "pack gate 
                                        "fast f8 sample 1/100", "fast f8 sample 1/16", "fast f8 sample 1/4",
                                        "fast f4 sample 1/16", "fast m8 sample 1/1000 (CM31)", "fast m8 sample 1/100 (CM31)",
                                        "fast m8 sample 1/16 (CM31)", "fast m8 sample 1/4 (CM31)", "fast m4 sample 1/16 (CM31)",
-                                       "pack chunk-eval sample 1/4" };
+                                       "pack chunk-eval sample 1/4", "fast f8 branchy 1/1000", "fast f8 branchy 1/100",
+                                       "fast f8 branchy 1/16", "fast f8 branchy 1/4", "fast m8 branchy 1/1000 (CM31)",
+                                       "fast m8 branchy 1/100 (CM31)", "fast m8 branchy 1/16 (CM31)", "fast m8 branchy 1/4 (CM31)" };
 static const uint64_t THR100 = (uint64_t)(18446744073709551615.0 / 100.0);
 static const kp7pack_tab* g_tab;           // chunk/position tables for the bench params, set in main
 static const kp7pack_ftab* g_ftab;         // fast 61-bit tables (same params), set in main
@@ -68,7 +70,7 @@ static const uint64_t THR1000 = (uint64_t)(18446744073709551615.0 / 1000.0);
 static bool is_sample(int m)
 {
   return m == PACK_S16 || m == PACK_S1000 || m == PACK_S100 || m == CHUNK_S1000 || m == CHUNK_S100 || m == CHUNK_S16 ||
-         m == POS_S16 || (m >= F8_S1000 && m <= CHUNK_S4);
+         m == POS_S16 || (m >= F8_S1000 && m <= MB_S4);
 }
 
 template <class Fn> static void hash_record(Method m, const std::string& s, const kp7_params* p, Fn&& fn)
@@ -151,6 +153,17 @@ template <class Fn> static void hash_record(Method m, const std::string& s, cons
     if (m == CHUNK_S4) kp7pack_sample_eval(p, g_tab, KP7PACK_EVAL_CHUNK, s.data(), s.size(), thr, pbuf, hbuf, 4096, tramp, &fn);
     else if (m >= M8_S1000) kp7pack_sample_m(g_mtab, m == M4_S16 ? 4 : 8, s.data(), s.size(), thr, pbuf, hbuf, 4096, tramp, &fn);
     else kp7pack_sample_f(g_ftab, m == F4_S16 ? 4 : 8, s.data(), s.size(), thr, pbuf, hbuf, 4096, tramp, &fn);
+    return;
+  }
+  case FB_S1000: case FB_S100: case FB_S16: case FB_S4: case MB_S1000: case MB_S100: case MB_S16: case MB_S4: {
+    auto tramp = [](void* ctx, const size_t* pos, const uint64_t* h, size_t n) {
+      Fn& f = *static_cast<Fn*>(ctx);
+      for (size_t j = 0; j < n; j++) f(pos[j], h[j]);
+    };
+    int r = (m - FB_S1000) % 4;
+    uint64_t thr = r == 0 ? THR1000 : r == 1 ? THR100 : r == 2 ? THR16 : THR4;
+    if (m >= MB_S1000) kp7pack_sample_mb(g_mtab, s.data(), s.size(), thr, pbuf, hbuf, 4096, tramp, &fn);
+    else kp7pack_sample_fb(g_ftab, s.data(), s.size(), thr, pbuf, hbuf, 4096, tramp, &fn);
     return;
   }
   case KP7_SEQ_L2: {
@@ -264,7 +277,9 @@ int main(int argc, char** argv)
                              { CHUNK_S16, PACK_S16 }, { POS_S16, PACK_S16 }, { CHUNK_ALL, KP7_SEQ_L2 },
                              { F8_ALL, KP7_SEQ_L2 }, { F4_ALL, KP7_SEQ_L2 }, { M8_ALL, M31_REF }, { M4_ALL, M31_REF },
                              { F8_S1000, PACK_S1000 }, { F8_S100, PACK_S100 }, { F8_S16, PACK_S16 }, { F4_S16, PACK_S16 },
-                             { F8_S4, CHUNK_S4 }, { M4_S16, M8_S16 } };
+                             { F8_S4, CHUNK_S4 }, { M4_S16, M8_S16 }, { FB_S1000, PACK_S1000 }, { FB_S100, PACK_S100 },
+                             { FB_S16, PACK_S16 }, { FB_S4, CHUNK_S4 }, { MB_S1000, M8_S1000 }, { MB_S100, M8_S100 },
+                             { MB_S16, M8_S16 }, { MB_S4, M8_S4 } };
     bool all = true;
     for (auto& pr : pairs) {
       bool same = msink[pr[0]] == msink[pr[1]] && counts[pr[0]] == counts[pr[1]];

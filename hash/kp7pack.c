@@ -420,3 +420,22 @@ size_t kp7pack_sample_m(const kp7pack_mtab* t, int W, const char* seq, size_t le
   return W == 4 ? samp_m4(t, seq, len, threshold, pos_buf, hash_buf, cap, emit, ctx)
                 : samp_m8(t, seq, len, threshold, pos_buf, hash_buf, cap, emit, ctx);
 }
+
+#define KP7PACK_DEF_SAMPLE_BRANCH(NAME, TAB, EVAL)                                                                    \
+  size_t NAME(const TAB* t, const char* seq, size_t len, uint64_t thr, size_t* pos_buf, uint64_t* hash_buf,          \
+              size_t cap, kp7_emit_pairs_fn emit, void* ctx)                                                          \
+  {                                                                                                                  \
+    if (!pcode_ready) pcode_init();                                                                                  \
+    const unsigned k = t->k;                                                                                         \
+    size_t n = 0, kept = 0;                                                                                          \
+    PACK_FOR_KMERS({                                                                                                 \
+      if (gate(fwd, rc) < thr) {                                                                                     \
+        if (n == cap) { emit(ctx, pos_buf, hash_buf, n); n = 0; }                                                    \
+        pos_buf[n] = pos; hash_buf[n] = EVAL(t, fwd, rc); n++; kept++;                                               \
+      }                                                                                                              \
+    })                                                                                                               \
+    if (n) emit(ctx, pos_buf, hash_buf, n);                                                                          \
+    return kept;                                                                                                     \
+  }
+KP7PACK_DEF_SAMPLE_BRANCH(kp7pack_sample_fb, kp7pack_ftab, eval_f8)
+KP7PACK_DEF_SAMPLE_BRANCH(kp7pack_sample_mb, kp7pack_mtab, eval_m8)

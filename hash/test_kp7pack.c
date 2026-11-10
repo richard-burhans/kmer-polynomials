@@ -296,8 +296,12 @@ static void test_fast(void)
                 sctx sc = { malloc((LEN[q] + 1) * sizeof(size_t)), malloc((LEN[q] + 1) * sizeof(uint64_t)), 0 };
                 size_t* pb = malloc(caps[c] * sizeof *pb);
                 uint64_t* hb = malloc(caps[c] * sizeof *hb);
-                size_t kept = m31 ? kp7pack_sample_m(&mt, W, SEQ[q], LEN[q], thrs[t], pb, hb, caps[c], semit, &sc)
-                                  : kp7pack_sample_f(&ft, W, SEQ[q], LEN[q], thrs[t], pb, hb, caps[c], semit, &sc);
+                /* W = 4 selects the batched evaluator; W = 8 alternates batched and branchy by threshold index */
+                size_t kept = (W == 8 && (t & 1))
+                                  ? (m31 ? kp7pack_sample_mb(&mt, SEQ[q], LEN[q], thrs[t], pb, hb, caps[c], semit, &sc)
+                                         : kp7pack_sample_fb(&ft, SEQ[q], LEN[q], thrs[t], pb, hb, caps[c], semit, &sc))
+                                  : (m31 ? kp7pack_sample_m(&mt, W, SEQ[q], LEN[q], thrs[t], pb, hb, caps[c], semit, &sc)
+                                         : kp7pack_sample_f(&ft, W, SEQ[q], LEN[q], thrs[t], pb, hb, caps[c], semit, &sc));
                 fctx r = { m31, { 0 }, { 0 }, &p31, 0, 0 };
                 kp7_start(&r.r0, &p, SEQ[q], LEN[q]);
                 kp7m31_start(&r.r1, &p31, SEQ[q], LEN[q]);
