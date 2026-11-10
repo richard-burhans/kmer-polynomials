@@ -114,6 +114,8 @@ representations of section 3 as double-stranded sets.
 
 **Status 2026-11-10:** the symmetric functions alone are degenerate (e₁ = F + R has ≤ 9^⌊k/2⌋ values, and e₂ = F·R merges a k-mer with its reverse). (F + λ)(R + λ) is exact. See notes/kp7_strand_symmetric_hash.md.
 
+**Status 2026-11-10 (C, cs10, k = 31):** the symmetric hash runs at 90.9 M k-mers/s against ntHash's 220.5 M (2.4× slower), with random-minimizer density within 0.3% of 2/(w+1) and of ntHash. Deserts are inconclusive (repeat-driven, one seed). See results/kp7_rolling_vs_nthash_2026-11-10.md and hash/.
+
 *Check (KP-6 + KP-7):* compare against ntHash on cs10 for throughput, uniformity of minimizer selection (density and
 spacing between chosen positions), and collision rate.
 
