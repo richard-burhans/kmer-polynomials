@@ -9,7 +9,7 @@ Change: (a+bi)(c+di) with imaginary part (a+b)(c+d) − ac − bd, 3 widening mu
 - `make mutation` kills a dropped term
 
 Run: `hash/run_bench.sh 31 5 throughput` on cs10, single thread, k = 31, 5 interleaved rounds, `-O3 -march=native`
-for kp7 and ntHash alike. Raw output: `kp7_rolling_vs_nthash_2026-11-10.throughput.raw.txt` (kp7 commit 0d5e66b).
+for kp7 and ntHash alike. Raw output: `kp7_rolling_vs_nthash_2026-11-10.throughput.raw.txt` (it records `56043de+dirty`: the run started before the Karatsuba change was committed, and that change was committed unchanged as 0d5e66b).
 
 | method | median M k-mers/s | range over 5 rounds |
 |---|---|---|
