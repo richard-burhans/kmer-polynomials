@@ -128,7 +128,7 @@ def run_ext(ga, gb, k, z, ratio, trials, nseqs):
     tmp = W / f"kmp_ext_{ga}__{gb}"
     tmp.mkdir(exist_ok=True)
     ext_txt = {}
-    kmers_fwd, kmers_can = {}, {}
+    kmers_can = {}
     for g in (ga, gb):
         fa = genome_fasta(g, nseqs, tmp / f"{g}.fa")
         raw = tmp / f"{g}.ext.raw"
@@ -150,13 +150,17 @@ def run_ext(ga, gb, k, z, ratio, trials, nseqs):
                 cur.append(l.strip())
         if cur:
             recs.append(b"".join(cur))
-        # per record, so no k-mer spans two records
-        kmers_can[g] = np.unique(np.concatenate([canonical_kmers(encode(r), k) for r in recs]))
-        kmers_fwd[g] = None
+        # per record, so no k-mer spans two records. Whole genomes: the truth comes from recon/kmerset's exact
+        # partitioned difference instead (two whole-genome sets do not fit in memory together here).
+        kmers_can[g] = None if nseqs is None else np.unique(np.concatenate([canonical_kmers(encode(r), k) for r in recs]))
     # exact element difference of extended-syncmer sets (for sizing n)
     D_ext = int(subprocess.run(f"LC_ALL=C comm -3 {ext_txt[ga]} {ext_txt[gb]} | wc -l", shell=True, check=True,
                                capture_output=True, text=True).stdout)
-    want = np.union1d(np.setdiff1d(kmers_can[ga], kmers_can[gb]), np.setdiff1d(kmers_can[gb], kmers_can[ga]))
+    if nseqs is None:
+        dd = kmerset.WORK / f"diff_{ga}__{gb}.k{k}"
+        want = np.union1d(np.fromfile(dd / "a_minus_b.u64", dtype=np.uint64), np.fromfile(dd / "b_minus_a.u64", dtype=np.uint64))
+    else:
+        want = np.union1d(np.setdiff1d(kmers_can[ga], kmers_can[gb]), np.setdiff1d(kmers_can[gb], kmers_can[ga]))
     n = max(int(round(ratio * D_ext)), 1)
     res_trials = []
     for t in range(trials):
