@@ -10,6 +10,7 @@
 // Stats (untimed, gate and ntHash only): random-minimizer density at w = 10, 20, 50 (expected 2/(w+1)) and per-bit
 // frequency.
 #include "kp7pack.h"
+#include "ntbatch.h"
 #include <nthash/nthash.hpp>
 
 #include <algorithm>
@@ -38,12 +39,24 @@ static std::vector<Rec> load_fasta(const char* path)
   return recs;
 }
 
-enum Method { NTHASH = 0, PACK_GATE, PACK_S16, PACK_S1000, KP7_SEQ_L2, NMETHODS };
+enum Method { NTHASH = 0, PACK_GATE, PACK_S16, PACK_S1000, KP7_SEQ_L2, NT_BATCH, PACK_S100, CHUNK_S1000, CHUNK_S100,
+              CHUNK_S16, POS_S16, CHUNK_ALL, NMETHODS };
 static const char* NAMES[NMETHODS] = { "ntHash canonical (fwd+rev)", "pack gate (cheap sym)", "pack sample 1/16",
-                                       "pack sample 1/1000", "kp7 sym_seq x real L2 (provable, all)" };
+                                       "pack sample 1/1000", "kp7 sym_seq x real L2 (provable, all)",
+                                       "ntHash batched (ntbatch)", "pack sample 1/100",
+                                       "pack chunk-eval sample 1/1000", "pack chunk-eval sample 1/100",
+                                       "pack chunk-eval sample 1/16", "pack pos-eval sample 1/16",
+                                       "pack chunk-eval all (provable, all)" };
+static const uint64_t THR100 = (uint64_t)(18446744073709551615.0 / 100.0);
+static const kp7pack_tab* g_tab;           // chunk/position tables for the bench params, set in main
+static const ntbatch::Tables* g_nt;        // batched ntHash tables, set in main
 static const uint64_t THR16 = 1ULL << 60;
 static const uint64_t THR1000 = (uint64_t)(18446744073709551615.0 / 1000.0);
-static bool is_sample(int m) { return m == PACK_S16 || m == PACK_S1000; }
+static bool is_sample(int m)
+{
+  return m == PACK_S16 || m == PACK_S1000 || m == PACK_S100 || m == CHUNK_S1000 || m == CHUNK_S100 || m == CHUNK_S16 ||
+         m == POS_S16;
+}
 
 template <class Fn> static void hash_record(Method m, const std::string& s, const kp7_params* p, Fn&& fn)
 {
@@ -72,6 +85,36 @@ template <class Fn> static void hash_record(Method m, const std::string& s, cons
       for (size_t j = 0; j < n; j++) f(pos[j], h[j]);
     };
     kp7pack_sample(p, s.data(), s.size(), m == PACK_S16 ? THR16 : THR1000, pbuf, hbuf, 4096, tramp, &fn);
+    return;
+  }
+  case NT_BATCH: {
+    auto tramp = [](void* ctx, size_t start, const uint64_t* h, size_t n) {
+      Fn& f = *static_cast<Fn*>(ctx);
+      for (size_t j = 0; j < n; j++) f(start + j, h[j]);
+    };
+    ntbatch::hash_seq(*g_nt, s.data(), s.size(), hbuf, 4096, tramp, &fn);
+    return;
+  }
+  case PACK_S100:
+  case CHUNK_S1000:
+  case CHUNK_S100:
+  case CHUNK_S16:
+  case POS_S16: {
+    auto tramp = [](void* ctx, const size_t* pos, const uint64_t* h, size_t n) {
+      Fn& f = *static_cast<Fn*>(ctx);
+      for (size_t j = 0; j < n; j++) f(pos[j], h[j]);
+    };
+    uint64_t thr = m == PACK_S100 || m == CHUNK_S100 ? THR100 : m == CHUNK_S1000 ? THR1000 : THR16;
+    int mode = m == PACK_S100 ? KP7PACK_EVAL_DIRECT : m == POS_S16 ? KP7PACK_EVAL_POS : KP7PACK_EVAL_CHUNK;
+    kp7pack_sample_eval(p, g_tab, mode, s.data(), s.size(), thr, pbuf, hbuf, 4096, tramp, &fn);
+    return;
+  }
+  case CHUNK_ALL: {
+    auto tramp = [](void* ctx, size_t start, const uint64_t* h, size_t n) {
+      Fn& f = *static_cast<Fn*>(ctx);
+      for (size_t j = 0; j < n; j++) f(start + j, h[j]);
+    };
+    kp7pack_sym_all(p, g_tab, s.data(), s.size(), hbuf, 4096, tramp, &fn);
     return;
   }
   case KP7_SEQ_L2: {
@@ -129,6 +172,11 @@ int main(int argc, char** argv)
 
   kp7_params real;
   kp7_init(&real, k, KP7_XREAL, 0x5eed);
+  static kp7pack_tab tab;
+  kp7pack_tab_init(&tab, &real);
+  g_tab = &tab;
+  static ntbatch::Tables nt(k);
+  g_nt = &nt;
 
   std::vector<std::vector<double>> secs(NMETHODS);
   uint64_t counts[NMETHODS] = { 0 }, msink[NMETHODS] = { 0 }, input_kmers = 0;
@@ -160,6 +208,25 @@ int main(int argc, char** argv)
   }
   if (only) return 0;
 
+  // identity: every alternative must reproduce its reference exactly (XOR of all hashes and the count)
+  {
+    const int pairs[6][2] = { { NT_BATCH, NTHASH }, { CHUNK_S1000, PACK_S1000 }, { CHUNK_S100, PACK_S100 },
+                              { CHUNK_S16, PACK_S16 }, { POS_S16, PACK_S16 }, { CHUNK_ALL, KP7_SEQ_L2 } };
+    bool all = true;
+    for (auto& pr : pairs) {
+      bool same = msink[pr[0]] == msink[pr[1]] && counts[pr[0]] == counts[pr[1]];
+      printf("  %-38s identical to %s: %s\n", NAMES[pr[0]], NAMES[pr[1]], same ? "yes" : "NO");
+      all = all && same;
+    }
+    // positions too: the first 2,000,000 (pos, hash) pairs of batched ntHash against the library, on the first record
+    std::vector<std::pair<size_t, uint64_t>> a, b;
+    hash_record(NTHASH, recs[0].seq, &real, [&](size_t pos, uint64_t h) { if (a.size() < 2000000) a.push_back({ pos, h }); });
+    hash_record(NT_BATCH, recs[0].seq, &real, [&](size_t pos, uint64_t h) { if (b.size() < 2000000) b.push_back({ pos, h }); });
+    bool pos_same = a == b;
+    printf("  ntHash batched positions and hashes identical on the first %zu k-mers of %s: %s\n", a.size(),
+           recs[0].name.c_str(), pos_same ? "yes" : "NO");
+    if (!all || !pos_same) return 1;
+  }
   // identity: the 1/16 sample's provable hashes equal kp7_sym_seq's at the gate-selected positions
   {
     uint64_t want = 0, nwant = 0;
