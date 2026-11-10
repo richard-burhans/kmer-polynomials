@@ -323,6 +323,8 @@ A 0/1 mask polynomial applied coefficient by coefficient gives spaced k-mers, an
 - Faloutsos, Ranganathan and Manolopoulos 1994, DFT lower bounds (KP-4)
 - the MAFFT FFT step (Katoh et al. 2002) (KP-13)
 
+**Eisenstein novelty (2026-11-10, literature/eisenstein_wantlist.md):** the map is the θ = π/3 member of Das et al.'s trigonometric mapping, up to rotation, and must be credited as such. The transition-cheapest criterion and the F_q-hash use look new, pending the 2017/2018 Das papers.
+
 ## 7. Open questions
 
 - Which ideas give an algorithm that is actually faster or smaller, rather than an elegant restatement?
