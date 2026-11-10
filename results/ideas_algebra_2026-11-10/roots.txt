@@ -1,0 +1,10 @@
+distances (squared) under complement = negation
+  4th roots (A=1, C=i): transitions A-G 2.0, C-T 2.0; transversions A-C 2.0, G-T 2.0, A-T 4, C-G 4.0
+  6th roots (A=1, C=w): transitions A-G 1.0, C-T 1.0; transversions A-C 3.0, G-T 3.0, A-T 4, C-G 4.0
+q = 2^61-1: q mod 3 = 1, q mod 4 = 3
+  w = 636260618972345635; w^2+w+1 = 0 mod q: True; base values distinct: True
+q = 2^31-1: q mod 3 = 1, q mod 4 = 3
+  w = 634005911; w^2+w+1 = 0 mod q: True; base values distinct: True
+  Eisenstein in F_q, k=7: distinct symmetric values 8192, double-stranded classes 8192
+  Eisenstein in F_q, k=8: distinct symmetric values 32896, double-stranded classes 32896
+all checks passed

@@ -69,6 +69,8 @@ The difference has terms only at degree 0 and degree k. Paths and unitigs then c
 *Check:* is there an algorithm (compaction, path enumeration, bubble detection) that becomes simpler or faster
 in this form, or is it only a restatement?
 
+**Status 2026-11-10 (results/ideas_algebra_2026-11-10.md):** hash-only navigation (16 successor candidates from F(u) alone, provable false-positive bound ≤ 12·|S|·k/q per node) is exact on 13.5 M cs10 31-mers (0 false, 0 missed, identical unitig structure), but 7.4× slower than packed codes and 2× the storage for k ≤ 32. ntHash's linear rolling allows the same trick, without a bound. Mostly a restatement; its niche is hash-only, large-k graphs.
+
 ### KP-4. Rotations, the DFT and Parseval lower bounds
 
 Mod xᵏ − 1, multiplying by x rotates the k-mer, and the DFT turns rotation into a phase change. So |DFT| is
@@ -278,6 +280,8 @@ For our work, this could rank diagonals or offsets between two pieces before las
 
 A 0/1 mask polynomial applied coefficient by coefficient gives spaced k-mers, and KP-11 composes them.
 
+**Status 2026-11-10 (results/ideas_algebra_2026-11-10.md):** rolling with one multiply per strand plus table adds per block (ideas/algebra/spaced.h), tested bit-identical. Runs at 0.47× ntHash2's SeedNtHash. Unlike SeedNtHash, which warns that non-symmetric seeds give inconsistent reverse-complement hashing, the symmetric form (F_m+λ)(R_m+λ) is strand-symmetric for ANY mask; with a non-palindromic mask it matches the exact double-stranded SNP sensitivity, and SeedNtHash does not.
+
 ---
 
 ## 5. Experiments, in suggested order
@@ -307,5 +311,6 @@ A 0/1 mask polynomial applied coefficient by coefficient gives spaced k-mers, an
   With this map, A–G and C–T (transitions) both cost 2, and so do A–C and G–T (transversions). Only complements
   cost more, so the metric does not separate transitions from transversions. Would a different root assignment
   do that while keeping complement = negation?
+  **Answered 2026-11-10:** yes. With complement = negation, transitions always share |A+C|, and they separate from the A–C/G–T transversions iff Re(A·C̄) ≠ 0; fourth roots are exactly the orthogonal case that cannot. Sixth roots (A=1, C=ω, G=−ω, T=−1, Eisenstein) give squared distances 1 / 3 / 4 (transitions / A–C,G–T / complements). ω lies in F_q for q = 2⁶¹−1 and 2³¹−1 (both ≡ 1 mod 3), so this encoding keeps every hash value in F_q, one element instead of two, with the strand-symmetric product still exact (results/ideas_algebra_2026-11-10.md). An Eisenstein KP-7 roller is a promising speed follow-up.
 - How large must m be in KP-9/KP-10 for two real haplotypes at k = 21 or 31?
 - What does the k-mer difference between two haplotypes look like? Is it dominated by SNPs (k k-mers per SNP)?
