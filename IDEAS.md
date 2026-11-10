@@ -120,6 +120,8 @@ Karatsuba (3 multiplies) tried: no measurable gain (results/kp7_karatsuba_2026-1
 
 Addition-side changes (merged tables, λ-state, lazy reduction): +18%, to 113.9 M k-mers/s with x real (0.47× ntHash), bit-identical (results/kp7_addside_2026-11-10.md).
 
+Batch loop (`kp7_sym_batch`): 158.7 M k-mers/s with x real, 0.66× ntHash; 127.1 with x complex (results/kp7_batch_2026-11-10.md).
+
 *Check (KP-6 + KP-7):* compare against ntHash on cs10 for throughput, uniformity of minimizer selection (density and
 spacing between chosen positions), and collision rate.
 
