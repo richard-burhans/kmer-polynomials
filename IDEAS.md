@@ -28,7 +28,9 @@ Identities (the reason for this choice):
 representation makes complement a conjugation, and ours makes it a negation. Ours matches the "trigonometric" mapping
 in Das et al. 2021 (das_2021_dna-encoding) at θ = π/4, up to a rotation; Das, Nanda & Das 2017 introduced it. Genomic
 signal processing evaluates such encodings at roots of unity, i.e. takes the DFT (for example the period-3 signal of
-coding exons at x = e^{2πi/3}). The encoding is not new. What might be new is the polynomial-algebra layer built on it
+coding exons at x = e^{2πi/3}). Mendizabal et al. 2017's REAL mapping (G −0.5, A −1.5, C 0.5, T 1.5; signs from the
+PDF's Table 1, which the text conversion loses) also makes complement a negation; their Table 6 shows it is blind to
+complement and reverse complement for spectra (mendizabal_2017_dna-numerical). The encoding is not new. What might be new is the polynomial-algebra layer built on it
 below.
 
 ---
