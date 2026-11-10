@@ -1,0 +1,125 @@
+{
+ "ref_len": 71238074,
+ "labels": [
+  "KOMPa",
+  "KOMPb"
+ ],
+ "costs": {
+  "quarter": [
+   2,
+   2,
+   4
+  ],
+  "eisenstein": [
+   1,
+   3,
+   4
+  ]
+ },
+ "all_columns": {
+  "cs10_vs_KOMPa": {
+   "compared": 31697426,
+   "substitutions": 933307,
+   "counts": {
+    "transition": 572287,
+    "tv13": 188506,
+    "complement": 172514
+   },
+   "ts_tv": 1.5851947260539583,
+   "fraction": {
+    "transition": 0.6131819433476873,
+    "tv13": 0.20197641290593557,
+    "complement": 0.18484164374637713
+   },
+   "mean_cost_quarter": 2.3696832874927543,
+   "mean_cost_eisenstein": 1.9584777570510026
+  },
+  "cs10_vs_KOMPb": {
+   "compared": 32360520,
+   "substitutions": 884600,
+   "counts": {
+    "transition": 542243,
+    "tv13": 180930,
+    "complement": 161427
+   },
+   "ts_tv": 1.583852528208858,
+   "fraction": {
+    "transition": 0.6129810083653628,
+    "tv13": 0.2045331223151707,
+    "complement": 0.18248586931946642
+   },
+   "mean_cost_quarter": 2.364971738638933,
+   "mean_cost_eisenstein": 1.9565238525887407
+  },
+  "KOMPa_vs_KOMPb_at_shared_cs10_positions": {
+   "compared": 29071195,
+   "substitutions": 316451,
+   "counts": {
+    "transition": 197884,
+    "tv13": 54290,
+    "complement": 64277
+   },
+   "ts_tv": 1.6689635396020814,
+   "fraction": {
+    "transition": 0.6253227197891617,
+    "tv13": 0.17155894593475768,
+    "complement": 0.20311833427608067
+   },
+   "mean_cost_quarter": 2.4062366685521615,
+   "mean_cost_eisenstein": 1.9524728946977574
+  }
+ },
+ "uppercase_only": {
+  "cs10_vs_KOMPa": {
+   "compared": 13601314,
+   "substitutions": 361668,
+   "counts": {
+    "transition": 231589,
+    "tv13": 67969,
+    "complement": 62110
+   },
+   "ts_tv": 1.7803719278284735,
+   "fraction": {
+    "transition": 0.6403358881626243,
+    "tv13": 0.18793202605704679,
+    "complement": 0.17173208578032892
+   },
+   "mean_cost_quarter": 2.3434641715606577,
+   "mean_cost_eisenstein": 1.8910603094550804
+  },
+  "cs10_vs_KOMPb": {
+   "compared": 13865116,
+   "substitutions": 334797,
+   "counts": {
+    "transition": 213899,
+    "tv13": 63808,
+    "complement": 57090
+   },
+   "ts_tv": 1.7692517659514633,
+   "fraction": {
+    "transition": 0.6388916268664295,
+    "tv13": 0.19058713190381038,
+    "complement": 0.17052124122976012
+   },
+   "mean_cost_quarter": 2.34104248245952,
+   "mean_cost_eisenstein": 1.892737987496901
+  },
+  "KOMPa_vs_KOMPb_at_shared_cs10_positions": {
+   "compared": 12607181,
+   "substitutions": 144065,
+   "counts": {
+    "transition": 93460,
+    "tv13": 24959,
+    "complement": 25646
+   },
+   "ts_tv": 1.8468530777591148,
+   "fraction": {
+    "transition": 0.6487349460313053,
+    "tv13": 0.17324818658244542,
+    "complement": 0.17801686738624925
+   },
+   "mean_cost_quarter": 2.3560337347724984,
+   "mean_cost_eisenstein": 1.8805469753236386
+  }
+ }
+}
