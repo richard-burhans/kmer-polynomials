@@ -5,6 +5,8 @@
 Drop fetched PDFs in `bench/data/papers/kmer_poly_oa/`, named as in the key column. This is acquisition only; nothing is
 filed in the library yet.
 
+**Filed in the library 2026-11-10** (richard-burhans/library 9d4a49f, 7678d46, 60fd23f): all 24 on `methods-tooling`, argued in `books/methods-tooling.md` (section "Algebra on k-mer sets"); report `reports/acquisition/kmer_polynomials_2026-11-10.md`. Independent second reads are still owed. Two corrections from reading them: the encoding with complement as negation is not Anastassiou's (his makes complement a conjugation); it matches the "trigonometric" mapping listed by Das et al. 2021 at θ = π/4, up to rotation. And Mendizabal 2017 includes no complex representation.
+
 ## Bearing on the novelty question (KP-9 / KP-10)
 
 - **Reconciliation of genomic k-mer sets is published, with IBLTs.** Shibuya, Belazzougui and Kucherov (WABI 2022)
