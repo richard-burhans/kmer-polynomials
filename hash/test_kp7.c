@@ -223,11 +223,64 @@ static void test_roll_sym(void)
   free(seqs[0]); free(seqs[1]);
 }
 
+/* 6: kp7_sym_batch: same hashes AND positions as kp7_roll64(SYM), for any buffer size and N layout */
+static void batch_case(const char* seq, size_t len, int variant, int kar, size_t bufsz, const char* label)
+{
+  kp7_params p0, p1;
+  kp7_init(&p0, 31, variant, 4321);
+  kp7_init(&p1, 31, variant, 4321);
+  p1.karatsuba = kar;
+  kp7_roller r0, r1;
+  kp7_start(&r0, &p0, seq, len);
+  kp7_start(&r1, &p1, seq, len);
+  uint64_t* buf = malloc(bufsz * sizeof *buf);
+  uint64_t h0, ref = 0, got = 0, bad = 0;
+  size_t i = 0, n;
+  while ((n = kp7_sym_batch(&r1, buf, bufsz)) > 0) {
+    size_t first = r1.pos - (n - 1);
+    for (size_t j = 0; j < n; j++, i++) {
+      if (!kp7_roll64(&r0, KP7_OUT_SYM, &h0)) { bad++; break; }
+      ref++; got++;
+      if (h0 != buf[j] || r0.pos != first + j) bad++;
+    }
+  }
+  if (kp7_roll64(&r0, KP7_OUT_SYM, &h0)) bad++; /* the batch stopped before the reference did */
+  CHECK(!bad, "sym_batch differs: %s variant %d karatsuba %d buf %zu (%llu bad of %llu)", label, variant, kar, bufsz,
+        (unsigned long long)bad, (unsigned long long)got);
+  free(buf);
+}
+static void test_sym_batch(void)
+{
+  uint64_t s = 99;
+  const size_t len = 40000;
+  char* rare = malloc(len); char* freq = malloc(len); char* runs = malloc(len);
+  for (size_t i = 0; i < len; i++) {
+    rare[i] = "ACGTN"[sm(&s) % 1000 == 0 ? 4 : sm(&s) % 4];
+    freq[i] = "ACGTN"[sm(&s) % 25 == 0 ? 4 : sm(&s) % 4];
+    runs[i] = (i / 997) % 3 == 1 && i % 997 < 40 ? 'N' : "ACGT"[sm(&s) % 4]; /* N runs longer than k */
+  }
+  freq[0] = 'N';  /* N at the very start */
+  rare[31] = 'N'; /* N right after the first k-mer: the second call's first incoming base */
+  const char* exact = "ACGTACGTACGTACGTACGTACGTACGTACG"; /* exactly k = 31 */
+  const size_t bufs[4] = { 1, 2, 7, 4096 };
+  for (int variant = 0; variant < 2; variant++)
+    for (int kar = 0; kar < 2; kar++)
+      for (int b = 0; b < 4; b++) {
+        batch_case(rare, len, variant, kar, bufs[b], "rare N");
+        batch_case(freq, len, variant, kar, bufs[b], "frequent N");
+        batch_case(runs, len, variant, kar, bufs[b], "N runs");
+        batch_case(exact, 31, variant, kar, bufs[b], "length k");
+        batch_case(exact, 30, variant, kar, bufs[b], "shorter than k");
+      }
+  free(rare); free(freq); free(runs);
+}
+
 int main(void)
 {
   test_field();
   test_karatsuba();
   test_roll_sym();
+  test_sym_batch();
   for (int variant = 0; variant < 2; variant++) {
     test_rolling(variant, 31, 200000, 7 + variant);
     test_rolling(variant, 8, 50000, 9 + variant);

@@ -41,20 +41,22 @@ static std::vector<Rec> load_fasta(const char* path)
 }
 
 enum Method { NTHASH = 0, KP7_FWD_REAL, KP7_MIN_REAL, KP7_SYM_REAL, KP7_SYM_COMPLEX, KP7_SYM_REAL_K, KP7_SYM_COMPLEX_K,
-              SYMR_OPT0, SYMR_LAM, SYMR_MERGED, SYMR_LAZY, SYMR_ALL, SYMC_OPT0, SYMC_LAM_MERGED, NMETHODS };
+              SYMR_OPT0, SYMR_LAM, SYMR_MERGED, SYMR_LAZY, SYMR_ALL, SYMC_OPT0, SYMC_LAM_MERGED, BATCH_REAL, BATCH_CPLX,
+              NMETHODS };
 static const char* NAMES[NMETHODS] = { "ntHash canonical (fwd+rev)", "kp7 forward, x real", "kp7 canonical min, x real",
                                        "kp7 symmetric, x real", "kp7 symmetric, x complex",
                                        "kp7 sym, x real, Karatsuba", "kp7 sym, x cplx, Karatsuba",
                                        "roll_sym x real opt0", "roll_sym x real lamstate", "roll_sym x real merged",
                                        "roll_sym x real lazy", "roll_sym x real all three", "roll_sym x cplx opt0",
-                                       "roll_sym x cplx lam+merged" };
+                                       "roll_sym x cplx lam+merged", "sym_batch x real", "sym_batch x cplx" };
+static bool is_batch(int m) { return m == BATCH_REAL || m == BATCH_CPLX; }
 // roll_sym methods (kp7_roll_sym with params.opt) must equal the plain symmetric hashes; main checks the sinks.
 static int sym_opt(int m) { switch (m) { case SYMR_OPT0: case SYMC_OPT0: return 0; case SYMR_LAM: return KP7_OPT_LAMSTATE;
   case SYMR_MERGED: return KP7_OPT_MERGED; case SYMR_LAZY: return KP7_OPT_LAZY; case SYMR_ALL: return 7;
   case SYMC_LAM_MERGED: return KP7_OPT_LAMSTATE | KP7_OPT_MERGED; default: return -1; } }
 static bool is_cplx_opt(int m) { return m == SYMC_OPT0 || m == SYMC_LAM_MERGED; }
 // Karatsuba methods give bit-identical hashes (test_kp7), so their STATS equal the plain methods'; main checks the sinks.
-static bool is_k(Method m) { return m == KP7_SYM_REAL_K || m == KP7_SYM_COMPLEX_K || sym_opt(m) >= 0; }
+static bool is_k(Method m) { return m == KP7_SYM_REAL_K || m == KP7_SYM_COMPLEX_K || sym_opt(m) >= 0 || is_batch(m); }
 
 // Calls fn(pos, hash) for every valid k-mer of one record.
 static const kp7_params *g_real_k, *g_cplx_k; // Karatsuba copies of real/cplx, set in main
@@ -66,6 +68,17 @@ template <class Fn> static void hash_record(Method m, const std::string& s, unsi
   if (m == NTHASH) {
     nthash::NtHash nth(s.data(), s.size(), 1, k);
     while (nth.roll()) fn(nth.get_pos(), nth.hashes()[0]);
+    return;
+  }
+  if (is_batch(m)) {
+    static thread_local uint64_t buf[4096];
+    kp7_roller r;
+    kp7_start(&r, m == BATCH_CPLX ? cplx : real, s.data(), s.size());
+    size_t n;
+    while ((n = kp7_sym_batch(&r, buf, 4096)) > 0) {
+      size_t first = r.pos - (n - 1);
+      for (size_t j = 0; j < n; j++) fn(first + j, buf[j]);
+    }
     return;
   }
   if (sym_opt(m) >= 0) {
@@ -235,6 +248,7 @@ int main(int argc, char** argv)
   bool same = msink[KP7_SYM_REAL_K] == msink[KP7_SYM_REAL] && msink[KP7_SYM_COMPLEX_K] == msink[KP7_SYM_COMPLEX];
   for (int m = 0; m < NMETHODS; m++)
     if (sym_opt(m) >= 0) same = same && msink[m] == msink[is_cplx_opt(m) ? KP7_SYM_COMPLEX : KP7_SYM_REAL];
+  same = same && msink[BATCH_REAL] == msink[KP7_SYM_REAL] && msink[BATCH_CPLX] == msink[KP7_SYM_COMPLEX];
   printf("  Karatsuba and roll_sym hashes identical to plain: %s\n", same ? "yes" : "NO");
   if (!same) return 1;
   if (throughput_only) return 0;

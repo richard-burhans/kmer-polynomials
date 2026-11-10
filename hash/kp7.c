@@ -174,7 +174,7 @@ kp7_fe kp7_sym(const kp7_params* p, kp7_fe F, kp7_fe R) { return fmul_p(p, fadd(
 
 void kp7_start(kp7_roller* r, const kp7_params* p, const char* seq, size_t len)
 {
-  r->p = p; r->seq = seq; r->len = len; r->pos = 0; r->valid = 0;
+  r->p = p; r->seq = seq; r->len = len; r->pos = 0; r->valid = 0; r->resume = 0;
 }
 
 static int restart(kp7_roller* r, size_t from)
@@ -286,4 +286,61 @@ int kp7_roll_sym(kp7_roller* r, uint64_t* out)
   /* lazy: a, b < 2q with the lam state, < 3q when lam is added lazily to a < 2q state; fmul_wide takes < 4q */
   *out = fold(lazy ? fmul_wide(a, b) : fmul_p(p, a, b));
   return 1;
+}
+
+/* ---- batch symmetric hashing (see kp7.h) ---- */
+
+size_t kp7_sym_batch(kp7_roller* r, uint64_t* out, size_t max)
+{
+  const kp7_params* p = r->p;
+  const char* seq = r->seq;
+  const size_t len = r->len, k = p->k;
+  size_t n = 0;
+  if (max == 0) return 0;
+  for (;;) {
+    if (!r->valid) {
+      /* only reached with n == 0, so the outputs of one call stay consecutive */
+      if (!restart(r, r->resume)) return 0; /* true end of the sequence */
+      r->G = fadd(r->F, p->lam);
+      r->H = fadd(r->R, p->lam);
+      out[n++] = fold(fmul_p(p, r->G, r->H));
+    }
+    size_t pos = r->pos;
+    kp7_fe G = r->G, H = r->H;
+    int stop_n = 0; /* stopped at a window with N */
+    if (p->variant == KP7_XREAL) {
+      const uint64_t xi = p->xinv.re, x = p->x.re;
+      uint64_t gr = G.re, gi = G.im, hr = H.re, hi = H.im; /* each < 2q (lazy) */
+      while (n < max) {
+        size_t in = pos + k;
+        if (in >= len) { r->valid = 0; r->resume = len; break; }
+        int ci = CODE[(unsigned char)seq[in]];
+        if (ci < 0) { r->valid = 0; r->resume = in + 1; stop_n = 1; break; }
+        int idx = CODE[(unsigned char)seq[pos]] * 4 + ci;
+        gr = mulq(gr, xi) + p->tfl[idx].re; gi = mulq(gi, xi) + p->tfl[idx].im; /* < q + q */
+        hr = mulq(hr, x) + p->trl[idx].re;  hi = mulq(hi, x) + p->trl[idx].im;
+        kp7_fe a = { gr, gi }, b = { hr, hi };
+        out[n++] = fold(fmul_wide(a, b));
+        pos++;
+      }
+      G.re = gr; G.im = gi; H.re = hr; H.im = hi;
+    } else {
+      while (n < max) {
+        size_t in = pos + k;
+        if (in >= len) { r->valid = 0; r->resume = len; break; }
+        int ci = CODE[(unsigned char)seq[in]];
+        if (ci < 0) { r->valid = 0; r->resume = in + 1; stop_n = 1; break; }
+        int idx = CODE[(unsigned char)seq[pos]] * 4 + ci;
+        G = fadd(fmul_p(p, G, p->xinv), p->tfl[idx]);
+        H = fadd(fmul_p(p, H, p->x), p->trl[idx]);
+        out[n++] = fold(fmul_p(p, G, H));
+        pos++;
+      }
+    }
+    /* pos is always the last k-mer written; after a stop, r->resume is where the next restart searches */
+    r->pos = pos;
+    r->G = G; r->H = H;
+    if (stop_n && n == 0) continue; /* the first incoming base was N: restart now rather than return 0 */
+    return n;
+  }
 }

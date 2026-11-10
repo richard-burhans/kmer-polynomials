@@ -63,6 +63,7 @@ typedef struct {
   int valid;       /* 1 when F, R hold the k-mer at pos */
   kp7_fe F, R;
   kp7_fe G, H;     /* kp7_roll_sym's state: F, R, or F+lam, R+lam with KP7_OPT_LAMSTATE */
+  size_t resume;   /* kp7_sym_batch: where the next restart searches (pos keeps the last k-mer written) */
 } kp7_roller;
 
 /* field */
@@ -104,6 +105,14 @@ int kp7_roll64(kp7_roller* r, int mode, uint64_t* out);
  *                     (red2) valid for any 128-bit value, so the output is still canonical. */
 enum { KP7_OPT_LAMSTATE = 1, KP7_OPT_MERGED = 2, KP7_OPT_LAZY = 4 };
 int kp7_roll_sym(kp7_roller* r, uint64_t* out);
+
+/* Batch symmetric hashing: writes up to `max` hashes of CONSECUTIVE k-mers to out[] and returns how many. It stops
+ * early at a window containing N (the next call restarts after it) or at the end of the sequence (then returns 0).
+ * The last k-mer written starts at r->pos, so the first starts at r->pos - (n - 1). Bit-identical to
+ * kp7_roll64(.., KP7_OUT_SYM, ..) (test_kp7). It always uses the lam state and merged tables, plus lazy reduction for
+ * KP7_XREAL, and keeps the rolling state in locals: no per-k-mer call, no per-k-mer state store. It ignores
+ * params.opt; params.karatsuba still applies to KP7_XCOMPLEX. Do not mix it with kp7_roll/kp7_roll_sym on one roller. */
+size_t kp7_sym_batch(kp7_roller* r, uint64_t* out, size_t max);
 
 #ifdef __cplusplus
 }
