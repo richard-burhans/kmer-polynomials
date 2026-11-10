@@ -1,0 +1,7 @@
+*.o
+test_spaced
+test_spaced_mutant
+mutant.out
+bench_spaced
+dbg
+eisen
