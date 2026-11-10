@@ -1,6 +1,9 @@
 """Shared helpers for the KP-4 / KP-13 spectral experiments (IDEAS.md KP-4, KP-13).
 
 Encoding (IDEAS.md section 0): A = 1, C = i, G = -i, T = -1, so complement is negation. N (and anything else) is 0.
+`set_encoding("eisenstein")` switches to A = 1, C = w, G = -w, T = -1 with w = exp(2 pi i / 3) (IDEAS.md section 7,
+results/kp7_eisenstein_2026-11-10.md): complement is still negation, and squared distances become 1 for transitions
+(A-G, C-T), 3 for the A-C / G-T transversions and 4 for complements.
 Sequences are kept as uint8 codes (A0 C1 G2 T3, N4) and mapped to complex only per segment, to bound memory.
 """
 from __future__ import annotations
@@ -14,6 +17,25 @@ for _ch, _v in zip("ACGTacgt", (0, 1, 2, 3, 0, 1, 2, 3)):
     CODE[ord(_ch)] = _v
 #: complex value per code; index 4 (N) is 0
 VAL = np.array([1, 1j, -1j, -1, 0], dtype=np.complex64)
+_W = complex(-0.5, 3 ** 0.5 / 2)
+#: encodings by name: value per code A, C, G, T, N
+ENCODINGS = {"quarter": np.array([1, 1j, -1j, -1, 0], dtype=np.complex64),
+             "eisenstein": np.array([1, _W, -_W, -1, 0], dtype=np.complex64)}
+ENCODING = "quarter"
+
+
+def set_encoding(name: str) -> None:
+    """Select the base -> complex map used by to_complex (and read by callers through `values()`)."""
+    global VAL, ENCODING
+    VAL = ENCODINGS[name]
+    ENCODING = name
+
+
+def values(dtype=np.complex128) -> np.ndarray:
+    """The current encoding's values for codes A, C, G, T (no N)."""
+    return VAL[:4].astype(dtype)
+
+
 #: complement code (A<->T, C<->G, N stays N)
 COMP = np.array([3, 2, 1, 0, 4], dtype=np.uint8)
 

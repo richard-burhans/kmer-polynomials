@@ -21,10 +21,13 @@ import time
 
 import numpy as np
 
+import common
 from common import read_fasta_one
 
 M_LIST = list(range(1, 9))
 D_LIST = [1, 2, 3, 5]
+#: weighted squared-distance thresholds (2 per ordinary mismatch under the quarter map, so 2d matches D_LIST's scale)
+W_LIST = [2, 4, 6, 10]
 
 
 def low_freq_order(k: int) -> np.ndarray:
@@ -70,7 +73,7 @@ def hamming_packed(a: np.ndarray, b: np.ndarray) -> np.ndarray:
 
 
 def analyse(A: np.ndarray, Bw: np.ndarray, k: int, label: str) -> dict:
-    vals = np.array([1, 1j, -1j, -1], dtype=np.complex128)
+    vals = common.values(np.complex128)
     a, b = vals[A], vals[Bw]
     ham = (A != Bw).sum(axis=1)
     l2 = (np.abs(a - b) ** 2).sum(axis=1)
@@ -93,12 +96,20 @@ def analyse(A: np.ndarray, Bw: np.ndarray, k: int, label: str) -> dict:
                 row[f"d{d}_pruned"] = float(pruned.mean())
                 row[f"d{d}_prunable"] = float(prunable.mean())
                 row[f"d{d}_recall_of_prunable"] = float(pruned.sum() / max(prunable.sum(), 1))
+            # weighted thresholds: "neighbour" means squared distance <= W (the metric itself, not Hamming)
+            for w in W_LIST:
+                prunable = l2 > w + 1e-9
+                pruned = lb > w + 1e-9
+                assert not np.any(pruned & ~prunable), "unsafe weighted prune"
+                row[f"w{w}_pruned"] = float(pruned.mean())
+                row[f"w{w}_prunable"] = float(prunable.mean())
+                row[f"w{w}_recall_of_prunable"] = float(pruned.sum() / max(prunable.sum(), 1))
             res["rows"].append(row)
     return res
 
 
 def timing(A: np.ndarray, Bw: np.ndarray, k: int, m: int = 8) -> dict:
-    vals = np.array([1, 1j, -1j, -1], dtype=np.complex64)
+    vals = common.values(np.complex64)
     FA = np.fft.fft(vals[A], axis=1)[:, :m].astype(np.complex64)
     FB = np.fft.fft(vals[Bw], axis=1)[:, :m].astype(np.complex64)
     pa, pb = pack2(A), pack2(Bw)
@@ -122,12 +133,14 @@ def main() -> int:
     ap.add_argument("--pairs", type=int, default=200000)
     ap.add_argument("--seed-len", type=int, default=12)
     ap.add_argument("--rng", type=int, default=1)
+    ap.add_argument("--encoding", choices=sorted(common.ENCODINGS), default="quarter")
     ap.add_argument("--out", type=pathlib.Path)
     a = ap.parse_args()
+    common.set_encoding(a.encoding)
     k, rng = a.k, np.random.default_rng(a.rng)
     name, codes, _ = read_fasta_one(a.fasta)
     vs = valid_starts(codes, k)
-    out = {"fasta": str(a.fasta), "record": name, "k": k, "valid_kmers": int(len(vs))}
+    out = {"fasta": str(a.fasta), "record": name, "k": k, "encoding": a.encoding, "valid_kmers": int(len(vs))}
     # random pairs
     i, j = rng.choice(vs, a.pairs), rng.choice(vs, a.pairs)
     A, Bw = kmer_windows(codes, k, i), kmer_windows(codes, k, j)

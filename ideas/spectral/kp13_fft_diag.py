@@ -33,6 +33,7 @@ import time
 
 import numpy as np
 
+import common
 from common import read_chains, read_fasta_one, revcomp, to_complex
 
 ZS = (6.0, 10.0)
@@ -140,8 +141,11 @@ def main() -> int:
     ap.add_argument("--lastz-windows", type=int, default=5)
     ap.add_argument("--genome-search", type=int, default=3)
     ap.add_argument("--rng", type=int, default=7)
+    ap.add_argument("--encoding", choices=sorted(common.ENCODINGS), default="quarter",
+                    help="eisenstein scores match +1, transition +1/2, A-C/G-T -1/2, complement -1")
     ap.add_argument("--out", type=pathlib.Path)
     a = ap.parse_args()
+    common.set_encoding(a.encoding)
     rng = np.random.default_rng(a.rng)
     tname, tc, tl = read_fasta_one(a.target)
     qname, qc, ql = read_fasta_one(a.query)
@@ -149,7 +153,7 @@ def main() -> int:
     Qs = {"+": (qc, ql), "-": (qrc, qlrc)}
     chains = read_chains(a.chain, tname, qname)
     letters = np.frombuffer(b"ACGTN", dtype=np.uint8)
-    out = {"target": tname, "query": qname, "chains": len(chains), "win": a.win, "flank": a.flank, "tol": a.tol,
+    out = {"encoding": a.encoding, "target": tname, "query": qname, "chains": len(chains), "win": a.win, "flank": a.flank, "tol": a.tol,
            "min_weight": a.min_weight, "windows": []}
     starts = np.linspace(0, len(tc) - a.win, a.windows * 3).astype(int)
     rng.shuffle(starts)
