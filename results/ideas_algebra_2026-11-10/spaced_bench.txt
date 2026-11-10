@@ -1,0 +1,10 @@
+bases 58823517, rounds 3
+masks 1: ours 41282360 hashes 1.509 s (27.4 M hashes/s)  SeedNtHash 41849577 hashes 0.706 s (59.3 M/s)  ours/nt speed 0.47x  (sinks 6ae99c7b41cca1a3 883d056c2e08f269)
+masks 2: ours 82564720 hashes 3.358 s (24.6 M hashes/s)  SeedNtHash 83699154 hashes 1.552 s (53.9 M/s)  ours/nt speed 0.46x  (sinks 4afa8de2902e83f7 dbf30e74ed718b03)
+SNP rate 0.001 mask 0: windows 41282360, unchanged: ours 0.97635  SeedNtHash 0.97635  exact(care positions of both strands) 0.97635
+SNP rate 0.001 mask 1: windows 41282360, unchanged: ours 0.97150  SeedNtHash 0.98025  exact(care positions of both strands) 0.97150
+SNP rate 0.010 mask 0: windows 41282360, unchanged: ours 0.78574  SeedNtHash 0.78574  exact(care positions of both strands) 0.78574
+SNP rate 0.010 mask 1: windows 41282360, unchanged: ours 0.74724  SeedNtHash 0.81795  exact(care positions of both strands) 0.74724
+SNP rate 0.050 mask 0: windows 41282360, unchanged: ours 0.29189  SeedNtHash 0.29189  exact(care positions of both strands) 0.29189
+SNP rate 0.050 mask 1: windows 41282360, unchanged: ours 0.22572  SeedNtHash 0.35843  exact(care positions of both strands) 0.22572
+# SeedNtHash printed, for the non-palindromic mask: WARNING: Seed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent

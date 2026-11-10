@@ -40,6 +40,9 @@ typedef struct {
   kp7_fe F, R;
 } sp_roller;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 void sp_init(sp_params* p, const kp7_params* kp, const char* mask); /* kp must be KP7_XREAL */
 /* direct evaluation of window j; returns 0 if it holds an N */
 int sp_direct(const sp_params* p, const char* w, kp7_fe* F, kp7_fe* R);
@@ -51,6 +54,9 @@ static inline void sp_start(sp_roller* r, const sp_params* p, const char* seq, s
 }
 
 int sp_restart(sp_roller* r, size_t from); /* in spaced.c */
+#ifdef __cplusplus
+}
+#endif
 
 /* next window: returns 1 with r->pos and *out (the symmetric hash) set, 0 at the end */
 static inline int sp_roll(sp_roller* r, uint64_t* out)
