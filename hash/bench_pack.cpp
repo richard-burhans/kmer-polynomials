@@ -40,22 +40,35 @@ static std::vector<Rec> load_fasta(const char* path)
 }
 
 enum Method { NTHASH = 0, PACK_GATE, PACK_S16, PACK_S1000, KP7_SEQ_L2, NT_BATCH, PACK_S100, CHUNK_S1000, CHUNK_S100,
-              CHUNK_S16, POS_S16, CHUNK_ALL, NMETHODS };
+              CHUNK_S16, POS_S16, CHUNK_ALL,
+              // kept-k-mer evaluation (results/kp7_kept_eval_2026-11-10.md): f = 61-bit, m = CM31; 8/4 = chunk bits
+              F8_ALL, F4_ALL, M8_ALL, M4_ALL, M31_REF, F8_S1000, F8_S100, F8_S16, F8_S4, F4_S16, M8_S1000, M8_S100, M8_S16,
+              M8_S4, M4_S16, CHUNK_S4, NMETHODS };
 static const char* NAMES[NMETHODS] = { "ntHash canonical (fwd+rev)", "pack gate (cheap sym)", "pack sample 1/16",
                                        "pack sample 1/1000", "kp7 sym_seq x real L2 (provable, all)",
                                        "ntHash batched (ntbatch)", "pack sample 1/100",
                                        "pack chunk-eval sample 1/1000", "pack chunk-eval sample 1/100",
                                        "pack chunk-eval sample 1/16", "pack pos-eval sample 1/16",
-                                       "pack chunk-eval all (provable, all)" };
+                                       "pack chunk-eval all (provable, all)",
+                                       "fast f8 all", "fast f4 all", "fast m8 all (CM31)", "fast m4 all (CM31)",
+                                       "m31 sym_seq scalar (CM31 reference)", "fast f8 sample 1/1000",
+                                       "fast f8 sample 1/100", "fast f8 sample 1/16", "fast f8 sample 1/4",
+                                       "fast f4 sample 1/16", "fast m8 sample 1/1000 (CM31)", "fast m8 sample 1/100 (CM31)",
+                                       "fast m8 sample 1/16 (CM31)", "fast m8 sample 1/4 (CM31)", "fast m4 sample 1/16 (CM31)",
+                                       "pack chunk-eval sample 1/4" };
 static const uint64_t THR100 = (uint64_t)(18446744073709551615.0 / 100.0);
 static const kp7pack_tab* g_tab;           // chunk/position tables for the bench params, set in main
+static const kp7pack_ftab* g_ftab;         // fast 61-bit tables (same params), set in main
+static const kp7pack_mtab* g_mtab;         // fast CM31 tables, set in main
+static const kp7m31_params* g_p31;         // CM31 params, set in main
+static const uint64_t THR4 = 1ULL << 62;
 static const ntbatch::Tables* g_nt;        // batched ntHash tables, set in main
 static const uint64_t THR16 = 1ULL << 60;
 static const uint64_t THR1000 = (uint64_t)(18446744073709551615.0 / 1000.0);
 static bool is_sample(int m)
 {
   return m == PACK_S16 || m == PACK_S1000 || m == PACK_S100 || m == CHUNK_S1000 || m == CHUNK_S100 || m == CHUNK_S16 ||
-         m == POS_S16;
+         m == POS_S16 || (m >= F8_S1000 && m <= CHUNK_S4);
 }
 
 template <class Fn> static void hash_record(Method m, const std::string& s, const kp7_params* p, Fn&& fn)
@@ -115,6 +128,29 @@ template <class Fn> static void hash_record(Method m, const std::string& s, cons
       for (size_t j = 0; j < n; j++) f(start + j, h[j]);
     };
     kp7pack_sym_all(p, g_tab, s.data(), s.size(), hbuf, 4096, tramp, &fn);
+    return;
+  }
+  case F8_ALL: case F4_ALL: case M8_ALL: case M4_ALL: case M31_REF: {
+    auto tramp = [](void* ctx, size_t start, const uint64_t* h, size_t n) {
+      Fn& f = *static_cast<Fn*>(ctx);
+      for (size_t j = 0; j < n; j++) f(start + j, h[j]);
+    };
+    if (m == M31_REF) kp7m31_sym_seq(g_p31, s.data(), s.size(), KP7M31_SCALAR, hbuf, 4096, tramp, &fn);
+    else if (m == F8_ALL || m == F4_ALL) kp7pack_sym_all_f(g_ftab, m == F8_ALL ? 8 : 4, s.data(), s.size(), hbuf, 4096, tramp, &fn);
+    else kp7pack_sym_all_m(g_mtab, m == M8_ALL ? 8 : 4, s.data(), s.size(), hbuf, 4096, tramp, &fn);
+    return;
+  }
+  case F8_S1000: case F8_S100: case F8_S16: case F8_S4: case F4_S16:
+  case M8_S1000: case M8_S100: case M8_S16: case M8_S4: case M4_S16: case CHUNK_S4: {
+    auto tramp = [](void* ctx, const size_t* pos, const uint64_t* h, size_t n) {
+      Fn& f = *static_cast<Fn*>(ctx);
+      for (size_t j = 0; j < n; j++) f(pos[j], h[j]);
+    };
+    uint64_t thr = (m == F8_S1000 || m == M8_S1000) ? THR1000 : (m == F8_S100 || m == M8_S100) ? THR100
+                 : (m == F8_S4 || m == M8_S4 || m == CHUNK_S4) ? THR4 : THR16;
+    if (m == CHUNK_S4) kp7pack_sample_eval(p, g_tab, KP7PACK_EVAL_CHUNK, s.data(), s.size(), thr, pbuf, hbuf, 4096, tramp, &fn);
+    else if (m >= M8_S1000) kp7pack_sample_m(g_mtab, m == M4_S16 ? 4 : 8, s.data(), s.size(), thr, pbuf, hbuf, 4096, tramp, &fn);
+    else kp7pack_sample_f(g_ftab, m == F4_S16 ? 4 : 8, s.data(), s.size(), thr, pbuf, hbuf, 4096, tramp, &fn);
     return;
   }
   case KP7_SEQ_L2: {
@@ -180,6 +216,15 @@ int main(int argc, char** argv)
   static kp7pack_tab tab;
   kp7pack_tab_init(&tab, &real);
   g_tab = &tab;
+  static kp7pack_ftab ftab;
+  kp7pack_ftab_init(&ftab, &real);
+  g_ftab = &ftab;
+  static kp7m31_params p31;
+  kp7m31_init(&p31, k, 0x5eed31);
+  g_p31 = &p31;
+  static kp7pack_mtab mtab;
+  kp7pack_mtab_init(&mtab, &p31);
+  g_mtab = &mtab;
   static ntbatch::Tables nt(k);
   g_nt = &nt;
 
@@ -215,8 +260,11 @@ int main(int argc, char** argv)
 
   // identity: every alternative must reproduce its reference exactly (XOR of all hashes and the count)
   {
-    const int pairs[6][2] = { { NT_BATCH, NTHASH }, { CHUNK_S1000, PACK_S1000 }, { CHUNK_S100, PACK_S100 },
-                              { CHUNK_S16, PACK_S16 }, { POS_S16, PACK_S16 }, { CHUNK_ALL, KP7_SEQ_L2 } };
+    const int pairs[][2] = { { NT_BATCH, NTHASH }, { CHUNK_S1000, PACK_S1000 }, { CHUNK_S100, PACK_S100 },
+                             { CHUNK_S16, PACK_S16 }, { POS_S16, PACK_S16 }, { CHUNK_ALL, KP7_SEQ_L2 },
+                             { F8_ALL, KP7_SEQ_L2 }, { F4_ALL, KP7_SEQ_L2 }, { M8_ALL, M31_REF }, { M4_ALL, M31_REF },
+                             { F8_S1000, PACK_S1000 }, { F8_S100, PACK_S100 }, { F8_S16, PACK_S16 }, { F4_S16, PACK_S16 },
+                             { F8_S4, CHUNK_S4 }, { M4_S16, M8_S16 } };
     bool all = true;
     for (auto& pr : pairs) {
       bool same = msink[pr[0]] == msink[pr[1]] && counts[pr[0]] == counts[pr[1]];
