@@ -250,6 +250,11 @@ int main(int argc, char** argv)
   int rounds = argc > 3 ? atoi(argv[3]) : 5;
   bool throughput_only = argc > 4 && !strcmp(argv[4], "throughput");
   const char* only = argc > 5 && !strncmp(argv[5], "only=", 5) ? argv[5] + 5 : nullptr;
+  // only= picks the method whose name equals the argument when one does, else every name containing it. A plain
+  // substring once matched "sample 1/100" inside "sample 1/1000" and timed both in one counted run (2026-11-10).
+  bool only_exact = false;
+  if (only)
+    for (int m = 0; m < NMETHODS; m++) only_exact = only_exact || !strcmp(NAMES[m], only);
   auto t0 = std::chrono::steady_clock::now();
   std::vector<Rec> recs = load_fasta(argv[1]);
   size_t bases = 0;
@@ -272,7 +277,7 @@ int main(int argc, char** argv)
   uint64_t counts[NMETHODS] = { 0 }, sink = 0, msink[NMETHODS] = { 0 };
   for (int round = 0; round < rounds; round++) {
     for (int m = 0; m < NMETHODS; m++) {
-      if (only && !strstr(NAMES[m], only)) continue;
+      if (only && !(only_exact ? !strcmp(NAMES[m], only) : strstr(NAMES[m], only) != nullptr)) continue;
       if (m31_impl(m) >= 0 && !kp7m31_have(m31_impl(m))) continue; // not built / not on this CPU
       uint64_t n = 0, x = 0;
       auto a = std::chrono::steady_clock::now();
