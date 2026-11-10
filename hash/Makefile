@@ -48,26 +48,28 @@ clean:
 	rm -f *.o test_kp7 test_kp7m31 test_kp7_mutant mutant.out bench
 
 # ---- hybrid v2 (kp7pack: packed-code gate, provable KP-7 hash for kept k-mers) ----
-kp7pack.o: kp7pack.c kp7pack.h kp7.h
+kp7pack.o: kp7pack.c kp7pack.h kp7.h kp7m31.h
 	$(CC) $(CFLAGS) -c kp7pack.c -o $@
 
-test_kp7pack: test_kp7pack.c kp7pack.o kp7.o
-	$(CC) $(CFLAGS) test_kp7pack.c kp7pack.o kp7.o -o $@
+test_kp7pack: test_kp7pack.c kp7pack.o kp7.o kp7m31.o
+	$(CC) $(CFLAGS) test_kp7pack.c kp7pack.o kp7.o kp7m31.o -o $@
 
 test_pack: test_kp7pack
 	./test_kp7pack
 
-mutation_pack: test_kp7pack.c kp7pack.c kp7pack.h kp7.c kp7.h
-	$(CC) $(CFLAGS) -DKP7PACK_MUTATE_GATE test_kp7pack.c kp7pack.c kp7.c -o test_kp7pack_mutant
+mutation_pack: test_kp7pack.c kp7pack.c kp7pack.h kp7.c kp7.h kp7m31.o
+	$(CC) $(CFLAGS) -DKP7PACK_MUTATE_GATE test_kp7pack.c kp7pack.c kp7.c kp7m31.o -o test_kp7pack_mutant
 	@if ./test_kp7pack_mutant > mutant_pack.out; then echo "PACK GATE MUTANT SURVIVED"; exit 1; else echo "pack gate mutant killed: $$(tail -1 mutant_pack.out)"; fi
-	$(CC) $(CFLAGS) -DKP7PACK_MUTATE_RC test_kp7pack.c kp7pack.c kp7.c -o test_kp7pack_mutant
+	$(CC) $(CFLAGS) -DKP7PACK_MUTATE_RC test_kp7pack.c kp7pack.c kp7.c kp7m31.o -o test_kp7pack_mutant
 	@if ./test_kp7pack_mutant > mutant_pack.out; then echo "PACK RC MUTANT SURVIVED"; exit 1; else echo "pack rc mutant killed: $$(tail -1 mutant_pack.out)"; fi
-	$(CC) $(CFLAGS) -DKP7PACK_MUTATE_CHUNK test_kp7pack.c kp7pack.c kp7.c -o test_kp7pack_mutant
+	$(CC) $(CFLAGS) -DKP7PACK_MUTATE_CHUNK test_kp7pack.c kp7pack.c kp7.c kp7m31.o -o test_kp7pack_mutant
 	@if ./test_kp7pack_mutant > mutant_pack.out; then echo "PACK CHUNK MUTANT SURVIVED"; exit 1; else echo "pack chunk mutant killed: $$(tail -1 mutant_pack.out)"; fi
+	$(CC) $(CFLAGS) -DKP7PACK_MUTATE_LAM test_kp7pack.c kp7pack.c kp7.c kp7m31.o -o test_kp7pack_mutant
+	@if ./test_kp7pack_mutant > mutant_pack.out; then echo "PACK LAM MUTANT SURVIVED"; exit 1; else echo "pack lam mutant killed: $$(tail -1 mutant_pack.out)"; fi
 
-bench_pack: bench_pack.cpp kp7pack.o kp7.o
-	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include bench_pack.cpp kp7pack.o kp7.o $(NTHASH)/build_o3/libnthash.a -o $@
+bench_pack: bench_pack.cpp kp7pack.o kp7.o kp7m31.o
+	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include bench_pack.cpp kp7pack.o kp7.o kp7m31.o $(NTHASH)/build_o3/libnthash.a -o $@
 
 # multi-seed sampling statistics (KP-7 next steps, item 3)
-stats_seeds: stats_seeds.cpp kp7pack.o kp7.o
-	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include stats_seeds.cpp kp7pack.o kp7.o $(NTHASH)/build_o3/libnthash.a -o $@
+stats_seeds: stats_seeds.cpp kp7pack.o kp7.o kp7m31.o
+	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include stats_seeds.cpp kp7pack.o kp7.o kp7m31.o $(NTHASH)/build_o3/libnthash.a -o $@

@@ -240,9 +240,90 @@ static void test_sym_all(void)
   }
 }
 
+/* 7: the faster kept-k-mer evaluators. 61-bit (W 8, 4) against kp7_roll64(SYM); CM31 (W 8, 4) against the kp7m31
+ * reference roller + kp7m31_sym. Hashes and positions, every k-mer and sampled, k = 1..32, all N layouts. */
+typedef struct { int m31; kp7_roller r0; kp7m31_roller r1; const kp7m31_params* p31; uint64_t bad, n; } fctx;
+static int ref_next(fctx* c, size_t* pos, uint64_t* h)
+{
+  if (!c->m31) { if (!kp7_roll64(&c->r0, KP7_OUT_SYM, h)) return 0; *pos = c->r0.pos; return 1; }
+  if (!kp7m31_roll(&c->r1)) return 0;
+  *pos = c->r1.pos; *h = kp7m31_sym(c->p31, c->r1.F, c->r1.R);
+  return 1;
+}
+static void femit(void* v, size_t start, const uint64_t* h, size_t n)
+{
+  fctx* c = v;
+  for (size_t j = 0; j < n; j++) {
+    size_t pos; uint64_t h0;
+    if (!ref_next(c, &pos, &h0)) { c->bad++; return; }
+    if (pos != start + j || h0 != h[j]) c->bad++;
+    c->n++;
+  }
+}
+static void test_fast(void)
+{
+  static kp7pack_ftab ft;
+  static kp7pack_mtab mt;
+  const unsigned ks[12] = { 1, 2, 3, 4, 5, 8, 15, 16, 17, 30, 31, 32 };
+  const size_t caps[5] = { 1, 3, 64, 600, 4096 };
+  const uint64_t thrs[4] = { 0, 1ULL << 60, 1ULL << 62, ~0ULL };
+  for (int ki = 0; ki < 12; ki++)
+    for (int m31 = 0; m31 < 2; m31++)
+      for (int variant = 0; variant < (m31 ? 1 : 2); variant++)
+        for (int W = 4; W <= 8; W += 4) {
+          const unsigned k = ks[ki];
+          kp7_params p;
+          kp7m31_params p31;
+          kp7_init(&p, k, variant, 1357 + k);
+          kp7m31_init(&p31, k, 2468 + k);
+          if (m31) kp7pack_mtab_init(&mt, &p31); else kp7pack_ftab_init(&ft, &p);
+          for (int q = 0; q < NSEQ; q++)
+            for (int c = 0; c < 5; c++) {
+              /* every k-mer */
+              fctx a = { m31, { 0 }, { 0 }, &p31, 0, 0 };
+              kp7_start(&a.r0, &p, SEQ[q], LEN[q]);
+              kp7m31_start(&a.r1, &p31, SEQ[q], LEN[q]);
+              uint64_t* buf = malloc(caps[c] * sizeof *buf);
+              size_t total = m31 ? kp7pack_sym_all_m(&mt, W, SEQ[q], LEN[q], buf, caps[c], femit, &a)
+                                 : kp7pack_sym_all_f(&ft, W, SEQ[q], LEN[q], buf, caps[c], femit, &a);
+              size_t pz; uint64_t hz;
+              if (ref_next(&a, &pz, &hz)) a.bad++;
+              CHECK(!a.bad && total == a.n, "fast all differs: k %u m31 %d variant %d W %d %s cap %zu (%llu bad)", k, m31, variant, W,
+                    LABEL[q], caps[c], (unsigned long long)a.bad);
+              free(buf);
+              /* sampled */
+              for (int t = 0; t < 4; t++) {
+                sctx sc = { malloc((LEN[q] + 1) * sizeof(size_t)), malloc((LEN[q] + 1) * sizeof(uint64_t)), 0 };
+                size_t* pb = malloc(caps[c] * sizeof *pb);
+                uint64_t* hb = malloc(caps[c] * sizeof *hb);
+                size_t kept = m31 ? kp7pack_sample_m(&mt, W, SEQ[q], LEN[q], thrs[t], pb, hb, caps[c], semit, &sc)
+                                  : kp7pack_sample_f(&ft, W, SEQ[q], LEN[q], thrs[t], pb, hb, caps[c], semit, &sc);
+                fctx r = { m31, { 0 }, { 0 }, &p31, 0, 0 };
+                kp7_start(&r.r0, &p, SEQ[q], LEN[q]);
+                kp7m31_start(&r.r1, &p31, SEQ[q], LEN[q]);
+                size_t pos, j = 0, expect = 0;
+                uint64_t h0, bad = 0;
+                while (ref_next(&r, &pos, &h0)) {
+                  uint64_t f, rr;
+                  if (!kp7pack_codes(SEQ[q] + pos, k, &f, &rr)) { bad++; continue; }
+                  if (kp7pack_gate(f, rr) >= thrs[t]) continue;
+                  expect++;
+                  if (j >= sc.n || sc.pos[j] != pos || sc.h[j] != h0) bad++;
+                  j++;
+                }
+                CHECK(!bad && kept == expect && sc.n == expect,
+                      "fast sample differs: k %u m31 %d variant %d W %d %s thr %d cap %zu (%llu bad, kept %zu want %zu)", k, m31,
+                      variant, W, LABEL[q], t, caps[c], (unsigned long long)bad, kept, expect);
+                free(sc.pos); free(sc.h); free(pb); free(hb);
+              }
+            }
+        }
+}
+
 int main(void)
 {
   make_seqs();
+  test_fast();
   test_eval();
   test_sym_all();
   test_gate_seq();

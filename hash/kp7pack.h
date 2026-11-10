@@ -72,6 +72,40 @@ size_t kp7pack_sample_eval(const kp7_params* p, const kp7pack_tab* tab, int mode
 size_t kp7pack_sym_all(const kp7_params* p, const kp7pack_tab* tab, const char* seq, size_t len, uint64_t* buf,
                        size_t cap, kp7_emit_fn emit, void* ctx);
 
+/* ---- cheaper evaluation of kept k-mers (results/kp7_kept_eval_2026-11-10.md) ----
+ * Same identity as above (F from rc digits, R from fwd digits, one shared table), with:
+ *   - lam folded into chunk 0's table, so the sums ARE G = F + lam and H = R + lam
+ *   - all chunks unrolled (tables for chunks >= k are all zero, so they add nothing)
+ *   - one partial reduction of the sums (61-bit: < 2q; the wide product takes parts < 4q)
+ *   - the product and fold inline, and kept k-mers collected without a branch, then evaluated in a batch
+ * W is the chunk width in bits: 8 = 4-base chunks (8 x 256 entries), 4 = 2-base chunks (16 x 16 entries).
+ * 61-bit tables (kp7pack_ftab) give fold(kp7_sym(F, R)), bit-identical to kp7_roll64(.., KP7_OUT_SYM, ..).
+ * CM31 tables (kp7pack_mtab, 8-byte entries re | im << 32) give kp7m31_sym(F, R), the CM31 hash: bit-identical to
+ * kp7m31_direct + kp7m31_sym (a DIFFERENT hash from the 61-bit one; a sketch must use one of them throughout). */
+#include "kp7m31.h"
+typedef struct {
+  unsigned k;
+  kp7_fe T8[8][256];  /* W = 8, lam in T8[0] */
+  kp7_fe T4[16][16];  /* W = 4, lam in T4[0] */
+} kp7pack_ftab;
+typedef struct {
+  unsigned k;
+  uint64_t T8[8][256]; /* re | im << 32, lam in T8[0] */
+  uint64_t T4[16][16];
+} kp7pack_mtab;
+void kp7pack_ftab_init(kp7pack_ftab* t, const kp7_params* p);
+void kp7pack_mtab_init(kp7pack_mtab* t, const kp7m31_params* p);
+/* every k-mer (no gate), blocks of consecutive k-mers as kp7pack_sym_all; W = 8 or 4 */
+size_t kp7pack_sym_all_f(const kp7pack_ftab* t, int W, const char* seq, size_t len, uint64_t* buf, size_t cap,
+                         kp7_emit_fn emit, void* ctx);
+size_t kp7pack_sym_all_m(const kp7pack_mtab* t, int W, const char* seq, size_t len, uint64_t* buf, size_t cap,
+                         kp7_emit_fn emit, void* ctx);
+/* gate < threshold, batch-evaluated; same output order and emit contract as kp7pack_sample */
+size_t kp7pack_sample_f(const kp7pack_ftab* t, int W, const char* seq, size_t len, uint64_t threshold, size_t* pos_buf,
+                        uint64_t* hash_buf, size_t cap, kp7_emit_pairs_fn emit, void* ctx);
+size_t kp7pack_sample_m(const kp7pack_mtab* t, int W, const char* seq, size_t len, uint64_t threshold, size_t* pos_buf,
+                        uint64_t* hash_buf, size_t cap, kp7_emit_pairs_fn emit, void* ctx);
+
 #ifdef __cplusplus
 }
 #endif
