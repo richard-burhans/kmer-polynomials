@@ -1,6 +1,7 @@
 // KP-6/KP-7 against ntHash: throughput, minimizer density and gaps, context-free sampling gaps, bit uniformity.
 //
-//   bench <fasta> [k=31] [rounds=5] [throughput]   (hash/run_bench.sh supplies cs10; `throughput` skips the stats)
+//   bench <fasta> [k=31] [rounds=5] [throughput] [only=<name substring>]
+//     `throughput` skips the stats; `only=` times just the matching method(s), for profiling (perf record).
 //   bench --nthash-classes                exhaustive k=8 class count for ntHash's canonical (fwd + rev)
 //
 // Every method sees identical bytes: the FASTA is loaded once, upper-cased (case-blind), split per record.
@@ -184,6 +185,7 @@ int main(int argc, char** argv)
   unsigned k = argc > 2 ? (unsigned)atoi(argv[2]) : 31;
   int rounds = argc > 3 ? atoi(argv[3]) : 5;
   bool throughput_only = argc > 4 && !strcmp(argv[4], "throughput");
+  const char* only = argc > 5 && !strncmp(argv[5], "only=", 5) ? argv[5] + 5 : nullptr;
   auto t0 = std::chrono::steady_clock::now();
   std::vector<Rec> recs = load_fasta(argv[1]);
   size_t bases = 0;
@@ -205,6 +207,7 @@ int main(int argc, char** argv)
   uint64_t counts[NMETHODS] = { 0 }, sink = 0, msink[NMETHODS] = { 0 };
   for (int round = 0; round < rounds; round++) {
     for (int m = 0; m < NMETHODS; m++) {
+      if (only && !strstr(NAMES[m], only)) continue;
       uint64_t n = 0, x = 0;
       auto a = std::chrono::steady_clock::now();
       for (const Rec& r : recs) hash_record((Method)m, r.seq, k, &real, &cplx, [&](size_t, uint64_t h) { x ^= h; n++; });
@@ -219,6 +222,7 @@ int main(int argc, char** argv)
   }
   printf("\nTHROUGHPUT (median of %d interleaved rounds; sink %016llx)\n", rounds, (unsigned long long)sink);
   for (int m = 0; m < NMETHODS; m++) {
+    if (secs[m].empty()) continue;
     std::vector<double> v = secs[m];
     std::sort(v.begin(), v.end());
     double med = v[v.size() / 2];
@@ -227,6 +231,7 @@ int main(int argc, char** argv)
   }
 
   // the Karatsuba methods must reproduce the plain ones exactly (xor of every hash)
+  if (only) return 0; // the identity check needs every method
   bool same = msink[KP7_SYM_REAL_K] == msink[KP7_SYM_REAL] && msink[KP7_SYM_COMPLEX_K] == msink[KP7_SYM_COMPLEX];
   for (int m = 0; m < NMETHODS; m++)
     if (sym_opt(m) >= 0) same = same && msink[m] == msink[is_cplx_opt(m) ? KP7_SYM_COMPLEX : KP7_SYM_REAL];
