@@ -82,6 +82,8 @@ technique from time-series search (Faloutsos et al. 1994), the same field the cr
 *Check:* on real k-mer pairs, what fraction of candidates do the first m coefficients prune at a given
 mismatch threshold?
 
+**Status 2026-11-10: tested, not useful.** Low-frequency energy is about white noise (m=8 carries 0.26–0.30 of ‖p−q‖², against 8/31). On seed-sharing near neighbours the bound prunes 21% of pairs at d=3 where 77% could be pruned, and 3% of 71% at d=5. Exact 2-bit popcount Hamming is cheaper and exact (results/ideas_spectral_2026-11-10.md).
+
 ### KP-5. RC palindromes and inverted repeats
 
 A reverse-complement palindrome satisfies p(x) = −x^{k−1} p(1/x): an anti-self-reciprocal polynomial. That can be
@@ -269,6 +271,8 @@ For our work, this could rank diagonals or offsets between two pieces before las
 
 *Check:* KOMPa chr7 against cs10 NC_044378.1. Do the correlation peaks fall where the chains (rerun
 2cc2600a989b3f73) say the alignment is?
+
+**Status 2026-11-10: tested, not a pre-filter.** Against the KOMPa chr7 chains, the best setting (soft-mask zeroed, z ≥ 10) has 97% precision but only 56% aligned-base recall per 100 kb window. Indels fragment diagonals; band summing and 4-indicator counts are worse. It is 35× cheaper than lastz per segment pair but does not replace it. Niche: high-precision anchors (results/ideas_spectral_2026-11-10.md).
 
 ### KP-14. Spaced seeds as masks
 

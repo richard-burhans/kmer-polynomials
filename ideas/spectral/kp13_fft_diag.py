@@ -15,7 +15,8 @@ bench/data/multiz-lowmem/cache/KOMPa.over.chain). For each sampled target window
     Precision is the share of peaks within `--tol` of any chain diagonal; recall is the share of chain-diagonal
     clusters carrying >= `--min-weight` aligned bases that have a peak within `--tol`.
 Variants: `cplx` (match - complement); `cplx_mask` (soft-masked bases zeroed); `ind4` (four 0/1 indicator sequences,
-the exact match count, minus its median). Negative control: the same window against a same-sized query segment that
+the exact match count, minus its median); `*_band` (the score summed over 2*`--band`+1 adjacent offsets before the
+z-score, to collect an alignment whose diagonal shifts by small indels). Negative control: the same window against a same-sized query segment that
 no chain block of the window maps to. Cost: FFT time per window, and lastz on the same window and segment.
 
     kp13_fft_diag.py TARGET_FA QUERY_FA CHAIN [--windows 40] [--win 100000] [--flank 500000] [--lastz /usr/bin/lastz]
@@ -134,6 +135,7 @@ def main() -> int:
     ap.add_argument("--tol", type=int, default=50)
     ap.add_argument("--min-weight", type=int, default=1000)
     ap.add_argument("--min-covered", type=int, default=5000)
+    ap.add_argument("--band", type=int, default=25)
     ap.add_argument("--lastz", default="/usr/bin/lastz")
     ap.add_argument("--lastz-windows", type=int, default=5)
     ap.add_argument("--genome-search", type=int, default=3)
@@ -181,9 +183,13 @@ def main() -> int:
             if not any(n0 - ws <= d <= n0 + (s1 - s0) - we for d, _ in truth[strand]):
                 break
         N, Nl = qcodes[n0:n0 + (s1 - s0)], qlow[n0:n0 + (s1 - s0)]
-        for var in ("cplx", "cplx_mask", "ind4"):
+        for var in ("cplx", "cplx_mask", "ind4", "cplx_band", "cplx_mask_band"):
             t0 = time.perf_counter()
-            if var == "ind4":
+            if var.endswith("_band"):
+                base = rec["variants"][var[:-5]]["_scores"]
+                box = np.ones(2 * a.band + 1)
+                sc, scn = np.convolve(base[0], box, "same"), np.convolve(base[1], box, "same")
+            elif var == "ind4":
                 sc, scn = xcorr_ind4(T, Q), xcorr_ind4(T, N)
             else:
                 m = var == "cplx_mask"
@@ -191,7 +197,7 @@ def main() -> int:
                 sc, scn = xcorr_real(tv, to_complex(Q, Ql, m)), xcorr_real(tv, to_complex(N, Nl, m))
             dt = (time.perf_counter() - t0) / 2
             z, zn = robust_z(sc), robust_z(scn)
-            vr = {"seconds_per_correlation": dt, "max_z": float(z.max()), "neg_max_z": float(zn.max())}
+            vr = {"seconds_per_correlation": dt, "max_z": float(z.max()), "neg_max_z": float(zn.max()), "_scores": (sc, scn)}
             for thr in ZS:
                 pk = peaks(z, thr, a.tol)
                 diag = [s0 + o - ws for o in pk]
@@ -203,6 +209,8 @@ def main() -> int:
                                    if heavy else None,
                                    "neg_peaks": len(peaks(zn, thr, a.tol))}
             rec["variants"][var] = vr
+        for v in rec["variants"].values():
+            v.pop("_scores", None)
         if lz < a.lastz_windows:
             Ts = letters[T].tobytes().decode()
             Qq = letters[Q].tobytes().decode()

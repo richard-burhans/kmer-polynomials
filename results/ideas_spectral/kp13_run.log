@@ -1,0 +1,43 @@
+window 1 ws=34672338 strand=+ cov=40848 heavy=12 cplx z6 P=0.29411764705882354 R=0.4166666666666667
+window 2 ws=65757883 strand=- cov=77294 heavy=5 cplx z6 P=0.8571428571428571 R=0.8
+window 3 ws=11358179 strand=+ cov=60317 heavy=16 cplx z6 P=1.0 R=0.4375
+window 4 ws=16738370 strand=- cov=11366 heavy=3 cplx z6 P=None R=0.0
+window 5 ws=69344677 strand=+ cov=67791 heavy=12 cplx z6 P=1.0 R=0.3333333333333333
+window 6 ws=40650328 strand=- cov=44419 heavy=3 cplx z6 P=0.6666666666666666 R=1.0
+window 7 ws=36465735 strand=+ cov=24788 heavy=3 cplx z6 P=0.0 R=0.0
+window 8 ws=1195597 strand=- cov=67106 heavy=14 cplx z6 P=1.0 R=0.5
+window 9 ws=38259132 strand=+ cov=60123 heavy=11 cplx z6 P=1.0 R=0.45454545454545453
+window 10 ws=57388698 strand=- cov=28709 heavy=5 cplx z6 P=1.0 R=0.6
+window 11 ws=26900952 strand=+ cov=71956 heavy=9 cplx z6 P=0.8 R=0.5555555555555556
+window 12 ws=47823915 strand=- cov=38319 heavy=4 cplx z6 P=None R=0.0
+window 13 ws=53204105 strand=+ cov=44302 heavy=8 cplx z6 P=0.75 R=0.25
+window 14 ws=53801904 strand=+ cov=37505 heavy=7 cplx z6 P=0.25 R=0.2857142857142857
+window 15 ws=33476740 strand=+ cov=51999 heavy=7 cplx z6 P=0.6666666666666666 R=0.5714285714285714
+window 16 ws=22118560 strand=- cov=87988 heavy=6 cplx z6 P=0.7142857142857143 R=0.8333333333333334
+window 17 ws=19129566 strand=- cov=63257 heavy=5 cplx z6 P=0.5 R=0.6
+window 18 ws=11955978 strand=+ cov=20741 heavy=9 cplx z6 P=0.0 R=0.0
+window 19 ws=60975492 strand=- cov=62823 heavy=13 cplx z6 P=0.8461538461538461 R=0.8461538461538461
+window 20 ws=66355682 strand=- cov=43684 heavy=11 cplx z6 P=1.0 R=0.18181818181818182
+window 21 ws=597798 strand=- cov=61823 heavy=18 cplx z6 P=1.0 R=0.2222222222222222
+window 22 ws=32281142 strand=+ cov=7564 heavy=1 cplx z6 P=0.0 R=0.0
+window 23 ws=45432719 strand=- cov=61344 heavy=6 cplx z6 P=0.75 R=0.6666666666666666
+window 24 ws=29292148 strand=- cov=79506 heavy=5 cplx z6 P=1.0 R=0.8
+window 25 ws=67551280 strand=- cov=55405 heavy=14 cplx z6 P=1.0 R=0.21428571428571427
+window 26 ws=9564783 strand=- cov=55708 heavy=13 cplx z6 P=0.8333333333333334 R=0.38461538461538464
+window 27 ws=44237121 strand=+ cov=38202 heavy=10 cplx z6 P=1.0 R=0.2
+window 28 ws=5977989 strand=+ cov=32632 heavy=4 cplx z6 P=0.23529411764705882 R=1.0
+window 29 ws=52606306 strand=+ cov=31792 heavy=2 cplx z6 P=0.6666666666666666 R=1.0
+window 30 ws=34074539 strand=+ cov=65796 heavy=6 cplx z6 P=0.75 R=0.8333333333333334
+window 31 ws=2391195 strand=- cov=64476 heavy=15 cplx z6 P=1.0 R=0.2
+window 32 ws=68149079 strand=- cov=69627 heavy=12 cplx z6 P=1.0 R=0.4166666666666667
+window 33 ws=50812910 strand=- cov=70038 heavy=10 cplx z6 P=1.0 R=0.5
+window 34 ws=49617312 strand=+ cov=8497 heavy=1 cplx z6 P=0.0 R=0.0
+window 35 ws=7173587 strand=+ cov=49872 heavy=10 cplx z6 P=0.6363636363636364 R=0.7
+window 36 ws=8369185 strand=- cov=70732 heavy=5 cplx z6 P=1.0 R=0.8
+window 37 ws=15542772 strand=+ cov=23459 heavy=5 cplx z6 P=0.25 R=0.4
+window 38 ws=31683343 strand=+ cov=36866 heavy=6 cplx z6 P=0.6666666666666666 R=0.16666666666666666
+window 39 ws=38856931 strand=+ cov=25567 heavy=3 cplx z6 P=1.0 R=0.3333333333333333
+window 40 ws=63964486 strand=- cov=67314 heavy=16 cplx z6 P=1.0 R=0.1875
+genome search ws=34672338: {'ws': 34672338, 'strands': {'+': {'peaks_z10': 50, 'on_chain_diagonal': 2, 'max_z': 16.412608957925467, 'chain_bases': 40848}, '-': {'peaks_z10': 50, 'on_chain_diagonal': 0, 'max_z': 14.381108445816574, 'chain_bases': 2297}}, 'seconds_both_strands': 33.86030022599152}
+genome search ws=65757883: {'ws': 65757883, 'strands': {'+': {'peaks_z10': 0, 'on_chain_diagonal': 0, 'max_z': 7.668318482473668, 'chain_bases': 0}, '-': {'peaks_z10': 5, 'on_chain_diagonal': 5, 'max_z': 25.068577318963932, 'chain_bases': 77294}}, 'seconds_both_strands': 31.154153770999983}
+genome search ws=11358179: {'ws': 11358179, 'strands': {'+': {'peaks_z10': 3, 'on_chain_diagonal': 3, 'max_z': 14.137165710423997, 'chain_bases': 60317}, '-': {'peaks_z10': 0, 'on_chain_diagonal': 0, 'max_z': 7.018560797116205, 'chain_bases': 0}}, 'seconds_both_strands': 32.550873097003205}
