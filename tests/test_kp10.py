@@ -93,3 +93,29 @@ def test_eisenstein_sketch_is_linear():
 
 def test_eisenstein_hash_strand_symmetric_and_matches_c():
     assert kp7e_hash.self_test(2000) == 0
+
+
+def _one_sided(d=200, seed=9):
+    """B = A plus d extra elements: every bucket has dB > dA + 1 (the case the negative-index bug broke)."""
+    rng = np.random.default_rng(seed)
+    a = np.unique(rng.integers(0, 1 << 62, 20000, dtype=np.uint64))
+    extra = np.setdiff1d(np.unique(rng.integers(0, 1 << 62, d, dtype=np.uint64)), a)
+    return a, np.union1d(a, extra)
+
+
+def test_one_sided_decodes_in_one_round_gaussian():
+    a, b = _one_sided()
+    p = params()
+    mk = lambda c: Side.build(c, sym_hash(c, p), mix64(c))
+    res = reconcile(mk(a), mk(b), 6, 16, 2, None, method="power")  # ~3 differences per bucket, all on B's side
+    assert res.splits == 0 and res.rounds == 1
+    assert res.a_minus_b.size == 0 and np.array_equal(res.b_minus_a, np.setdiff1d(b, a))
+
+
+def test_one_sided_decodes_in_one_round_eisenstein():
+    a, b = _one_sided()
+    p = kp7e_hash.params()
+    mk = lambda c: recon61.SideE.build(c, kp7e_hash.sym_hash(c, p), mix64(c))
+    res = recon61.reconcile(mk(a), mk(b), 6, 16, 2)
+    assert res.splits == 0 and res.rounds == 1
+    assert res.a_minus_b.size == 0 and np.array_equal(res.b_minus_a, np.setdiff1d(b, a))

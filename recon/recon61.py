@@ -109,7 +109,9 @@ def decode(SA, SB, nA: int, nB: int, m: int, c: int, ownA: np.ndarray, ownB: np.
         acc = sum(S[j - 1] * r[k - j] for j in range(1, k + 1)) % Q
         r[k] = (-acc * pow(k, Q - 2, Q)) % Q
     if dB:
-        M = [[r[n - j] for j in range(1, dB + 1)] for n in range(dA + 1, dA + dB + 1)]
+        # r_i = 0 for i < 0: a negative Python index would wrap to the END of r (the bug fixed 2026-11-11; it hit
+        # every bucket with dB > dA + 1, i.e. more differences on B's side)
+        M = [[r[n - j] if n - j >= 0 else 0 for j in range(1, dB + 1)] for n in range(dA + 1, dA + dB + 1)]
         sol = _solve(M, [(-r[n]) % Q for n in range(dA + 1, dA + dB + 1)])
         if sol is None:
             return None

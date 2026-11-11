@@ -232,7 +232,8 @@ def decode_power(SA, SB, nA, nB, m, c, ownA, ownB):
         Mim = np.empty_like(Mre)
         for i, n in enumerate(range(dA + 1, dA + dB + 1)):
             for j in range(1, dB + 1):
-                Mre[i, j - 1], Mim[i, j - 1] = r[0][n - j], r[1][n - j]
+                # r_i = 0 for i < 0 (a negative numpy index wraps to the end; fixed 2026-11-11, it hit dB > dA + 1)
+                Mre[i, j - 1], Mim[i, j - 1] = (r[0][n - j], r[1][n - j]) if n - j >= 0 else (0, 0)
         rhs = fq.neg((r[0][dA + 1:dA + dB + 1], r[1][dA + 1:dA + dB + 1]))
         sol = solve(Mre, Mim, rhs[0], rhs[1])
         if sol is None:
