@@ -43,16 +43,18 @@ static std::vector<Rec> load_fasta(const char* path)
 }
 
 struct Sink { uint64_t x = 0, n = 0; };
+// The sink works in locals: s->x and s->n may alias h (both uint64_t), so updating them through the pointer made the
+// compiler load and store both per hash, about 10 instructions per k-mer that bench_e's lambda sink does not pay (the
+// first sweep, job 3dddf48cdf81c0ca, measured batched ntHash at 57.1 instructions/k-mer here against 47.0 there).
 static void pairs_sink(void* ctx, const size_t*, const uint64_t* h, size_t n)
 {
   Sink* s = static_cast<Sink*>(ctx);
-  for (size_t j = 0; j < n; j++) { s->x ^= h[j]; s->n++; }
+  uint64_t x = s->x;
+  for (size_t j = 0; j < n; j++) x ^= h[j];
+  s->x = x;
+  s->n += n;
 }
-static void seq_sink(void* ctx, size_t, const uint64_t* h, size_t n)
-{
-  Sink* s = static_cast<Sink*>(ctx);
-  for (size_t j = 0; j < n; j++) { s->x ^= h[j]; s->n++; }
-}
+static void seq_sink(void* ctx, size_t, const uint64_t* h, size_t n) { pairs_sink(ctx, nullptr, h, n); }
 
 struct Spec {
   std::string ev;

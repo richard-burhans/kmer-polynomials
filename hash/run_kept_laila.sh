@@ -6,6 +6,7 @@
 #   sweep    every evaluator (batched) at 1/1000, 1/100, 1/16, 1/4, the current samplers, the bases (rate 0), batched
 #            ntHash and the round-1 baselines (UH on every k-mer; gate + ntHash / gate + UH on kept k-mers)
 #   confirm  the best evaluators against batched ntHash at the sketch rates, branchy and batched, and batch sizes
+#            (5 repeats recommended)
 # The bundle is `git archive <commit>` of this repository (laila_perf --git), so the timed code is exactly <commit>.
 # Every binary is built in the job by hash/Makefile (OPT = -O3 -march=native for kp7, ntbatch and the baselines alike).
 # Each repeat runs the plan's methods in order; odd repeats run it reversed, so drift does not favour one end.
@@ -30,18 +31,18 @@ case "$PLAN" in
     done
     ;;
   confirm)
-    # filled in after the sweep (results/kp7_kept_eval_2026-11-11.md says which evaluators and why)
-    M+=("ntHash batched")
+    # chosen from the sweep (job 3dddf48cdf81c0ca; results/kp7_kept_eval_2026-11-11.md): the current samplers, the
+    # best chunk widths, batch sizes, CM31's tables, and the gate + ntHash / gate + UH baselines, branchy at sparse rates
+    M+=("ntHash batched" "uh all")
     for r in 0 1/1000 1/100; do M+=("lib-e 8 br $r"); done
-    : "${CONFIRM_EVS:?set CONFIRM_EVS to evaluators separated by ';', e.g. 'ec 16;gp 16'}"
-    IFS=';' read -ra EVS <<< "$CONFIRM_EVS"
-    for ev in "${EVS[@]}"; do
-      for r in 0 1/1000 1/100; do M+=("$ev br $r"); done
-      for r in 1/1000 1/100 1/16 1/4; do M+=("$ev bat $r"); done
-      for b in 64 4096; do M+=("$ev bat 1/16 b$b" "$ev bat 1/4 b$b"); done
+    for r in 0 1/1000 1/100 1/16 1/4; do M+=("lib-e 8 bat $r"); done
+    for r in 1/1000 1/100; do M+=("ec 13 br $r"); done
+    for r in 1/1000 1/100 1/16 1/4; do M+=("ec 13 bat $r"); done
+    for r in 1/16 1/4; do M+=("ec 11 bat $r" "ec 8 bat $r b64" "ec 8 bat $r b4096" "lib-m 8 bat $r"); done
+    for ev in "nt 8" "uh 0"; do
+      for r in 1/1000 1/100; do M+=("$ev br $r"); done
+      for r in 1/16 1/4; do M+=("$ev bat $r"); done
     done
-    for r in 1/1000 1/100 1/16 1/4; do M+=("lib-e 8 bat $r"); done
-    M+=("nt 8 br 1/1000" "nt 8 br 1/100" "uh 0 br 1/1000" "uh 0 br 1/100")
     ;;
   *) echo "unknown plan $PLAN" >&2; exit 2 ;;
 esac
