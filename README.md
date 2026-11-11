@@ -22,10 +22,10 @@ repository:
 
 ## Read more
 
-- **[manuscript/](manuscript/):** the paper ([paper.md](manuscript/paper.md)), its numeric ledger, the outline, and the
-  build. `make -C manuscript pdf` builds paper.pdf with pandoc in a pinned docker image, `make -C manuscript lint` runs
-  the writing-repo linter and reference validator, and `make -C manuscript readme` / `check` keep this abstract in sync
-  with the paper.
+- **[manuscript/](manuscript/):** the paper ([paper.md](manuscript/paper.md), and the built [paper.pdf](manuscript/paper.pdf)),
+  its numeric ledger, the outline, and the build. `make -C manuscript pdf` rebuilds paper.pdf with pandoc in a pinned
+  docker image, `make -C manuscript lint` runs the writing-repo linter and reference validator, and
+  `make -C manuscript readme` / `check` keep this abstract in sync with the paper and fail if the committed PDF is stale.
 - **[IDEAS.md](IDEAS.md):** ideas KP-1 to KP-14 with their status, the comparison with ntHash/ntHash2 (what is
   different and what is shared), and the open questions.
 - **Key results** (all in [results/](results/)):
