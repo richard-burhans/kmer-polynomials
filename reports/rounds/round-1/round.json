@@ -215,7 +215,373 @@
   "carried": [],
   "dropped": [],
   "corrections": [],
-  "findings": [],
+  "findings": [
+    {
+      "lens": "correctness",
+      "id": "F1",
+      "flaw": "code derives lambda from x via one splitmix seed, so the Schwartz-Zippel independence premise fails in the implementation (C1)"
+    },
+    {
+      "lens": "correctness",
+      "id": "F2",
+      "flaw": "bound arithmetic: 2(k-1)/q is 2.6e-17 not 2.7e-17, and the CM31 1.4e-17 is wrong (C1)"
+    },
+    {
+      "lens": "correctness",
+      "id": "F3",
+      "flaw": "'determines the pair / the k-mer' holds for polynomials, and 'separates/injective' overstates a per-pair bound at genome scale (C1)"
+    },
+    {
+      "lens": "correctness",
+      "id": "F4",
+      "flaw": "overflow detection is probabilistic, not deterministic (C16)"
+    },
+    {
+      "lens": "correctness",
+      "id": "F5",
+      "flaw": "spaced-seed 0.747 vs 0.818 measures seed weight (29 vs 20 positions), not strand consistency (C14)"
+    },
+    {
+      "lens": "correctness",
+      "id": "F6",
+      "flaw": "sampler break-even is 1/20.3, so '1/20 and below' fails at 1/20; 28.5 cycles holds only for collected evaluation (C11)"
+    },
+    {
+      "lens": "correctness",
+      "id": "F7",
+      "flaw": "'61 percent spurious' is relative to D; of the returned superset it is 38 percent (C15)"
+    },
+    {
+      "lens": "correctness",
+      "id": "F8",
+      "flaw": "fourth-root hash needs 7-8 multiplications against 3, not 'about twice' (C4)"
+    },
+    {
+      "lens": "correctness",
+      "id": "F9",
+      "flaw": "F\u00b7R merges more than reversal explains, and the table caption names the wrong field (C2)"
+    },
+    {
+      "lens": "correctness",
+      "id": "F10",
+      "flaw": "ntHash's canonical value is not GF(2)-linear (C18)"
+    },
+    {
+      "lens": "correctness",
+      "id": "F11",
+      "flaw": "the bit-for-bit baseline check is partial, not in the timed job, and has no committed output (C12)"
+    },
+    {
+      "lens": "correctness",
+      "id": "F12",
+      "flaw": "the Ts/Tv range unions an all-columns row with a repeat-masked subset and misdescribes the alignment set (C9)"
+    },
+    {
+      "lens": "sampling",
+      "id": "F1",
+      "flaw": "the 1,774 long gaps are pseudo-replicated: 154 loci counted repeatedly (C13)"
+    },
+    {
+      "lens": "sampling",
+      "id": "F2",
+      "flaw": "'none of the Eisenstein hash's 367 outside repeats' is a zero with no power (C13)"
+    },
+    {
+      "lens": "sampling",
+      "id": "F3",
+      "flaw": "bit-balance comparison sits at the genome's repeat floor and cannot discriminate hashes (C13)"
+    },
+    {
+      "lens": "sampling",
+      "id": "F4",
+      "flaw": "'tens of gaps per seed' is false for one ntHash seed (C13)"
+    },
+    {
+      "lens": "sampling",
+      "id": "F5",
+      "flaw": "sampler break-even is 1/20.3, so '1/20 and below' fails at 1/20; 28.5 cycles holds only for collected evaluation (C11)"
+    },
+    {
+      "lens": "sampling",
+      "id": "F6",
+      "flaw": "the Ts/Tv range unions an all-columns row with a repeat-masked subset and misdescribes the alignment set (C9)"
+    },
+    {
+      "lens": "sampling",
+      "id": "F7",
+      "flaw": "'equal reliability' compares a two-round, oracle-decoded sketch with a one-round IBLT on 30 trials of 4/64 partitions (C15)"
+    },
+    {
+      "lens": "statistics",
+      "id": "F1",
+      "flaw": "bound arithmetic: 2(k-1)/q is 2.6e-17 not 2.7e-17, and the CM31 1.4e-17 is wrong (C1)"
+    },
+    {
+      "lens": "statistics",
+      "id": "F2",
+      "flaw": "'determines the pair / the k-mer' holds for polynomials, and 'separates/injective' overstates a per-pair bound at genome scale (C1)"
+    },
+    {
+      "lens": "statistics",
+      "id": "F3",
+      "flaw": "sampler break-even is 1/20.3, so '1/20 and below' fails at 1/20; 28.5 cycles holds only for collected evaluation (C11)"
+    },
+    {
+      "lens": "statistics",
+      "id": "F4",
+      "flaw": "'every timing from one job, by counters, at 2.0 GHz' is false: spaced-seed is wall-clock, supplement from other jobs, turbo on; two repeats overstate precision (C10)"
+    },
+    {
+      "lens": "statistics",
+      "id": "F5",
+      "flaw": "the 1,774 long gaps are pseudo-replicated: 154 loci counted repeatedly (C13)"
+    },
+    {
+      "lens": "statistics",
+      "id": "F6",
+      "flaw": "'equal reliability' compares a two-round, oracle-decoded sketch with a one-round IBLT on 30 trials of 4/64 partitions (C15)"
+    },
+    {
+      "lens": "statistics",
+      "id": "F7",
+      "flaw": "overflow detection is probabilistic, not deterministic (C16)"
+    },
+    {
+      "lens": "statistics",
+      "id": "F8",
+      "flaw": "the Ts/Tv range unions an all-columns row with a repeat-masked subset and misdescribes the alignment set (C9)"
+    },
+    {
+      "lens": "statistics",
+      "id": "F9",
+      "flaw": "the bit-for-bit baseline check is partial, not in the timed job, and has no committed output (C12)"
+    },
+    {
+      "lens": "provenance",
+      "id": "F1",
+      "flaw": "bound arithmetic: 2(k-1)/q is 2.6e-17 not 2.7e-17, and the CM31 1.4e-17 is wrong (C1)"
+    },
+    {
+      "lens": "provenance",
+      "id": "F2",
+      "flaw": "F\u00b7R merges more than reversal explains, and the table caption names the wrong field (C2)"
+    },
+    {
+      "lens": "provenance",
+      "id": "F3",
+      "flaw": "'every timing from one job, by counters, at 2.0 GHz' is false: spaced-seed is wall-clock, supplement from other jobs, turbo on; two repeats overstate precision (C10)"
+    },
+    {
+      "lens": "provenance",
+      "id": "F4",
+      "flaw": "the bit-for-bit baseline check is partial, not in the timed job, and has no committed output (C12)"
+    },
+    {
+      "lens": "provenance",
+      "id": "F5",
+      "flaw": "sampler break-even is 1/20.3, so '1/20 and below' fails at 1/20; 28.5 cycles holds only for collected evaluation (C11)"
+    },
+    {
+      "lens": "provenance",
+      "id": "F6",
+      "flaw": "spaced-seed 0.747 vs 0.818 measures seed weight (29 vs 20 positions), not strand consistency (C14)"
+    },
+    {
+      "lens": "provenance",
+      "id": "F7",
+      "flaw": "'61 percent spurious' is relative to D; of the returned superset it is 38 percent (C15)"
+    },
+    {
+      "lens": "provenance",
+      "id": "F8",
+      "flaw": "overflow detection is probabilistic, not deterministic (C16)"
+    },
+    {
+      "lens": "provenance",
+      "id": "F9",
+      "flaw": "the Ts/Tv range unions an all-columns row with a repeat-masked subset and misdescribes the alignment set (C9)"
+    },
+    {
+      "lens": "provenance",
+      "id": "F10",
+      "flaw": "the Mar\u00e7ais reading hardens 'can negate' and overstates 'no visible effect' (C19)"
+    },
+    {
+      "lens": "provenance",
+      "id": "F11",
+      "flaw": "ntHash's canonical value is not GF(2)-linear (C18)"
+    },
+    {
+      "lens": "provenance",
+      "id": "F12",
+      "flaw": "Supplement numbers described more broadly than their sources (first 20 Mb, 42 vs 35 percent, single-run 1,370x) (C21)"
+    },
+    {
+      "lens": "provenance",
+      "id": "F13",
+      "flaw": "literature paraphrases tidy their sources, and the unread Das 2019 is cited instead of Gulocak 2022 (C7)"
+    },
+    {
+      "lens": "provenance",
+      "id": "F14",
+      "flaw": "'tens of gaps per seed' is false for one ntHash seed (C13)"
+    },
+    {
+      "lens": "provenance",
+      "id": "F15",
+      "flaw": "absence and priority claims rest on dated searches the paper never mentions, and held papers go uncited (C5, C6)"
+    },
+    {
+      "lens": "inference",
+      "id": "F1",
+      "flaw": "spaced-seed 0.747 vs 0.818 measures seed weight (29 vs 20 positions), not strand consistency (C14)"
+    },
+    {
+      "lens": "inference",
+      "id": "F2",
+      "flaw": "sampler break-even is 1/20.3, so '1/20 and below' fails at 1/20; 28.5 cycles holds only for collected evaluation (C11)"
+    },
+    {
+      "lens": "inference",
+      "id": "F3",
+      "flaw": "F\u00b7R merges more than reversal explains, and the table caption names the wrong field (C2)"
+    },
+    {
+      "lens": "inference",
+      "id": "F4",
+      "flaw": "bound arithmetic: 2(k-1)/q is 2.6e-17 not 2.7e-17, and the CM31 1.4e-17 is wrong (C1)"
+    },
+    {
+      "lens": "inference",
+      "id": "F5",
+      "flaw": "'equal reliability' compares a two-round, oracle-decoded sketch with a one-round IBLT on 30 trials of 4/64 partitions (C15)"
+    },
+    {
+      "lens": "inference",
+      "id": "F6",
+      "flaw": "overflow detection is probabilistic, not deterministic (C16)"
+    },
+    {
+      "lens": "inference",
+      "id": "F7",
+      "flaw": "bit-balance comparison sits at the genome's repeat floor and cannot discriminate hashes (C13)"
+    },
+    {
+      "lens": "inference",
+      "id": "F8",
+      "flaw": "the orientation cause of the 48 million is asserted rather than measured (C17)"
+    },
+    {
+      "lens": "inference",
+      "id": "F9",
+      "flaw": "the Ts/Tv range unions an all-columns row with a repeat-masked subset and misdescribes the alignment set (C9)"
+    },
+    {
+      "lens": "inference",
+      "id": "F10",
+      "flaw": "'fixed seeds, so measured, not proven' contrast with ntHash (C18)"
+    },
+    {
+      "lens": "inference",
+      "id": "F11",
+      "flaw": "the Mar\u00e7ais reading hardens 'can negate' and overstates 'no visible effect' (C19)"
+    },
+    {
+      "lens": "prior-art",
+      "id": "F1",
+      "flaw": "overflow detection is probabilistic, not deterministic (C16)"
+    },
+    {
+      "lens": "prior-art",
+      "id": "F2",
+      "flaw": "power-sum sketch is PinSketch; split-and-resend is Minsky-Trachtenberg/Erlay; uncited (C15, C16)"
+    },
+    {
+      "lens": "prior-art",
+      "id": "F3",
+      "flaw": "(F+\u03bb)(R+\u03bb) is the classical characteristic-polynomial fingerprint; (k-1)/q uncited (C6)"
+    },
+    {
+      "lens": "prior-art",
+      "id": "F4",
+      "flaw": "ntHash history misattributed: ntHash 2016 already combined strands by minimum (C18)"
+    },
+    {
+      "lens": "prior-art",
+      "id": "F5",
+      "flaw": "the Mar\u00e7ais reading hardens 'can negate' and overstates 'no visible effect' (C19)"
+    },
+    {
+      "lens": "prior-art",
+      "id": "F6",
+      "flaw": "the ntHash2 warning is a library runtime message, not in the cited paper (C14)"
+    },
+    {
+      "lens": "prior-art",
+      "id": "F7",
+      "flaw": "the FFT diagonal finder is MAFFT's FFT step, uncited (C21)"
+    },
+    {
+      "lens": "prior-art",
+      "id": "F8",
+      "flaw": "C5 and C7 attacked and held"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F1",
+      "flaw": "sampler break-even is 1/20.3, so '1/20 and below' fails at 1/20; 28.5 cycles holds only for collected evaluation (C11)"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F2",
+      "flaw": "'every timing from one job, by counters, at 2.0 GHz' is false: spaced-seed is wall-clock, supplement from other jobs, turbo on; two repeats overstate precision (C10)"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F3",
+      "flaw": "the bit-for-bit baseline check is partial, not in the timed job, and has no committed output (C12)"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F4",
+      "flaw": "the Ts/Tv range unions an all-columns row with a repeat-masked subset and misdescribes the alignment set (C9)"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F5",
+      "flaw": "overflow detection is probabilistic, not deterministic (C16)"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F6",
+      "flaw": "'equal reliability' compares a two-round, oracle-decoded sketch with a one-round IBLT on 30 trials of 4/64 partitions (C15)"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F7",
+      "flaw": "ntHash's canonical value is not GF(2)-linear (C18)"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F8",
+      "flaw": "bound arithmetic: 2(k-1)/q is 2.6e-17 not 2.7e-17, and the CM31 1.4e-17 is wrong (C1)"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F9",
+      "flaw": "testing claims hold, with overstated block-size range (C20)"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F10",
+      "flaw": "the orientation cause of the 48 million is asserted rather than measured (C17)"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F11",
+      "flaw": "Supplement numbers described more broadly than their sources (first 20 Mb, 42 vs 35 percent, single-run 1,370x) (C21)"
+    }
+  ],
   "open": [],
   "unchallenged": [],
   "discharges": {},
@@ -249,5 +615,42 @@
       "blob": "ef5677e39abac8a1d5efc222c7ef90e730c71e02",
       "ref": "refs/round/seal/1/attack-L7-reproduction.md"
     }
+  },
+  "diversity": {
+    "attacks": 7,
+    "lenses": [
+      "correctness",
+      "sampling",
+      "statistics",
+      "provenance",
+      "inference",
+      "prior-art",
+      "reproduction"
+    ],
+    "mean_pairwise_similarity": 0.283,
+    "max_pairwise_similarity": 0.36,
+    "most_similar_pair": [
+      "attack-L4-provenance.md",
+      "attack-L5-inference.md"
+    ],
+    "claims_answered": 21,
+    "claims_corroborated": 21,
+    "claims_single_voter": 0,
+    "claims_unanimous": 0,
+    "verdict_agreement": 0.0,
+    "findings_mode": "synthesized",
+    "findings_filed": 73,
+    "findings_per_attacker": {
+      "attack-L1-correctness.md": 12,
+      "attack-L2-sampling.md": 7,
+      "attack-L3-statistics.md": 9,
+      "attack-L4-provenance.md": 15,
+      "attack-L5-inference.md": 11,
+      "attack-L6-prior-art.md": 8,
+      "attack-L7-reproduction.md": 11
+    },
+    "distinct_flaws": 31,
+    "flaws_named_by_more_than_one_attacker": 18,
+    "duplicate_rate": 0.581
   }
 }
