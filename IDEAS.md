@@ -103,6 +103,9 @@ tested algebraically, possibly as a rolling test over a whole sequence.
 
 **Eisenstein revisit:** unchanged. The palindrome identity needs only complement = negation.
 
+
+**Tested 2026-11-11** (results/ideas_kp5_kp11_2026-11-11.md): correct (identical to packed codes and brute force on cs10 NC_044378.1, arms 12–40), but for arms ≤ 32 it is a slower way to compare packed codes; it only pays for long arms (8-byte key with a provable bound). Perfect repeats only.
+
 ## 2. The arithmetic: hashing in F_{q²}
 
 ### KP-6. Gaussian integers mod a prime give a field that holds the encoding exactly
@@ -271,6 +274,9 @@ computation?
 ---
 
 **Eisenstein revisit:** unchanged. Indexed by k-mer code, so the encoding never enters.
+
+
+**Tested 2026-11-11** (results/ideas_kp5_kp11_2026-11-11.md): the concatenation product aggregates nothing (code(uv) is injective, so it is just U × V). The group-algebra form works: mismatch-neighbourhood counts for all 4^k targets by an exact (Z₄)^k NTT with Krawtchouk weights, 1,370× faster than ball enumeration at k = 12, d = 3 on laila (0.81 s vs 1,108 s). Probably known (MacWilliams/Krawtchouk); cite, do not claim.
 
 ## 4. Whole sequences
 

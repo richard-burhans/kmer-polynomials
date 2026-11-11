@@ -1,0 +1,40 @@
+gcc -O3 -march=native -Wall -Wextra -c ../../hash/kp7e.c -o kp7e.o
+gcc -O3 -march=native -Wall -Wextra ir.c kp7e.o -o ir
+gcc -O3 -march=native -Wall -Wextra mismatch.c -o mismatch
+ok   palin 12: 11
+ok   palin 8: 108
+ok   inv 12 40: 265
+ok   inv 20 40: 217
+ok   inv 33 40: 166
+ok   inv 40 40: 121
+ok   inv 64 40: 10
+ok   inv 6 10: 108
+ok   mismatch k=6 d=0 fft == direct
+ok   mismatch k=6 d=1 fft == direct
+ok   mismatch k=6 d=2 fft == direct
+ok   mismatch k=6 d=3 fft == direct
+ok   mismatch k=7 d=2 fft == direct
+ok   mismatch k=9 d=3 fft == direct
+ok   mismatch k=7 d=2 brute force on 25 targets
+=== run_1: cd kp/ideas/kp5_kp11 && ./ir "$DATA" - palin 20 hash
+mode=palin a=20 gmax=0 method=hash len=71238074 windows=71238055 count=7760 checksum=8ac1fa8ae0b5dc37dc689988bf8d68ff keys_s=0.786 scan_s=0.072
+=== run_2: cd kp/ideas/kp5_kp11 && ./ir "$DATA" - palin 20 pack
+mode=palin a=20 gmax=0 method=pack len=71238074 windows=71238055 count=7760 checksum=8ac1fa8ae0b5dc37dc689988bf8d68ff keys_s=0.382 scan_s=0.070
+=== run_3: cd kp/ideas/kp5_kp11 && ./ir "$DATA" - inv 20 100 hash
+mode=inv a=20 gmax=100 method=hash len=71238074 windows=71238055 count=34736 checksum=91024279500779af79cb8c39283057f9 keys_s=0.635 scan_s=6.781
+=== run_4: cd kp/ideas/kp5_kp11 && ./ir "$DATA" - inv 20 100 pack
+mode=inv a=20 gmax=100 method=pack len=71238074 windows=71238055 count=34736 checksum=91024279500779af79cb8c39283057f9 keys_s=0.484 scan_s=6.807
+=== run_5: cd kp/ideas/kp5_kp11 && ./ir "$DATA" - inv 40 100 hash
+mode=inv a=40 gmax=100 method=hash len=71238074 windows=71238035 count=23560 checksum=57b94da0cfcb60af83f2f99c8d0d5629 keys_s=0.633 scan_s=7.367
+=== run_6: cd kp/ideas/kp5_kp11 && ./ir "$DATA" - inv 40 100 pack
+mode=inv a=40 gmax=100 method=pack len=71238074 windows=71238035 count=23560 checksum=57b94da0cfcb60af83f2f99c8d0d5629 keys_s=0.577 scan_s=8.069
+=== run_7: cd kp/ideas/kp5_kp11 && ./mismatch "$DATA" - 10 3 both
+k=10 d=3 len=71238074 occurrences=60636989 distinct=1042569 targets=1048576 ball=3676 count_s=0.151 fft_s=0.034 fft_sum=5f5096c49c4da1a8 direct_s=24.122 direct_sum=5f5096c49c4da1a8 identical=yes
+=== run_8: cd kp/ideas/kp5_kp11 && ./mismatch "$DATA" - 12 1 both
+k=12 d=1 len=71238074 occurrences=60636873 distinct=10136092 targets=16777216 ball=37 count_s=0.452 fft_s=0.792 fft_sum=443438287ca9a0e9 direct_s=1.723 direct_sum=443438287ca9a0e9 identical=yes
+=== run_9: cd kp/ideas/kp5_kp11 && ./mismatch "$DATA" - 12 2 both
+k=12 d=2 len=71238074 occurrences=60636873 distinct=10136092 targets=16777216 ball=631 count_s=0.418 fft_s=0.678 fft_sum=93cf79abfaa0bb67 direct_s=61.694 direct_sum=93cf79abfaa0bb67 identical=yes
+=== run_10: cd kp/ideas/kp5_kp11 && ./mismatch "$DATA" - 12 3 both
+k=12 d=3 len=71238074 occurrences=60636873 distinct=10136092 targets=16777216 ball=6571 count_s=0.463 fft_s=0.806 fft_sum=377d18b0a9db4ed3 direct_s=1107.944 direct_sum=377d18b0a9db4ed3 identical=yes
+=== run_11: cd kp/ideas/kp5_kp11 && ./mismatch "$DATA" - 13 3 fft
+k=13 d=3 len=71238074 occurrences=60636815 distinct=18511188 targets=67108864 ball=8464 count_s=0.595 fft_s=2.799 fft_sum=21aa62c71f0c8086
