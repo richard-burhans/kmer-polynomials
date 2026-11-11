@@ -5,9 +5,21 @@
     python3 sync_abstract.py --check   exit 1 if ../README.md's abstract differs from paper.md's
 
 Both files carry the abstract between the same two marker comments. Only text between the markers is touched.
+
+Inline math: paper.md uses pandoc's $...$. GitHub renders $...$ unreliably (it fails next to punctuation such as an
+em-dash), so the README copy rewrites each $...$ as GitHub's robust $`...`$ form. --check compares after that rewrite.
 """
 import pathlib
+import re
 import sys
+
+#: a pandoc inline-math span: $ not followed by space, content without $, $ not preceded by space
+MATH = re.compile(r"(?<![\\$`])\$(?=[^\s`])([^$\n]+?)(?<=[^\s`])\$(?![`$])")  # skips spans already in $`...`$ form
+
+
+def github_math(text: str) -> str:
+    """Rewrite pandoc $...$ inline math as GitHub's $`...`$ form."""
+    return MATH.sub(lambda m: "$`" + m.group(1) + "`$", text)
 
 BEGIN, END = "<!-- ABSTRACT:BEGIN -->", "<!-- ABSTRACT:END -->"
 HERE = pathlib.Path(__file__).resolve().parent
@@ -26,7 +38,7 @@ def main() -> int:
     paper, readme = PAPER.read_text(encoding="utf-8"), README.read_text(encoding="utf-8")
     pa, pb = between(paper, PAPER)
     ra, rb = between(readme, README)
-    abstract = paper[pa:pb]
+    abstract = github_math(paper[pa:pb])
     if "--check" in sys.argv[1:]:
         if readme[ra:rb] != abstract:
             print(f"{README.name}: abstract differs from {PAPER.name}; run `make readme`")
