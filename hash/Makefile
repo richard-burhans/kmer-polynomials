@@ -71,8 +71,8 @@ bench_pack: bench_pack.cpp kp7pack.o kp7.o kp7m31.o
 	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include bench_pack.cpp kp7pack.o kp7.o kp7m31.o $(NTHASH)/build_o3/libnthash.a -o $@
 
 # multi-seed sampling statistics (KP-7 next steps, item 3)
-stats_seeds: stats_seeds.cpp kp7pack.o kp7.o kp7m31.o
-	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include stats_seeds.cpp kp7pack.o kp7.o kp7m31.o $(NTHASH)/build_o3/libnthash.a -o $@
+stats_seeds: stats_seeds.cpp kp7pack.o kp7.o kp7m31.o kp7e.o
+	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include stats_seeds.cpp kp7pack.o kp7.o kp7m31.o kp7e.o $(NTHASH)/build_o3/libnthash.a -o $@
 
 # ---- Eisenstein KP-7 (kp7e: A=1, C=w, G=-w, T=-1 with w in F_q, q = 2^61 - 1; one field element per hash) ----
 kp7e.o: kp7e.c kp7e.h

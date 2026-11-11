@@ -7,7 +7,10 @@
 //            h_i = h * (i ^ k * MULTISEED); h_i ^= h_i >> 27 (seed 0 = the canonical hash itself)
 //   v2gate   kp7pack_gate_seeded(fwd, rc, seed)            (packed codes, mix(fwd ^ s) + mix(rc ^ s))
 //   v1gate   kp7_gate_seq with kp7_init(seed)              (gate on the rolling field values)
-//   provable kp7_sym_seq with kp7_init(seed)               (the provable (F + lam)(R + lam))
+//   provable kp7_sym_seq with kp7_init(seed)               (the provable (F + lam)(R + lam), fourth-root over F_{q^2})
+//   eprovable kp7e_sym_seq with kp7e_init(seed)            (the Eisenstein provable S over F_q, q = 2^61 - 1). S is a
+//            61-bit field element, so it is fed to the statistics as (S << 3) | (S >> 58): every bit then carries a
+//            uniform field bit, and the order (minimizers, thresholds) is that of S up to its low 3 bits.
 // For each: max per-bit deviation from 1/2; random-minimizer density at w = 10, 20, 50 (expected 2/(w+1)); and
 // context-free (FracMinHash-style) sampling at rate 2/21: number of gaps, gaps > 200 k-mers (geometric expectation
 // n (1 - rate)^200), and how many of those long gaps lie OUTSIDE repeats. A gap counts as inside a repeat when at least
@@ -15,6 +18,7 @@
 // in the input. The FASTA's case is kept for that; hashing is case-blind (every method treats a/A alike).
 #include "kp7.h"
 #include "kp7pack.h"
+#include "kp7e.h"
 #include <nthash/nthash.hpp>
 
 #include <algorithm>
@@ -86,8 +90,9 @@ static void run_stats(Stats& st, const std::vector<uint64_t>& h, size_t start, c
   }
 }
 
-enum { NTHASH = 0, V2GATE, V1GATE, PROVABLE, NM };
-static const char* NAMES[NM] = { "ntHash", "v2gate", "v1gate", "provable" };
+enum { NTHASH = 0, V2GATE, V1GATE, PROVABLE, EPROVABLE, NM };
+static const char* NAMES[NM] = { "ntHash", "v2gate", "v1gate", "provable", "eprovable" };
+static kp7e_params g_ep; // set per seed in main for EPROVABLE
 
 // calls fn(pos, hash) for every valid k-mer of one record
 template <class Fn> static void hash_record(int m, int seed, const std::string& s, unsigned k, const kp7_params* p, Fn&& fn)
@@ -122,6 +127,12 @@ template <class Fn> static void hash_record(int m, int seed, const std::string& 
       if (have < k) have++;
       if (have == k) fn(i + 1 - k, kp7pack_gate_seeded(f, r, sd));
     }
+  } else if (m == EPROVABLE) {
+    auto etramp = [](void* ctx, size_t start, const uint64_t* h, size_t n) {
+      Fn& f = *static_cast<Fn*>(ctx);
+      for (size_t j = 0; j < n; j++) f(start + j, (h[j] << 3) | (h[j] >> 58));
+    };
+    kp7e_sym_seq(&g_ep, s.data(), s.size(), 2, buf, 4096, etramp, &fn);
   } else if (m == V1GATE) {
     kp7_gate_seq(p, s.data(), s.size(), 2, buf, 4096, tramp, &fn);
   } else {
@@ -146,6 +157,7 @@ int main(int argc, char** argv)
     for (int seed = 0; seed < seeds; seed++) {
       kp7_params p;
       kp7_init(&p, k, KP7_XREAL, 0x5eed + 1000 * (uint64_t)seed);
+      kp7e_init(&g_ep, k, 0x5eed + 1000 * (uint64_t)seed);
       Stats st;
       for (const Rec& r : recs) {
         std::vector<uint64_t> run;
