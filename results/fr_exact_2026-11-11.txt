@@ -1,0 +1,12 @@
+# python3 ideas/algebra/fr_exact.py 7 8 at f856571, 2026-11-11T06:33:38Z
+k=7: 16384 k-mers, 8192 double-stranded classes, 4160 orbits under {id, reverse, complement, reverse complement} (Burnside 4160)
+  fourth-root Z[i]: F*R distinct 4160 (orbits - F*R = 0 extra merges)
+  fourth-root Z[i]: F+R distinct 729; (F+lam)(R+lam) as a polynomial in (x, lam) distinct 8192 (classes 8192)
+  Eisenstein Z[w]: F*R distinct 4160 (orbits - F*R = 0 extra merges)
+  Eisenstein Z[w]: F+R distinct 729; (F+lam)(R+lam) as a polynomial in (x, lam) distinct 8192 (classes 8192)
+k=8: 65536 k-mers, 32896 double-stranded classes, 16512 orbits under {id, reverse, complement, reverse complement} (Burnside 16512)
+  fourth-root Z[i]: F*R distinct 16362 (orbits - F*R = 150 extra merges); e.g. AAACCCCT and CAAATCCC share F*R but are not related by reversal or complement
+  fourth-root Z[i]: F+R distinct 6561; (F+lam)(R+lam) as a polynomial in (x, lam) distinct 32896 (classes 32896)
+  Eisenstein Z[w]: F*R distinct 16500 (orbits - F*R = 12 extra merges); e.g. AAATCCCG and ATTTCGGG share F*R but are not related by reversal or complement
+  Eisenstein Z[w]: F+R distinct 6561; (F+lam)(R+lam) as a polynomial in (x, lam) distinct 32896 (classes 32896)
+all structural checks passed
