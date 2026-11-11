@@ -19,48 +19,59 @@ different jobs must not be compared directly in the paper, because between-job v
 | 3 multiplies per k-mer | Eisenstein rolling cost | results/kp7_eisenstein_2026-11-10.md:19–20 |
 | 16 KB | Eisenstein v2 table size (8-byte entries) | results/kp7_eisenstein_2026-11-10.md:22 |
 | θ = π/3 | Das, Nanda & Das 2017 fix θ explicitly | literature/eisenstein_wantlist.md (Resolution section) |
+| eq. (5), eq. (4) | Cristea 2002: the fourth-root map (up to sign) and the θ = π/4 point | library papers_md/summaries/cristea_2002_genomic-signals.md:25–30; literature/eisenstein_wantlist.md:103–104 |
+| rationale restates Cristea's | Das 2017's purine/pyrimidine + complements-sum-to-zero rationale, no distances, θ asserted | library papers_md/summaries/das_2017_trigonometric-mapping.md:23–27, 63–64 |
+| sensitivity = specificity formula; 3 exon ranges | Das 2017 reliability caveats | library papers_md/summaries/das_2017_trigonometric-mapping.md:34–39, 48–51 |
+| unread | Das, Nanda & Das 2019 Genomics, the mapping's source cited by Gulocak 2022 | literature/eisenstein_wantlist.md:93–96 |
+| binary codes with transition-aware distance | Yu, Li & Yu 2018 (narrows the novelty claim) | library papers_md/summaries/yu_2018_encoding-survey.md:24–31 |
 
 ## Speed (laila, Xeon Gold 6330 at 2.0 GHz, cycles per input k-mer, cs10, k = 31)
 
-Input: 736,547,799 k-mers (results/kp7_eisenstein_2026-11-10.md:58).
+Input: 736,547,799 k-mers (results/paper_bench_2026-11-11.md:8). Every timing below comes from ONE job, 08653d9e6a7453a2, run by
+`manuscript/run_paper_bench.sh`; the table is `manuscript/paper_bench_table.py` on its raw counters.
 
 | number | meaning | job | source |
 |---|---|---|---|
-| 11.41 | batched ntHash | 7fc2a700073c1f4f | results/kp7_eisenstein_2026-11-10.md:63 |
-| 23.44 | ntHash library roll() | 7fc2a700073c1f4f | results/kp7_eisenstein_2026-11-10.md:64 |
-| 24.59 | Eisenstein, every k-mer, 2 lanes (0.46×) | 7fc2a700073c1f4f | results/kp7_eisenstein_2026-11-10.md:68 |
-| 27.95 | Eisenstein, every k-mer, 1 lane | 7fc2a700073c1f4f | results/kp7_eisenstein_2026-11-10.md:67 |
-| 47.51 | Gaussian 61-bit, every k-mer, 2 lanes | 7fc2a700073c1f4f | results/kp7_eisenstein_2026-11-10.md:70 |
-| 25.83 | CM31 AVX-512, every k-mer, 16 lanes | 7fc2a700073c1f4f | results/kp7_eisenstein_2026-11-10.md:71 |
-| 9.41 (1.21×) | Eisenstein sampler, branchy, 1/1000 | 7fc2a700073c1f4f | results/kp7_eisenstein_2026-11-10.md:73 |
-| 9.97 (1.14×) | Eisenstein sampler, branchy, 1/100 | 7fc2a700073c1f4f | results/kp7_eisenstein_2026-11-10.md:74 |
-| 11.87 (0.96×) | Eisenstein sampler, batched, 1/16 | 7fc2a700073c1f4f | results/kp7_eisenstein_2026-11-10.md:79 |
-| 17.21 (0.66×) | Eisenstein sampler, batched, 1/4 | 7fc2a700073c1f4f | results/kp7_eisenstein_2026-11-10.md:80 |
-| ≈ 28.5 | Eisenstein cycles per kept k-mer (slope 1/16 to 1/4) | 7fc2a700073c1f4f | results/kp7_eisenstein_2026-11-10.md:91 |
-| ≈ 1/19 | Eisenstein sampler break-even against batched ntHash | 7fc2a700073c1f4f | results/kp7_eisenstein_2026-11-10.md:96 |
-| 2.09× | batched ntHash against the library roll() | 5a03e1322aef25af | results/kp7_next_steps_2026-11-10.md:18 |
-| 64.4 | CM31 v2 cycles per kept k-mer (batched) | 5deca06fa147bf0e | results/kp7_kept_eval_2026-11-10.md:43 |
+| 11.37 | batched ntHash | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:22 |
+| 23.53 (0.48×) | ntHash library roll() | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:23 |
+| 24.69 (0.46×) | Eisenstein, every k-mer, 2 lanes | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:26 |
+| 27.82 (0.41×) | Eisenstein, every k-mer, 1 lane | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:25 |
+| 47.37 (0.24×) | Gaussian 61-bit, every k-mer, 2 lanes | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:28 |
+| 26.43 (0.43×) | CM31 AVX2, every k-mer, 8 lanes | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:42 |
+| 25.86 (0.44×) | CM31 AVX-512, every k-mer, 16 lanes | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:43 |
+| 9.40 (1.21×) | Eisenstein sampler, branchy, 1/1000 | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:30 |
+| 10.01 (1.14×) | Eisenstein sampler, branchy, 1/100 | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:31 |
+| 11.74 (0.97×) | Eisenstein sampler, batched, 1/16 | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:36 |
+| 17.08 (0.67×) | Eisenstein sampler, batched, 1/4 | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:37 |
+| ≈ 28.5 | Eisenstein cycles per kept k-mer (slope 1/16 to 1/4) | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:47 |
+| ≈ 1/20 (1/20.3) | Eisenstein sampler break-even against batched ntHash | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:47 |
+| 2.07× | batched ntHash against the library roll() (23.53 / 11.37), "about twice" | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:22–23 |
+| 64.3 | CM31 v2 cycles per kept k-mer (batched), previous best | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:49 |
+| ≤ 1.3% | spread between the two repeats, every row in the paper's table | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:12 |
+
+Superseded (earlier drafts, other jobs): 11.41 / 23.44 / 24.59 / 27.95 / 47.51 / 25.83 / 9.41 / 9.97 / 11.87 / 17.21
+from 7fc2a700073c1f4f, and the break-even "≈ 1/19", which was an arithmetic slip (intercept 9.9 for 10.09; see
+results/paper_bench_2026-11-11.md, per-kept section).
 
 ## Sampling quality (local, full cs10, 5 seeds per method, no job)
 
 | number | meaning | source |
 |---|---|---|
 | 0.14 | geometric expectation of gaps > 200 k-mers per seed, rate 2/21 | results/kp7_next_steps_2026-11-10.md:50–51 |
-| about 1,450 long gaps, all but 2 in soft-masked repeats | across 4 methods × 5 seeds | results/kp7_next_steps_2026-11-10.md:64–65 |
-| 0.00088 to 0.00103 | mean max per-bit deviation from ½ (ntHash, v2 gate, v1 gate, Gaussian provable) | results/kp7_next_steps_2026-11-10.md:55–58 |
+| 1,774 long gaps, all but 2 in soft-masked repeats | across 5 methods × 5 seeds | results/kp7_stats_seeds_eisenstein_2026-11-11.md:25–27 |
+| 367, 0 outside repeats | Eisenstein provable hash's long gaps | results/kp7_stats_seeds_eisenstein_2026-11-11.md:23 |
+| 0.0009 to 0.0010 (0.00088–0.00103) | mean max per-bit deviation from ½, per method | results/kp7_stats_seeds_eisenstein_2026-11-11.md:19–23 |
+| 0.00090 / 0.00088 | Eisenstein provable / ntHash mean max bit deviation | results/kp7_stats_seeds_eisenstein_2026-11-11.md:19, 23 |
+| within 0.4% (max 0.40%, ntHash) | minimizer density deviation, w = 10, 20, 50, every method | results/kp7_stats_seeds_eisenstein_2026-11-11.md:19–23 |
 | 47.7% | soft-masked fraction of cs10 | results/kp7_next_steps_2026-11-10.md:50 |
 
-Note: these statistics were measured with the Gaussian provable hash and the packed-code gate. The Eisenstein sampler
-uses the same gate (results/kp7_eisenstein_2026-11-10.md:46–47), but the Eisenstein provable hash itself has no
-multi-seed statistics yet.
-
-## Spaced seeds (KP-14, laila job af1eb52f65c6d471)
+## Spaced seeds (consolidated job 08653d9e6a7453a2)
 
 | number | meaning | source |
 |---|---|---|
-| 0.78× | Eisenstein spaced-seed hash against ntHash2 SeedNtHash, one mask | results/ideas_eisenstein_2026-11-10.md:105 |
-| 0.74724 | fraction of windows unchanged at 1% SNPs, non-palindromic mask: exact double-stranded value, matched by ours | results/ideas_algebra_2026-11-10.md:55 |
-| 0.818 | SeedNtHash's value on the same test | results/ideas_eisenstein_2026-11-10.md (KP-14 section) |
+| 0.76× | Eisenstein spaced-seed hash against ntHash2 SeedNtHash, one mask, first 60 Mb of cs10 (was 0.78× in job af1eb52f65c6d471) | results/paper_bench_2026-11-11.md:58 |
+| 0.747 (0.74722) | fraction of windows unchanged at 1% SNPs, non-palindromic mask: exact double-stranded value, matched by ours | results/paper_bench_2026-11-11.md:61 |
+| 0.818 (0.81794) | SeedNtHash's value on the same test | results/paper_bench_2026-11-11.md:62 |
 
 ## Transition frequency (KP-1)
 
@@ -69,14 +80,28 @@ multi-seed statistics yet.
 | 1.58–1.85 | Ts/Tv, cannabis NC_044378.1 pairwise columns | results/ideas_eisenstein_2026-11-10.md:23–26 |
 | 61.3–64.9% | fraction of substitutions that are transitions | results/ideas_eisenstein_2026-11-10.md:23–26 |
 
-## Set reconciliation (KP-9; KP-10 pending)
+## Set reconciliation (KP-9, KP-10)
 
 | number | meaning | source |
 |---|---|---|
-| 0.42 \|A\| | KOMPa vs KOMPb chr7 difference | results/kp9_kompa_kompb_2026-11-10.md (section 1 table) |
-| 2,180× / 273× | sketch smaller than the set, 100 / 1,000 SNPs | results/kp9_kompa_kompb_2026-11-10.md (section 2 table) |
-| 17 bytes, 25–30 measured | bytes per difference (design load / with power-of-two rounding) | results/kp9_kompa_kompb_2026-11-10.md section 2 |
-| pending | KP-10 against Shibuya's km-peeler | recon/ (running) |
+| 0.42 \|A\| | KOMPa vs KOMPb chr7 difference (Supplement) | results/kp9_kompa_kompb_2026-11-10.md (section 1 table) |
+| 3,238,101 | canonical 31-mer difference, Cannbio-2 vs Cannbio2_GigaDB | results/kp10_vs_shibuya_2026-11-11.md:21 |
+| 7,931 | difference, Cannbio-2 vs its draft | results/kp10_vs_shibuya_2026-11-11.md:20 |
+| 11.3 (11.27) | KP-10 bytes per difference, GigaDB pair, both fields | results/kp10_vs_shibuya_2026-11-11.md:60 |
+| 36.5 MB | KP-10 sketch size, GigaDB pair, both fields | results/kp10_vs_shibuya_2026-11-11.md:60 |
+| 137 KB, 1 round | KP-10 on the draft pair, exact | results/kp10_vs_shibuya_2026-11-11.md:62 |
+| 20.5 | km-peeler k-mer IBLT bytes per difference at 1.05·D, 30/30 | results/kp10_vs_shibuya_2026-11-11.md:91 |
+| 1.8× | IBLT / KP-10 bytes (20.5 / 11.27) | results/kp10_vs_shibuya_2026-11-11.md:94 |
+| 15/30 | IBLT successes at n = D | results/kp10_vs_shibuya_2026-11-11.md:90 |
+| 26/30 (4 of 30 failed), D = 488 | IBLT on draft partitions 0–3 at 1.05·D | results/kp10_vs_shibuya_2026-11-11.md:92 |
+| 4.2 | extended-syncmer IBLT bytes per true k-mer difference | results/kp10_vs_shibuya_2026-11-11.md:102 |
+| 2.7× | KP-10 / extended syncmers (11.27 / 4.2) | results/kp10_vs_shibuya_2026-11-11.md:102 |
+| 1,986,807 spurious (61%), 7 missed | extended-syncmer recovery, GigaDB | results/kp10_vs_shibuya_2026-11-11.md:105 |
+| 48,293,748 | differing extended syncmers, draft vs final | results/kp10_vs_shibuya_2026-11-11.md:110 |
+| m + c = 66 | field multiplications per element | results/kp10_vs_shibuya_2026-11-11.md:8 |
+| 6.9 million (6,913,034) | elements in the mergeability test | results/kp10_vs_shibuya_2026-11-11.md:68 |
+| 20,000 | sampled k-mers on which the numpy hashes equal the C | results/kp10_vs_shibuya_2026-11-11.md:33 |
+| 3 rounds, 257 splits | draft Gaussian run before the Padé index fix (771092b) | results/kp10_vs_shibuya_2026-11-11.md:73–74 |
 
 ## Supplement: negative and niche results
 
@@ -90,16 +115,9 @@ multi-seed statistics yet.
 | 7,760 / 34,736 | KP-5 palindromic 20-mers / inverted repeats (arm 20, spacer ≤ 100) on NC_044378.1 | results/ideas_kp5_kp11_2026-11-11.md:27–28 |
 | 1,370× | KP-11 mismatch-counting transform against direct, k = 12, d = 3 | results/ideas_kp5_kp11_2026-11-11.md:74 |
 
-## Consolidated benchmark required before submission
+## Consolidated benchmark: DONE (job 08653d9e6a7453a2, 2026-11-11)
 
-The timings above come from at least four laila jobs (7fc2a700073c1f4f, 5a03e1322aef25af, 5deca06fa147bf0e,
-af1eb52f65c6d471). Before submission, ONE laila job must time, in interleaved repeats with a `__load_only__` baseline:
-1. batched ntHash (`ntbatch.h`) and the ntHash library roll()
-2. Eisenstein every-k-mer: scalar reference, 1 lane, 2 lanes
-3. Gaussian 61-bit every-k-mer, 2 lanes, and CM31 AVX2 and AVX-512
-4. Eisenstein sampler, branchy and batched, at 1/1000, 1/100, 1/16, 1/4
-5. CM31 v2 sampler (batched) at the same rates, as the previous best
-6. the Eisenstein spaced-seed hash and ntHash2 SeedNtHash (one and two masks)
-7. the KP-10 sketch build and recovery, once that code is final
-
-Also needed: multi-seed sampling statistics for the Eisenstein provable hash itself.
+Items 1–6 of the earlier requirement (ntHash batched and library; Eisenstein scalar, 1 and 2 lanes; Gaussian 61-bit;
+CM31 AVX2 and AVX-512; Eisenstein and CM31 samplers at 1/1000 to 1/4; spaced seeds with one and two masks) ran in
+one job, two interleaved repeats, three load baselines per binary. Item 7, the KP-10 sketch build and recovery, is
+a numpy prototype and is not timed on laila; the paper quotes its times only as prototype times.
