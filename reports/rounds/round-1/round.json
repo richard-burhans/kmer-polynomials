@@ -8,7 +8,7 @@
       "id": "C1",
       "text": "[the user's claim] (F+λ)(R+λ) over F_q with the Eisenstein encoding is injective on double-stranded k-mers with a provable ~2k/q collision bound, and the obvious shortcuts F+R and F·R are degenerate. Refuted if the unique-factorization step does not show S(s)−S(u) is a NONZERO polynomial for every pair of distinct double-stranded classes, if 'injective' overstates a probabilistic statement, if the total-degree bound 2(k−1) or the 2.7×10⁻¹⁷ arithmetic is wrong, if independence of x, λ from the input is insufficiently stated, or if the exhaustive k=7/8 checks (results/kp7_symmetric_check_2026-11-10.txt, results/kp7_eisenstein_2026-11-10.md) do not reproduce or do not test what they claim. Evidence map: manuscript/ledger.md.",
       "source": {
-        "file": "manuscript/paper.md",
+        "file": "reports/rounds/round-1/ATTACKED-paper.md",
         "quote": "Its unique factorization in $\\lambda$ separates distinct double-stranded k-mers"
       },
       "type": "human"
@@ -49,7 +49,7 @@
       "id": "C6",
       "text": "[priority, no number] 'We contribute four things': the second contribution, using these values as polynomial hash coefficients over F_q with a strand-symmetric product whose bound holds for every input, is implied new. Refuted if a strand-symmetric polynomial/product hash with a proven bound (or (F+λ)(R+λ) itself, or a symmetric-polynomial canonical hash) is already published; the paper cites no dated search for this absence. Evidence map: manuscript/ledger.md.",
       "source": {
-        "file": "manuscript/paper.md",
+        "file": "reports/rounds/round-1/ATTACKED-paper.md",
         "quote": "Second, the use of these values as polynomial hash coefficients over $\\mathbb{F}_q$, with a strand-symmetric product whose collision bound holds for every input."
       }
     },
@@ -73,7 +73,7 @@
       "id": "C9",
       "text": "[empirical] In pairwise alignments of cannabis assemblies on NC_044378.1, 61–65% of substitutions are transitions (Ts/Tv 1.58–1.85). Refuted if the source (results/ideas_eisenstein_2026-11-10.md, ideas/eisenstein/kp1_tstv.py) does not give these, if 61–65% does not follow from 1.58–1.85, or if the alignment set is mis-described. Evidence map: manuscript/ledger.md.",
       "source": {
-        "file": "manuscript/paper.md",
+        "file": "reports/rounds/round-1/ATTACKED-paper.md",
         "quote": "61 to 65 percent of substitutions are transitions (Ts/Tv 1.58 to 1.85)"
       }
     },
@@ -81,7 +81,7 @@
       "id": "C10",
       "text": "[speed] Every timing comes from one laila job (08653d9e6a7453a2), two interleaved repeats ≤1.3% apart, load cost subtracted: Eisenstein every k-mer 24.69 cycles = 0.46× batched ntHash (11.37); library interface 23.53; fourth-root 47.37; AVX2 26.43; AVX-512 25.86; the Eisenstein scalar code 'matches the 16-lane AVX-512 code'. Refuted if the raw counters (results/paper_bench_2026-11-11/) do not give these, if the comparison is unfair (flags, input, the batched baseline not bit-identical to the library), or if two repeats cannot support the precision quoted. Evidence map: manuscript/ledger.md.",
       "source": {
-        "file": "manuscript/paper.md",
+        "file": "reports/rounds/round-1/ATTACKED-paper.md",
         "quote": "the hash costs 24.7 cycles per k-mer on every k-mer, 0.46 times the speed of a batched ntHash"
       }
     },
@@ -89,7 +89,7 @@
       "id": "C11",
       "text": "[speed, extrapolated] A kept k-mer costs about 28.5 cycles, so the sampler is faster than batched ntHash at sampling rates of 1/20 and below. Refuted if 1/20 is not supported by measurement (the table measures 1/16 at 0.97× and 1/100 at 1.14×; 1/20 is interpolated from a slope between rows using DIFFERENT evaluation modes), or if 'and below' fails anywhere in the range. Evidence map: manuscript/ledger.md.",
       "source": {
-        "file": "manuscript/paper.md",
+        "file": "reports/rounds/round-1/ATTACKED-paper.md",
         "quote": "a sampler that computes it only for kept k-mers is faster than batched ntHash at sampling rates of 1/20 and below"
       }
     },
@@ -97,7 +97,7 @@
       "id": "C12",
       "text": "[equivalence] The batched ntHash reimplementation reproduces the library's hashes bit for bit and runs about twice as fast as the library's per-k-mer interface. Refuted if the bit-for-bit check is absent, partial (e.g. only some k-mers or only canonical values), or if 'about twice' is wrong. Evidence map: manuscript/ledger.md.",
       "source": {
-        "file": "manuscript/paper.md",
+        "file": "reports/rounds/round-1/ATTACKED-paper.md",
         "quote": "The baseline is a batched reimplementation of ntHash's canonical roll that reproduces the library's hashes bit for bit"
       }
     },
@@ -105,7 +105,7 @@
       "id": "C13",
       "text": "[sampling quality] Across cs10 and five seeds, minimizer density within 0.4% of 2/(w+1) at w=10,20,50 for four methods; max per-bit deviation 0.0009–0.0010 (Eisenstein 0.00090 vs ntHash 0.00088); tens of threshold-sampling gaps >200 k-mers per seed vs 0.14 expected; all but 2 of 1,774 in soft-masked repeats, none of the Eisenstein hash's 367 outside. Refuted if the numbers do not reproduce from results/kp7_stats_seeds_eisenstein_2026-11-11.md and its TSVs, if 0.14 is mis-derived, or if 'so the long gaps reflect repeats' does not follow (47.7% of cs10 is soft-masked). Evidence map: manuscript/ledger.md.",
       "source": {
-        "file": "manuscript/paper.md",
+        "file": "reports/rounds/round-1/ATTACKED-paper.md",
         "quote": "All but 2 of the 1,774 such gaps lay in soft-masked repeats"
       }
     },
@@ -121,7 +121,7 @@
       "id": "C15",
       "text": "[set sketch] Power-sum sketch: 11.3 bytes per difference on Cannbio-2 vs GigaDB (3,238,101 differences), exact in every run; km-peeler k-mer table 20.5 bytes at 1.05× in 30/30 (15/30 at 1.0×, tested on 4 of 64 partitions); extended syncmers 4.2 bytes, 1,986,807 spurious, 7 missed, 61% spurious, 2.7× smaller; 0.55× / 1.8× the bytes of an IBLT 'of equal reliability'. Refuted if the numbers do not reproduce from results/kp10_vs_shibuya_2026-11-11*, if 'equal reliability' compares unequal regimes (4 of 64 partitions, 30 trials vs deterministic), or if the bytes accounting differs between methods. Evidence map: manuscript/ledger.md.",
       "source": {
-        "file": "manuscript/paper.md",
+        "file": "reports/rounds/round-1/ATTACKED-paper.md",
         "quote": "it needed 11.3 bytes per difference, against 20.5 for an invertible Bloom lookup table of equal reliability"
       }
     },
@@ -129,7 +129,7 @@
       "id": "C16",
       "text": "[set sketch, no number] The c extra sums make overflow detection deterministic: 'a bucket holding more than m differences is detected rather than resolved wrongly'; the Discussion says the sketch 'detected its own overflow deterministically'. Refuted if a bucket with >m differences can produce m+c power sums consistent with a ≤m solution (then detection is probabilistic over the hash, not deterministic). Evidence map: manuscript/ledger.md.",
       "source": {
-        "file": "manuscript/paper.md",
+        "file": "reports/rounds/round-1/ATTACKED-paper.md",
         "quote": "so a bucket holding more than $m$ differences is detected rather than resolved wrongly"
       }
     },
@@ -137,7 +137,7 @@
       "id": "C17",
       "text": "[orientation] Between Cannbio-2 and its draft, the sketch recovered all 7,931 differences in 137 KB in one round, where km-peeler's extended-syncmer method saw 48,293,748 differences because the draft's contigs lie in other orientations; a canonical k-mer table is orientation-blind too, so the advantage holds against the extended-syncmer method only. Refuted if the 48M is not caused by orientation, if 137 KB is mis-computed, or if the abstract/introduction ('a strand-specific method saw 48 million') overstate what the Discussion concedes. Evidence map: manuscript/ledger.md.",
       "source": {
-        "file": "manuscript/paper.md",
+        "file": "reports/rounds/round-1/ATTACKED-paper.md",
         "quote": "where a strand-specific method saw 48 million"
       }
     },
@@ -153,7 +153,7 @@
       "id": "C19",
       "text": "[literature reading] Marçais and colleagues show that canonicalization negates the window guarantee of syncmer-style schemes but has no visible effect on fractional sampling. Refuted if the reading of marcais_2024_knonical is wrong (library summary and PDF). Evidence map: manuscript/ledger.md.",
       "source": {
-        "file": "manuscript/paper.md",
+        "file": "reports/rounds/round-1/ATTACKED-paper.md",
         "quote": "Marçais and colleagues show that folding a k-mer with its reverse complement negates the window guarantee of syncmer-style schemes"
       }
     },
