@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Run the shared round harness from ANY working directory in this repo.
+#
+# This forwards to the round repo's own `bin/round`;
+# it imports nothing. This repo gains no Python dependency, so it still needs no sibling checkout and
+# no credentials to install — and a missing sibling degrades to a named exit rather than an install
+# failure, which is how every other cross-repo absence behaves here.
+#
+# The repo root comes from `${BASH_SOURCE[0]}`, never from `$PWD`, so this is correct from anywhere.
+#
+# This repo's manuscript makes mathematical and priority claims (injectivity, collision bounds, prior art),
+# and each goes through an adversarial round before it is asserted. Copied from cannabis-genome's forwarder.
+set -euo pipefail
+
+REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROUND="${ROUND_ROOT:-$REPO/../round}"
+
+if [ ! -x "$ROUND/bin/round" ]; then
+    # NAMED, with an exit code — never a silent skip. A gate that quietly stopped attacking would
+    # report a clean round it had not run.
+    echo "no round harness at ${ROUND}/bin/round" >&2
+    echo "Point at a checkout with \$ROUND_ROOT, or clone it beside this repo as ../round." >&2
+    exit 2
+fi
+
+# This repo IS the consumer unless the caller says otherwise — so a round run from here is about here,
+# without anybody having to export a variable. `round.toml` at the root is what makes that true.
+export ROUND_CONSUMER_ROOT="${ROUND_CONSUMER_ROOT:-$REPO}"
+exec "$ROUND/bin/round" "$@"

@@ -1,0 +1,15 @@
+# This repository is a CONSUMER of the adversarial-round harness (richard-burhans/round).
+# `scripts/round` forwards to it. Paths are relative to this file.
+
+[consumer]
+name = "kmer-polynomials"
+
+[paths]
+rounds = "reports/rounds"
+log = "reports/adversarial_log.md"
+# The siblings a round may reach into: the library (paper summaries) and the data directory.
+workspace = ".."
+
+[commands]
+# What the cold post-round auditor runs before forming a view.
+gate = "python3 -m pytest -q && make -C manuscript check"
