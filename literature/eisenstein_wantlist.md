@@ -1,6 +1,8 @@
 # Literature for the Eisenstein encoding: novelty check (2026-11-10)
 
-**Status: OPEN. Acquisition only, not yet filed in the library.** The encoding under check: A = 1, C = ω, G = −ω,
+**Status (updated 2026-11-11):** all six owner-fetched papers received (bench/data/papers/eisenstein_oa/). The owner supplied Das & Das 2017 (I2CT, Kaiser window) in place of Das et al. 2018 (Genomics); the latter is no longer needed, see the resolution below.
+
+**Original status: OPEN. Acquisition only, not yet filed in the library.** The encoding under check: A = 1, C = ω, G = −ω,
 T = −1 (ω a primitive cube root of unity). Complement is negation. In ℂ, transitions have squared distance 1,
 A–C/G–T transversions 3, and complements 4. The same values serve as polynomial-hash coefficients over F_q with ω ∈ F_q
 (hash/kp7e.*, results/kp7_eisenstein_2026-11-10.md). OA PDFs are in `bench/data/papers/eisenstein_oa/`.
@@ -60,3 +62,20 @@ coefficients with an exact strand-symmetric product. Both are pending the fetch 
 - "k-mer hashing finite field reverse complement symmetric", "trigonometric mapping DNA theta 60 degrees"
 
 The Eisenstein-integer hits were all image cryptography or GF(4)/ring DNA codes (item 4 above).
+
+
+## Resolution (2026-11-11): the exact map IS published
+
+Das, Nanda & Das 2017 (MAMI, das_2017_trigonometric-mami.pdf, eq. 2) define A = −cos θ + j sin θ, C = −cos θ − j sin θ,
+G = cos θ + j sin θ, T = cos θ − j sin θ, and state "the θ value is taken as pi/3". This has complement = negation and
+exactly our squared distances: 1 for A–G and C–T (transitions), 3 for A–C and G–T, and 4 for complements. It is our
+Eisenstein map up to a rotation. Their stated reasons are that purines and pyrimidines share imaginary parts and that
+complements sum to zero. They do NOT mention transitions or distances.
+
+What remains unclaimed, as far as these searches go:
+1. the explicit criterion (transitions separate from A–C/G–T exactly when Re(A·C̄) ≠ 0, so no fourth-root map can) and
+   transition-cheapest as the REASON for θ = π/3;
+2. the use as polynomial-hash coefficients over F_q with ω ∈ F_q, and the strand-symmetric product (F+λ)(R+λ).
+
+The other papers: Grandhi & Kumar 2007's 2-simplex map puts three bases on a triangle and the fourth at 0 (different).
+Roy & Barman 2017 use a codon-level map with angle π/8. Cristea 2002 and Yu et al. 2018 are background.
