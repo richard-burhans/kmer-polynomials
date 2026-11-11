@@ -1,0 +1,12 @@
+{
+ "truth": "recon/kmerset.py canonical difference diff_Cannbio-2__Cannbio-2_draft.k31",
+ "rundir": "/home/rcb112/project/claude/bench/data/kmer_poly_work/round1_owed/aswritten/run_Cannbio-2__Cannbio-2_draft.k31.sym.x5eed.l1a3d.b8.m64",
+ "true_A_minus_B_kmers": 0,
+ "true_B_minus_A_kmers": 7931,
+ "true_distinct_hash_values": 7931,
+ "recovered_A_minus_B": 0,
+ "recovered_B_minus_A": 7931,
+ "recovered_equals_truth": true,
+ "missed": 0,
+ "spurious": 0
+}

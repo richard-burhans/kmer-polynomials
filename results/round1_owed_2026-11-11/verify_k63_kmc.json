@@ -1,0 +1,14 @@
+{
+ "truth": "KMC 3 canonical k-mer difference",
+ "rundir": "/home/rcb112/project/claude/bench/data/kmer_poly_work/round1_owed/aswritten/run_Cannbio-2__Cannbio-2_draft.k63.sym.x5eed.l1a3d.b10.m64",
+ "amb_dump": "/home/rcb112/project/claude/bench/data/kmer_poly_work/round1_owed/kmc/k63/amb.txt",
+ "bma_dump": "/home/rcb112/project/claude/bench/data/kmer_poly_work/round1_owed/kmc/k63/bma.txt",
+ "true_A_minus_B_kmers": 0,
+ "true_B_minus_A_kmers": 21382,
+ "true_distinct_hash_values": 21382,
+ "recovered_A_minus_B": 0,
+ "recovered_B_minus_A": 21382,
+ "recovered_equals_truth": true,
+ "missed": 0,
+ "spurious": 0
+}

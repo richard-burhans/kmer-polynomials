@@ -1,0 +1,2 @@
+{"tool": "KMC ver. 3.2.4", "A": "Cannbio-2", "B": "Cannbio-2_draft", "k": 31, "distinct_A": 442151894, "distinct_B": 442159825, "A_minus_B": 0,
+ "B_minus_A": 7931, "D": 7931, "amb": "/home/rcb112/project/claude/bench/data/kmer_poly_work/round1_owed/kmc/k31/amb.txt", "bma": "/home/rcb112/project/claude/bench/data/kmer_poly_work/round1_owed/kmc/k31/bma.txt"}

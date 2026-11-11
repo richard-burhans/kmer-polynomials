@@ -1,0 +1,16 @@
+{
+ "k": 63,
+ "mode": "sym",
+ "x": 492247986318507,
+ "lam": 834835136232447260,
+ "records": 147,
+ "bases": 914397426,
+ "kmers": 912947159,
+ "distinct": 600828183,
+ "passes": 16,
+ "genome": "Cannbio-2",
+ "seed_x": 24301,
+ "seed_lam": 6717,
+ "parts": 64,
+ "seconds": 2543.4
+}
