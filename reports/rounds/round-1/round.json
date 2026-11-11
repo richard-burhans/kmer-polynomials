@@ -6,7 +6,7 @@
   "claims": [
     {
       "id": "C1",
-      "text": "[the user's claim] (F+λ)(R+λ) over F_q with the Eisenstein encoding is injective on double-stranded k-mers with a provable ~2k/q collision bound, and the obvious shortcuts F+R and F·R are degenerate. Refuted if the unique-factorization step does not show S(s)−S(u) is a NONZERO polynomial for every pair of distinct double-stranded classes, if 'injective' overstates a probabilistic statement, if the total-degree bound 2(k−1) or the 2.7×10⁻¹⁷ arithmetic is wrong, if independence of x, λ from the input is insufficiently stated, or if the exhaustive k=7/8 checks (results/kp7_symmetric_check_2026-11-10.txt, results/kp7_eisenstein_2026-11-10.md) do not reproduce or do not test what they claim. Evidence map: manuscript/ledger.md.",
+      "text": "[the user's claim] (F+\u03bb)(R+\u03bb) over F_q with the Eisenstein encoding is injective on double-stranded k-mers with a provable ~2k/q collision bound, and the obvious shortcuts F+R and F\u00b7R are degenerate. Refuted if the unique-factorization step does not show S(s)\u2212S(u) is a NONZERO polynomial for every pair of distinct double-stranded classes, if 'injective' overstates a probabilistic statement, if the total-degree bound 2(k\u22121) or the 2.7\u00d710\u207b\u00b9\u2077 arithmetic is wrong, if independence of x, \u03bb from the input is insufficiently stated, or if the exhaustive k=7/8 checks (results/kp7_symmetric_check_2026-11-10.txt, results/kp7_eisenstein_2026-11-10.md) do not reproduce or do not test what they claim. Evidence map: manuscript/ledger.md.",
       "source": {
         "file": "manuscript/paper.md",
         "quote": "Its unique factorization in $\\lambda$ separates distinct double-stranded k-mers"
@@ -15,7 +15,7 @@
     },
     {
       "id": "C2",
-      "text": "[mathematical] F+R depends only on mirror differences and takes at most 9^⌊k/2⌋ values (729 at k=7, 6,561 at k=8); F·R cannot tell a k-mer from its plain reverse (4,160 and 16,362 values). Refuted if the formulas are wrong, the counts do not reproduce, or the table caption's encoding/field (fourth-root, q=2^31−1) is not what produced them. Evidence map: manuscript/ledger.md.",
+      "text": "[mathematical] F+R depends only on mirror differences and takes at most 9^\u230ak/2\u230b values (729 at k=7, 6,561 at k=8); F\u00b7R cannot tell a k-mer from its plain reverse (4,160 and 16,362 values). Refuted if the formulas are wrong, the counts do not reproduce, or the table caption's encoding/field (fourth-root, q=2^31\u22121) is not what produced them. Evidence map: manuscript/ledger.md.",
       "source": {
         "file": "manuscript/paper.md",
         "quote": "The sum $F + R = \\sum_t s_t (x^t - x^{k-1-t})$ depends only on the mirror differences"
@@ -23,7 +23,7 @@
     },
     {
       "id": "C3",
-      "text": "[mathematical] Rolling rules F_{j+1}=(F_j−s_j)x⁻¹+s_{j+k}x^{k−1} and R_{j+1}=x(R_j+s_j x^{k−1})−s_{j+k} are correct for F=p(x), R=−x^{k−1}p(1/x); single-strand bound (k−1)/q. Refuted if either recurrence is wrong. Evidence map: manuscript/ledger.md.",
+      "text": "[mathematical] Rolling rules F_{j+1}=(F_j\u2212s_j)x\u207b\u00b9+s_{j+k}x^{k\u22121} and R_{j+1}=x(R_j+s_j x^{k\u22121})\u2212s_{j+k} are correct for F=p(x), R=\u2212x^{k\u22121}p(1/x); single-strand bound (k\u22121)/q. Refuted if either recurrence is wrong. Evidence map: manuscript/ledger.md.",
       "source": {
         "file": "manuscript/paper.md",
         "quote": "R_{j+1} = x\\,(R_j + s_j\\,x^{k-1}) - s_{j+k}"
@@ -31,7 +31,7 @@
     },
     {
       "id": "C4",
-      "text": "[field facts] q=2^61−1 ≡ 1 (mod 3) so a primitive cube root ω lies in F_q; q ≡ 3 (mod 4) so i does not, and the fourth-root hash lives in F_{q²} at about twice the multiplications. Refuted if a congruence is wrong or the cost ratio is not ~2 (47.37 vs 24.69 cycles in results/paper_bench_2026-11-11.md). Evidence map: manuscript/ledger.md.",
+      "text": "[field facts] q=2^61\u22121 \u2261 1 (mod 3) so a primitive cube root \u03c9 lies in F_q; q \u2261 3 (mod 4) so i does not, and the fourth-root hash lives in F_{q\u00b2} at about twice the multiplications. Refuted if a congruence is wrong or the cost ratio is not ~2 (47.37 vs 24.69 cycles in results/paper_bench_2026-11-11.md). Evidence map: manuscript/ledger.md.",
       "source": {
         "file": "manuscript/paper.md",
         "quote": "Because $q \\equiv 1 \\pmod 3$, a primitive cube root of unity exists in $\\mathbb{F}_q$"
@@ -39,7 +39,7 @@
     },
     {
       "id": "C5",
-      "text": "[priority / definitional] The criterion: with complement as negation, transitions separate from A–C/G–T transversions exactly when Re(A C̄)≠0; no fourth-root map satisfies it; it is presented as this paper's contribution ('narrower'). Refuted if the identity or the 'exactly when' is wrong, if some fourth-root map does satisfy it, or if the criterion is already published (an absence/priority claim: the paper carries NO dated search marker for it). Evidence map: manuscript/ledger.md.",
+      "text": "[priority / definitional] The criterion: with complement as negation, transitions separate from A\u2013C/G\u2013T transversions exactly when Re(A C\u0304)\u22600; no fourth-root map satisfies it; it is presented as this paper's contribution ('narrower'). Refuted if the identity or the 'exactly when' is wrong, if some fourth-root map does satisfy it, or if the criterion is already published (an absence/priority claim: the paper carries NO dated search marker for it). Evidence map: manuscript/ledger.md.",
       "source": {
         "file": "manuscript/paper.md",
         "quote": "Our contribution here is narrower, the criterion for complex maps in which complement is negation."
@@ -47,7 +47,7 @@
     },
     {
       "id": "C6",
-      "text": "[priority, no number] 'We contribute four things': the second contribution, using these values as polynomial hash coefficients over F_q with a strand-symmetric product whose bound holds for every input, is implied new. Refuted if a strand-symmetric polynomial/product hash with a proven bound (or (F+λ)(R+λ) itself, or a symmetric-polynomial canonical hash) is already published; the paper cites no dated search for this absence. Evidence map: manuscript/ledger.md.",
+      "text": "[priority, no number] 'We contribute four things': the second contribution, using these values as polynomial hash coefficients over F_q with a strand-symmetric product whose bound holds for every input, is implied new. Refuted if a strand-symmetric polynomial/product hash with a proven bound (or (F+\u03bb)(R+\u03bb) itself, or a symmetric-polynomial canonical hash) is already published; the paper cites no dated search for this absence. Evidence map: manuscript/ledger.md.",
       "source": {
         "file": "manuscript/paper.md",
         "quote": "Second, the use of these values as polynomial hash coefficients over $\\mathbb{F}_q$, with a strand-symmetric product whose collision bound holds for every input."
@@ -55,7 +55,7 @@
     },
     {
       "id": "C7",
-      "text": "[attribution / provenance] Cristea 2002 already made complement a negation via the fourth-root map (up to global sign) and the θ=π/4 trigonometric point; Das, Nanda and Das 2017 fixed θ=π/3, our map up to rotation; their rationale restates Cristea's, mentions no distances, asserts the angle; printed sensitivity is the value of their specificity formula; text and two tables give three exon ranges; Anastassiou makes complement a conjugation; Mendizabal's Table 6 shows spectra cannot tell strand from complement. Refuted if any of these readings of the sources is wrong (check the library summaries AND the PDFs). Evidence map: manuscript/ledger.md.",
+      "text": "[attribution / provenance] Cristea 2002 already made complement a negation via the fourth-root map (up to global sign) and the \u03b8=\u03c0/4 trigonometric point; Das, Nanda and Das 2017 fixed \u03b8=\u03c0/3, our map up to rotation; their rationale restates Cristea's, mentions no distances, asserts the angle; printed sensitivity is the value of their specificity formula; text and two tables give three exon ranges; Anastassiou makes complement a conjugation; Mendizabal's Table 6 shows spectra cannot tell strand from complement. Refuted if any of these readings of the sources is wrong (check the library summaries AND the PDFs). Evidence map: manuscript/ledger.md.",
       "source": {
         "file": "manuscript/paper.md",
         "quote": "Das, Nanda and Das fixed the family's angle at $\\theta = \\pi/3$"
@@ -63,15 +63,15 @@
     },
     {
       "id": "C8",
-      "text": "[mathematical] With A=1, C=ω: squared distances 1 (transitions), 3 (A–C, G–T transversions), 4 (complements); the field hash keeps the algebra, not the distances. Refuted if the arithmetic is wrong or the sentence implies the hash measures substitution distance. Evidence map: manuscript/ledger.md.",
+      "text": "[mathematical] With A=1, C=\u03c9: squared distances 1 (transitions), 3 (A\u2013C, G\u2013T transversions), 4 (complements); the field hash keeps the algebra, not the distances. Refuted if the arithmetic is wrong or the sentence implies the hash measures substitution distance. Evidence map: manuscript/ledger.md.",
       "source": {
         "file": "manuscript/paper.md",
-        "quote": "so the squared distances are 1 for transitions, 3 for the A–C and G–T transversions, and 4 for complements"
+        "quote": "so the squared distances are 1 for transitions, 3 for the A\u2013C and G\u2013T transversions, and 4 for complements"
       }
     },
     {
       "id": "C9",
-      "text": "[empirical] In pairwise alignments of cannabis assemblies on NC_044378.1, 61–65% of substitutions are transitions (Ts/Tv 1.58–1.85). Refuted if the source (results/ideas_eisenstein_2026-11-10.md, ideas/eisenstein/kp1_tstv.py) does not give these, if 61–65% does not follow from 1.58–1.85, or if the alignment set is mis-described. Evidence map: manuscript/ledger.md.",
+      "text": "[empirical] In pairwise alignments of cannabis assemblies on NC_044378.1, 61\u201365% of substitutions are transitions (Ts/Tv 1.58\u20131.85). Refuted if the source (results/ideas_eisenstein_2026-11-10.md, ideas/eisenstein/kp1_tstv.py) does not give these, if 61\u201365% does not follow from 1.58\u20131.85, or if the alignment set is mis-described. Evidence map: manuscript/ledger.md.",
       "source": {
         "file": "manuscript/paper.md",
         "quote": "61 to 65 percent of substitutions are transitions (Ts/Tv 1.58 to 1.85)"
@@ -79,7 +79,7 @@
     },
     {
       "id": "C10",
-      "text": "[speed] Every timing comes from one laila job (08653d9e6a7453a2), two interleaved repeats ≤1.3% apart, load cost subtracted: Eisenstein every k-mer 24.69 cycles = 0.46× batched ntHash (11.37); library interface 23.53; fourth-root 47.37; AVX2 26.43; AVX-512 25.86; the Eisenstein scalar code 'matches the 16-lane AVX-512 code'. Refuted if the raw counters (results/paper_bench_2026-11-11/) do not give these, if the comparison is unfair (flags, input, the batched baseline not bit-identical to the library), or if two repeats cannot support the precision quoted. Evidence map: manuscript/ledger.md.",
+      "text": "[speed] Every timing comes from one laila job (08653d9e6a7453a2), two interleaved repeats \u22641.3% apart, load cost subtracted: Eisenstein every k-mer 24.69 cycles = 0.46\u00d7 batched ntHash (11.37); library interface 23.53; fourth-root 47.37; AVX2 26.43; AVX-512 25.86; the Eisenstein scalar code 'matches the 16-lane AVX-512 code'. Refuted if the raw counters (results/paper_bench_2026-11-11/) do not give these, if the comparison is unfair (flags, input, the batched baseline not bit-identical to the library), or if two repeats cannot support the precision quoted. Evidence map: manuscript/ledger.md.",
       "source": {
         "file": "manuscript/paper.md",
         "quote": "the hash costs 24.7 cycles per k-mer on every k-mer, 0.46 times the speed of a batched ntHash"
@@ -87,7 +87,7 @@
     },
     {
       "id": "C11",
-      "text": "[speed, extrapolated] A kept k-mer costs about 28.5 cycles, so the sampler is faster than batched ntHash at sampling rates of 1/20 and below. Refuted if 1/20 is not supported by measurement (the table measures 1/16 at 0.97× and 1/100 at 1.14×; 1/20 is interpolated from a slope between rows using DIFFERENT evaluation modes), or if 'and below' fails anywhere in the range. Evidence map: manuscript/ledger.md.",
+      "text": "[speed, extrapolated] A kept k-mer costs about 28.5 cycles, so the sampler is faster than batched ntHash at sampling rates of 1/20 and below. Refuted if 1/20 is not supported by measurement (the table measures 1/16 at 0.97\u00d7 and 1/100 at 1.14\u00d7; 1/20 is interpolated from a slope between rows using DIFFERENT evaluation modes), or if 'and below' fails anywhere in the range. Evidence map: manuscript/ledger.md.",
       "source": {
         "file": "manuscript/paper.md",
         "quote": "a sampler that computes it only for kept k-mers is faster than batched ntHash at sampling rates of 1/20 and below"
@@ -103,7 +103,7 @@
     },
     {
       "id": "C13",
-      "text": "[sampling quality] Across cs10 and five seeds, minimizer density within 0.4% of 2/(w+1) at w=10,20,50 for four methods; max per-bit deviation 0.0009–0.0010 (Eisenstein 0.00090 vs ntHash 0.00088); tens of threshold-sampling gaps >200 k-mers per seed vs 0.14 expected; all but 2 of 1,774 in soft-masked repeats, none of the Eisenstein hash's 367 outside. Refuted if the numbers do not reproduce from results/kp7_stats_seeds_eisenstein_2026-11-11.md and its TSVs, if 0.14 is mis-derived, or if 'so the long gaps reflect repeats' does not follow (47.7% of cs10 is soft-masked). Evidence map: manuscript/ledger.md.",
+      "text": "[sampling quality] Across cs10 and five seeds, minimizer density within 0.4% of 2/(w+1) at w=10,20,50 for four methods; max per-bit deviation 0.0009\u20130.0010 (Eisenstein 0.00090 vs ntHash 0.00088); tens of threshold-sampling gaps >200 k-mers per seed vs 0.14 expected; all but 2 of 1,774 in soft-masked repeats, none of the Eisenstein hash's 367 outside. Refuted if the numbers do not reproduce from results/kp7_stats_seeds_eisenstein_2026-11-11.md and its TSVs, if 0.14 is mis-derived, or if 'so the long gaps reflect repeats' does not follow (47.7% of cs10 is soft-masked). Evidence map: manuscript/ledger.md.",
       "source": {
         "file": "manuscript/paper.md",
         "quote": "All but 2 of the 1,774 such gaps lay in soft-masked repeats"
@@ -111,7 +111,7 @@
     },
     {
       "id": "C14",
-      "text": "[spaced seeds] (F_m+λ)(R_m+λ) is strand-symmetric for any 0/1 mask; ntHash2 warns its reverse-complement hashing becomes inconsistent for non-palindromic masks; at 1% substitutions our hash kept 0.747 of windows unchanged (the exact double-stranded value) vs 0.818 for ntHash2; 0.76× ntHash2 speed. Refuted if a non-palindromic mask breaks symmetry (the mirror of a mask is applied to R?), if ntHash2 does not so warn, or if the 0.818 > 0.747 comparison is misread (a HIGHER unchanged fraction from ntHash2 is presented as inconsistency, not as better). Evidence map: manuscript/ledger.md.",
+      "text": "[spaced seeds] (F_m+\u03bb)(R_m+\u03bb) is strand-symmetric for any 0/1 mask; ntHash2 warns its reverse-complement hashing becomes inconsistent for non-palindromic masks; at 1% substitutions our hash kept 0.747 of windows unchanged (the exact double-stranded value) vs 0.818 for ntHash2; 0.76\u00d7 ntHash2 speed. Refuted if a non-palindromic mask breaks symmetry (the mirror of a mask is applied to R?), if ntHash2 does not so warn, or if the 0.818 > 0.747 comparison is misread (a HIGHER unchanged fraction from ntHash2 is presented as inconsistency, not as better). Evidence map: manuscript/ledger.md.",
       "source": {
         "file": "manuscript/paper.md",
         "quote": "Because $(F_m + \\lambda)(R_m + \\lambda)$ is strand-symmetric for any mask"
@@ -119,7 +119,7 @@
     },
     {
       "id": "C15",
-      "text": "[set sketch] Power-sum sketch: 11.3 bytes per difference on Cannbio-2 vs GigaDB (3,238,101 differences), exact in every run; km-peeler k-mer table 20.5 bytes at 1.05× in 30/30 (15/30 at 1.0×, tested on 4 of 64 partitions); extended syncmers 4.2 bytes, 1,986,807 spurious, 7 missed, 61% spurious, 2.7× smaller; 0.55× / 1.8× the bytes of an IBLT 'of equal reliability'. Refuted if the numbers do not reproduce from results/kp10_vs_shibuya_2026-11-11*, if 'equal reliability' compares unequal regimes (4 of 64 partitions, 30 trials vs deterministic), or if the bytes accounting differs between methods. Evidence map: manuscript/ledger.md.",
+      "text": "[set sketch] Power-sum sketch: 11.3 bytes per difference on Cannbio-2 vs GigaDB (3,238,101 differences), exact in every run; km-peeler k-mer table 20.5 bytes at 1.05\u00d7 in 30/30 (15/30 at 1.0\u00d7, tested on 4 of 64 partitions); extended syncmers 4.2 bytes, 1,986,807 spurious, 7 missed, 61% spurious, 2.7\u00d7 smaller; 0.55\u00d7 / 1.8\u00d7 the bytes of an IBLT 'of equal reliability'. Refuted if the numbers do not reproduce from results/kp10_vs_shibuya_2026-11-11*, if 'equal reliability' compares unequal regimes (4 of 64 partitions, 30 trials vs deterministic), or if the bytes accounting differs between methods. Evidence map: manuscript/ledger.md.",
       "source": {
         "file": "manuscript/paper.md",
         "quote": "it needed 11.3 bytes per difference, against 20.5 for an invertible Bloom lookup table of equal reliability"
@@ -127,7 +127,7 @@
     },
     {
       "id": "C16",
-      "text": "[set sketch, no number] The c extra sums make overflow detection deterministic: 'a bucket holding more than m differences is detected rather than resolved wrongly'; the Discussion says the sketch 'detected its own overflow deterministically'. Refuted if a bucket with >m differences can produce m+c power sums consistent with a ≤m solution (then detection is probabilistic over the hash, not deterministic). Evidence map: manuscript/ledger.md.",
+      "text": "[set sketch, no number] The c extra sums make overflow detection deterministic: 'a bucket holding more than m differences is detected rather than resolved wrongly'; the Discussion says the sketch 'detected its own overflow deterministically'. Refuted if a bucket with >m differences can produce m+c power sums consistent with a \u2264m solution (then detection is probabilistic over the hash, not deterministic). Evidence map: manuscript/ledger.md.",
       "source": {
         "file": "manuscript/paper.md",
         "quote": "so a bucket holding more than $m$ differences is detected rather than resolved wrongly"
@@ -151,15 +151,15 @@
     },
     {
       "id": "C19",
-      "text": "[literature reading] Marçais and colleagues show that canonicalization negates the window guarantee of syncmer-style schemes but has no visible effect on fractional sampling. Refuted if the reading of marcais_2024_knonical is wrong (library summary and PDF). Evidence map: manuscript/ledger.md.",
+      "text": "[literature reading] Mar\u00e7ais and colleagues show that canonicalization negates the window guarantee of syncmer-style schemes but has no visible effect on fractional sampling. Refuted if the reading of marcais_2024_knonical is wrong (library summary and PDF). Evidence map: manuscript/ledger.md.",
       "source": {
         "file": "manuscript/paper.md",
-        "quote": "Marçais and colleagues show that folding a k-mer with its reverse complement negates the window guarantee of syncmer-style schemes"
+        "quote": "Mar\u00e7ais and colleagues show that folding a k-mer with its reverse complement negates the window guarantee of syncmer-style schemes"
       }
     },
     {
       "id": "C20",
-      "text": "[testing] Every variant checked against the reference roller over windows with N, block sizes 1–4,096, both strands; deliberately broken versions fail; every sketch recovery compared element by element; the Padé negative-index bug showed only as extra rounds (3 instead of 1) and one-sided tests fail without the fix. Refuted if the tests in hash/ and tests/ do not do this, or the mutants do not fail. Evidence map: manuscript/ledger.md.",
+      "text": "[testing] Every variant checked against the reference roller over windows with N, block sizes 1\u20134,096, both strands; deliberately broken versions fail; every sketch recovery compared element by element; the Pad\u00e9 negative-index bug showed only as extra rounds (3 instead of 1) and one-sided tests fail without the fix. Refuted if the tests in hash/ and tests/ do not do this, or the mutants do not fail. Evidence map: manuscript/ledger.md.",
       "source": {
         "file": "manuscript/paper.md",
         "quote": "Deliberately broken versions (a wrong sign on the incoming base, a shifted lane remainder, $\\lambda$ missing from the table) must fail these tests, and they do."
@@ -167,7 +167,7 @@
     },
     {
       "id": "C21",
-      "text": "[supplement] De Bruijn adjacency exact on 13.6M edges, 4–6× slower; DFT bound pruned 21% vs 77% possible; FFT diagonals 97–99% precision, <2/3 of aligned bases; 7,760 palindromic 20-mers; haplotypes differ in 42% of chromosome 7 31-mers; Z_4^k transform 1,370× faster at k=12, d=3 and 'probably known'. Refuted if any number does not reproduce from results/ideas_*.md, or if a 'did not pay off' verdict does not follow. Evidence map: manuscript/ledger.md.",
+      "text": "[supplement] De Bruijn adjacency exact on 13.6M edges, 4\u20136\u00d7 slower; DFT bound pruned 21% vs 77% possible; FFT diagonals 97\u201399% precision, <2/3 of aligned bases; 7,760 palindromic 20-mers; haplotypes differ in 42% of chromosome 7 31-mers; Z_4^k transform 1,370\u00d7 faster at k=12, d=3 and 'probably known'. Refuted if any number does not reproduce from results/ideas_*.md, or if a 'did not pay off' verdict does not follow. Evidence map: manuscript/ledger.md.",
       "source": {
         "file": "manuscript/paper.md",
         "quote": "1,370 times faster than direct enumeration at $k = 12$, $d = 3$"
@@ -196,14 +196,22 @@
     "kmer-polynomials": "8954c65674f6da7752b38aa849d83f190fdcc143"
   },
   "drift_reviewed": [],
-  "sealed": {},
+  "sealed": {
+    "attack-L1-correctness.md": "1632e431b0260f6042f50003a568b5bf5683d7dc362ff4ad671ea22aea2793fe",
+    "attack-L2-sampling.md": "7192e64acbe22e29347111df954d27572c9c0521131ea74a24a17ba815c8ee2d",
+    "attack-L3-statistics.md": "df828a763b2cccb03fade7c9e9c774b205e0ebb40638abb6e2ccd55a29eb3ab0",
+    "attack-L4-provenance.md": "4a8545eee90b58942ab2b23fdbd9240f999e0fe079c45af342d094e24ea00b8d",
+    "attack-L5-inference.md": "b1430fe37d83b68ad8e0d1a17061786cf45f7c0b894f7e7778b28749232c845d",
+    "attack-L6-prior-art.md": "5451ee912f9f8c4449ad6a8769717a1434eb128f2b0e7e211e87bf52be7ba5b8",
+    "attack-L7-reproduction.md": "15205881f37207eaea57db8ebb58d0c3760dec2b521c161b96ca58451a1d401e"
+  },
   "aborted": [],
   "unbriefed": [],
   "lens_drops": {},
   "briefs_required": true,
   "runner_is_author": true,
   "claim_list_author": "runner",
-  "human_claim": "(F+λ)(R+λ) over F_q with the Eisenstein encoding is injective on double-stranded k-mers with a provable ~2k/q collision bound, and the obvious shortcuts F+R and F·R are degenerate.",
+  "human_claim": "(F+\u03bb)(R+\u03bb) over F_q with the Eisenstein encoding is injective on double-stranded k-mers with a provable ~2k/q collision bound, and the obvious shortcuts F+R and F\u00b7R are degenerate.",
   "carried": [],
   "dropped": [],
   "corrections": [],
@@ -211,5 +219,35 @@
   "open": [],
   "unchallenged": [],
   "discharges": {},
-  "decisions": []
+  "decisions": [],
+  "sealed_blobs": {
+    "attack-L1-correctness.md": {
+      "blob": "53760487e568e09913c95b48dbfcec877d6cf07c",
+      "ref": "refs/round/seal/1/attack-L1-correctness.md"
+    },
+    "attack-L2-sampling.md": {
+      "blob": "1340ca604170186f8327c1023aae16e418848b7b",
+      "ref": "refs/round/seal/1/attack-L2-sampling.md"
+    },
+    "attack-L3-statistics.md": {
+      "blob": "29cbd709c20fdc48110964e2302cae8ff9232cc6",
+      "ref": "refs/round/seal/1/attack-L3-statistics.md"
+    },
+    "attack-L4-provenance.md": {
+      "blob": "51feb6517d4ed43ed7bd5a78d0e5f7c41774ec46",
+      "ref": "refs/round/seal/1/attack-L4-provenance.md"
+    },
+    "attack-L5-inference.md": {
+      "blob": "610798c3b78d1baecb07032ba5f7602ad7f7a1d0",
+      "ref": "refs/round/seal/1/attack-L5-inference.md"
+    },
+    "attack-L6-prior-art.md": {
+      "blob": "43127542f4971a5d0ed210d8e96e3f3d61014491",
+      "ref": "refs/round/seal/1/attack-L6-prior-art.md"
+    },
+    "attack-L7-reproduction.md": {
+      "blob": "ef5677e39abac8a1d5efc222c7ef90e730c71e02",
+      "ref": "refs/round/seal/1/attack-L7-reproduction.md"
+    }
+  }
 }
