@@ -7,12 +7,13 @@
 # KMC is run with -ci1 (keep singletons: we want the SET of k-mers, not the solid ones) and -cs255 (counts are irrelevant, but kmc_tools cannot subtract counter-less sets made with -cs1),
 # canonical (KMC's default), from FASTA made by twoBitToFa. KMC is case-blind and skips k-mers with N, as
 # recon/kmerset.py and hash/kp7e_stream.c do. Outputs in <workdir>/k<k>/: <g>.kmc_{pre,suf}, amb.txt / bma.txt (dumped
-# k-mers of A\B and B\A), and summary.json with the counts. KMC_BIN defaults to the bioconda env made for round 1.
+# k-mers of A\B and B\A), and summary.json with the counts. KMC_BIN defaults to the bioconda env made for round 1;
+# TWOBIT (the <g>.2bit directory) and KENT (twoBitToFa's directory) default to bench and are overridden on laila.
 set -euo pipefail
 A=$1 B=$2 K=$3 W=$4
 KMC_BIN=${KMC_BIN:-/home/rcb112/project/claude/bench/data/kmer_poly_work/round1_owed/env_kmc/bin}
-TWOBIT=/home/rcb112/project/claude/bench/data/hub-build/2bit
-KENT=/home/rcb112/project/claude/bench/data/kent-bin
+TWOBIT=${TWOBIT:-/home/rcb112/project/claude/bench/data/hub-build/2bit}
+KENT=${KENT:-/home/rcb112/project/claude/bench/data/kent-bin}
 THREADS=${THREADS:-16}
 MEM_GB=${MEM_GB:-6}
 D=$W/k$K
