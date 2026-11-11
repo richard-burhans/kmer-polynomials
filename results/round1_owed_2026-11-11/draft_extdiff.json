@@ -1,0 +1,12 @@
+{
+ "final": "Cannbio-2",
+ "draft": "Cannbio-2_draft",
+ "source": "/home/rcb112/project/claude/bench/data/kmer_poly_work/kmp_ext_Cannbio-2__Cannbio-2_draft",
+ "ext_Cannbio-2": 55351607,
+ "ext_canon_Cannbio-2": 54405791,
+ "ext_Cannbio-2_draft": 57367455,
+ "ext_canon_Cannbio-2_draft": 55800032,
+ "D_ext_as_written": 48293748,
+ "D_ext_canonicalized": 33446895,
+ "seconds": 13210.6
+}

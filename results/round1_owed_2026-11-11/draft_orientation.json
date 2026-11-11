@@ -1,0 +1,28 @@
+{
+ "final": "Cannbio-2",
+ "draft": "Cannbio-2_draft",
+ "k": 31,
+ "sample": "mix64(canonical) & 1023 == 0, no palindromes",
+ "final_sampled_kmers": 911756,
+ "final_single_copy_sampled": 323937,
+ "draft_contigs": {
+  "same": 4110,
+  "flipped": 3971,
+  "mixed": 168,
+  "unplaced": 228
+ },
+ "draft_bases": {
+  "same": 444623007,
+  "flipped": 414376252,
+  "mixed": 50583059,
+  "unplaced": 3940731
+ },
+ "draft_total_bases": 913523049,
+ "fraction_of_bases": {
+  "same": 0.4867,
+  "flipped": 0.4536,
+  "mixed": 0.0554,
+  "unplaced": 0.0043
+ },
+ "seconds": 307.7
+}
