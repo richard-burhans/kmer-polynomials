@@ -11,7 +11,7 @@
  *
  * Methods (identical loops; only the per-position key differs):
  *   hash  F and R of every a-mer, rolled with two 61-bit multiplies per position (merged 16-entry tables)
- *   pack  2-bit packed fwd and rc codes (unsigned __int128, so a <= 64), rolled with shifts
+ *   pack  2-bit packed fwd and rc codes, rolled with shifts: 64-bit keys for a <= 32, 128-bit (a <= 64) beyond
  * Modes:
  *   ir FASTA RECORD palin K METHOD          count windows of length K that equal their reverse complement
  *   ir FASTA RECORD inv A GMAX METHOD       perfect inverted repeats: arm length A, spacer 0..GMAX (j - i - A = g),
@@ -43,6 +43,7 @@ static void code_init(void)
 }
 
 /* key arrays: kf[i], kr[i] for every a-mer start i; valid[i] = 0 if the window holds a non-ACGT base */
+/* hf/hr: hash keys; for pack, arms <= 32 use 64-bit codes (hf/hr reused), longer arms 128-bit codes (pf/pr) */
 typedef struct { size_t n; uint8_t* valid; uint64_t* hf; uint64_t* hr; unsigned __int128* pf; unsigned __int128* pr; } keys;
 
 static void keys_hash(const char* s, size_t len, unsigned a, keys* K)
@@ -98,7 +99,8 @@ static void keys_pack(const char* s, size_t len, unsigned a, keys* K)
     rc = (rc >> 2) | ((unsigned __int128)(3 - c) << (2 * (a - 1)));
     if (run < a) { if (j + 1 >= a) K->valid[j + 1 - a] = 0; continue; }
     size_t i = j + 1 - a;
-    K->valid[i] = 1; K->pf[i] = fw; K->pr[i] = rc;
+    K->valid[i] = 1;
+    if (a <= 32) { K->hf[i] = (uint64_t)fw; K->hr[i] = (uint64_t)rc; } else { K->pf[i] = fw; K->pr[i] = rc; }
   }
 }
 
@@ -119,7 +121,8 @@ int main(int argc, char** argv)
   if (a < 1 || a > 64) { fprintf(stderr, "arm/k must be 1..64\n"); return 2; }
   keys K = { 0 };
   K.valid = calloc(len + 1, 1);
-  if (hash) { K.hf = malloc((len + 1) * 8); K.hr = malloc((len + 1) * 8); }
+  int wide = !hash && a > 32; /* 128-bit packed codes only when the arm does not fit in 64 bits */
+  if (!wide) { K.hf = malloc((len + 1) * 8); K.hr = malloc((len + 1) * 8); }
   else { K.pf = malloc((len + 1) * 16); K.pr = malloc((len + 1) * 16); }
   double t0 = now_s();
   if (hash) keys_hash(s, len, a, &K); else keys_pack(s, len, a, &K);
@@ -128,7 +131,7 @@ int main(int argc, char** argv)
   if (palin) {
     for (size_t i = 0; i < K.n; i++) {
       if (!K.valid[i]) continue;
-      int eq = hash ? K.hf[i] == K.hr[i] : K.pf[i] == K.pr[i];
+      int eq = !wide ? K.hf[i] == K.hr[i] : K.pf[i] == K.pr[i];
       if (eq) { count++; uint64_t h = mix64(i); sum += h; xr ^= h; }
     }
   } else {
@@ -139,7 +142,7 @@ int main(int argc, char** argv)
         size_t j = i + a + g;
         if (j >= K.n) break;
         if (!K.valid[j]) continue;
-        int eq = hash ? K.hf[i] == K.hr[j] : K.pf[i] == K.pr[j];
+        int eq = !wide ? K.hf[i] == K.hr[j] : K.pf[i] == K.pr[j];
         if (eq) { count++; uint64_t h = mix64(i * 1315423911ULL + g); sum += h; xr ^= h; }
       }
     }
