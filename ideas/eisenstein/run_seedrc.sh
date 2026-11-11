@@ -8,6 +8,9 @@ NTHASH=${NTHASH:-/home/rcb112/project/claude/bench/data/kmer_poly_work/ntHash}
 make -s -C "$HERE" seedrc NTHASH="$NTHASH"
 {
   echo "# ideas/eisenstein/seedrc; repo $(git -C "$HERE" rev-parse --short HEAD); ntHash $(git -C "$NTHASH" rev-parse --short HEAD); host $(uname -n); $(date -u +%FT%TZ)"
-  "$HERE/seedrc" "${2:-200000}" "${3:-7}" 2> >(sed 's/^/# stderr: /' >&2)
-} > "$OUT" 2>&1
+  ERR=$(mktemp)
+  "$HERE/seedrc" "${2:-200000}" "${3:-7}" 2> "$ERR"
+  sed 's/^/# stderr: /' "$ERR"   # after the table: interleaving the two streams split rows
+  rm -f "$ERR"
+} > "$OUT"
 grep -v '^#' "$OUT"
