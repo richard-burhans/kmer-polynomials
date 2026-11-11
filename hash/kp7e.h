@@ -13,9 +13,10 @@
  * Collision bound. The four base values are distinct in F_q, so two different k-mers give a nonzero difference
  * polynomial of degree <= k-1 in x: Pr[F(s) = F(u)] <= (k-1)/q. S, as a polynomial in lam over F_q(x), factors into
  * (lam + F)(lam + R), so it determines the unordered pair {p_s, rc(p_s)}, i.e. the double-stranded class; by
- * Schwartz-Zippel two different classes collide with probability <= deg/q <= 2k/q over random (x, lam)
- * (about 2^-55 at k = 31). That matches kp7's KP7_XREAL bound and is weaker than CM31's (k-1)/p^2 only by
- * p^2/q ~ 2^1: it is NOT the F_{q^2} x-complex bound (k-1)/q^2.
+ * Schwartz-Zippel two different classes collide with probability <= deg/q over random (x, lam). The difference of
+ * two S polynomials has total degree <= 2k - 2 (the lam^2 terms cancel), so the bound is 2(k-1)/q, about 2.6e-17 at
+ * k = 31 (the looser 2k/q is 2.7e-17). That matches kp7's KP7_XREAL bound and is weaker than CM31's 2(k-1)/p^2
+ * (1.3e-17) only by p^2/q ~ 2^1: it is NOT the F_{q^2} x-complex bound 2(k-1)/q^2.
  *
  * Rolling, both strands, with the lam state G = F + lam, H = R + lam and merged 16-entry tables [s_out*4 + s_in]:
  *   G' = G * x^{-1} + TF[.],   TF = -s_out x^{-1} + s_in x^{k-1} + lam (1 - x^{-1})

@@ -54,7 +54,7 @@ k-mer can't compete with rolling.
 
 - `kp7pack_sample_f`/`_fb` produce the 61-bit KP-7 hash, bit-identical to `kp7_roll64(.., KP7_OUT_SYM, ..)`.
 - `kp7pack_sample_m`/`_mb` produce the CM31 KP-7 hash, bit-identical to `kp7m31_direct` + `kp7m31_sym`. That is a
-  different function, with collision bound ≈ 2k/p² ≈ 1.4e-17 per pair at k = 31.
+  different function, with collision bound 2(k−1)/p² ≈ 1.3e-17 per pair at k = 31 (corrected 2026-11-11 from 1.4e-17).
 - A sketch must use one of them throughout.
 
 ## Recommendation

@@ -3,8 +3,8 @@
 Encoding A = 1, C = w, G = -w, T = -1, with w a primitive cube root of unity in F_q (q = 1 mod 3). Bit-identical to the
 C library hash/kp7e.c (kp7e_direct + kp7e_sym): w, x and lam come from kp7e_init through ctypes, and `self-test`
 compares this port with the C at every k-mer of a random sample. Collision bound: distinct double-stranded classes
-collide with probability <= about 2k/q (2.7e-17 at k = 31; results/kp7_eisenstein_2026-11-10.md), against about
-2k/p^2 for the Gaussian CM31 hash with x complex (recon/kp7hash.py, 1.4e-17).
+collide with probability <= 2(k-1)/q (2.6e-17 at k = 31; results/kp7_eisenstein_2026-11-10.md), against
+2(k-1)/p^2 for the Gaussian CM31 hash with x complex (recon/kp7hash.py, 1.3e-17).
 
 k-mers are the canonical 2-bit codes of prototype/kmers.py (A0 C1 G2 T3, s_0 most significant), the same code order as
 kp7e (complement 3 - c). F = sum_j val(s_j) x^j by Horner from s_{k-1}; R = F of the reverse-complement code.

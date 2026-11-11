@@ -5,7 +5,8 @@
  *   encoding A = 1, C = i, G = -i, T = -1 (complement = negation)
  *   F = sum_t s_t x^t,  R = rc(p)(x) = -x^{k-1} p(1/x),  sym = (F + lam)(R + lam)
  * with x and lam random in F_{p^2} (x COMPLEX). Two distinct double-stranded k-mers collide with probability
- * <= about 2k / p^2 (Schwartz-Zippel, notes/kp7_strand_symmetric_hash.md); for k = 31, ~1.4e-17 per pair.
+ * <= 2(k-1)/p^2 (Schwartz-Zippel on a difference of total degree <= 2k - 2; notes/kp7_strand_symmetric_hash.md); for
+ * k = 31 about 1.3e-17 per pair (1.34e-17 for the looser 2k/p^2).
  *
  * Output: pack(z) = re | (im << 31), a 62-bit value (injective on F_{p^2}; the top two bits are zero).
  *

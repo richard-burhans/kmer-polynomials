@@ -40,7 +40,7 @@ and the size, each counted as 8 bytes. The decode uses Newton's identities and t
 its own roots. The c = 2 extra sums check the decode, and an overflowing bucket is split and resent (one extra
 round). Every run was verified element for element against the exact numpy differences.
 
-**Collision bounds:** Gaussian about 2k/p² = 1.4 × 10⁻¹⁷ per pair of classes; Eisenstein about 2k/q = 2.7 × 10⁻¹⁷.
+**Collision bounds:** Gaussian 2(k−1)/p² = 1.3 × 10⁻¹⁷ per pair of classes; Eisenstein 2(k−1)/q = 2.6 × 10⁻¹⁷ (corrected 2026-11-11 from 1.4 and 2.7, round-1 adjudication L1 F2).
 Both entries fit in 8 bytes. The "halving" expected for Eisenstein holds only against a Gaussian sketch over F_{q²}
 with q = 2⁶¹ − 1 (16-byte entries), not against CM31.
 
@@ -126,7 +126,7 @@ FASTA AS WRITTEN (km-peeler is strand-specific), with n = 1.05 × the true exten
 | linear / mergeable | yes (sums), verified | yes (sums and XOR) | yes |
 | compute per element | about m + c field multiplications (66) | r = 3 cell updates | r per extended syncmer (about 2/21 of k-mers) |
 | implementation here | numpy prototype, about 1 h per pair | C, seconds to minutes | C |
-| collision bound | Gaussian 1.4 × 10⁻¹⁷, Eisenstein 2.7 × 10⁻¹⁷ per class pair | hash checksums, probabilistic listing | same |
+| collision bound | Gaussian 1.3 × 10⁻¹⁷, Eisenstein 2.6 × 10⁻¹⁷ per class pair | hash checksums, probabilistic listing | same |
 
 **Defensible advantages of the algebraic sketch:**
 1. **Size at equal reliability:** about 1.8× smaller than the exact-recovery IBLT.

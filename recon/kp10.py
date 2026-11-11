@@ -6,9 +6,9 @@ Newton's identities, verified element for element against exact set differences.
 
 Two fields:
   gaussian    KP-7 over CM31 = F_{p^2}, p = 2^31 - 1, x complex (recon/kp7hash.py); prototype/recon.py decodes.
-              One entry = 62 bits. Collision bound about 2k/p^2 = 1.4e-17 at k = 31.
+              One entry = 62 bits. Collision bound 2(k-1)/p^2 = 1.3e-17 at k = 31.
   eisenstein  KP-7 over F_q, q = 2^61 - 1, A = 1, C = w, G = -w, T = -1 (recon/kp7e_hash.py); recon/recon61.py
-              decodes. One entry = 61 bits. Collision bound about 2k/q = 2.7e-17 at k = 31.
+              decodes. One entry = 61 bits. Collision bound 2(k-1)/q = 2.6e-17 at k = 31.
 Both entries fit 8 bytes. (A Gaussian sketch over F_{q^2} with q = 2^61 - 1 would need 16.)
 
 Inputs are the partitioned canonical k-mer sets of recon/kmerset.py. Each element is the KP-7 hash S(s) over CM31

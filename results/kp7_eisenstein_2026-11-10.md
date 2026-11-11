@@ -26,10 +26,11 @@ element:
 
 - **Collision bound.** The four base values are distinct in F_q, so distinct k-mers give a nonzero difference
   polynomial of degree ≤ k − 1, and Pr[F(s) = F(u)] ≤ (k − 1)/q. As a polynomial in λ, S factors into (λ + F)(λ + R),
-  so it determines the double-stranded class. By Schwartz–Zippel, distinct classes collide with probability ≤ about
-  2k/q ≈ 2.7 × 10⁻¹⁷ at k = 31.
+  so it determines the double-stranded class. By Schwartz–Zippel, distinct classes collide with probability
+  ≤ 2(k − 1)/q ≈ 2.6 × 10⁻¹⁷ at k = 31: the difference has total degree ≤ 2k − 2 because the λ² terms cancel (the
+  looser 2k/q ≈ 2.7 × 10⁻¹⁷; corrected 2026-11-11, round-1 adjudication L1 F2).
   - This is the same as the Gaussian KP7_XREAL bound and comparable to CM31 with x complex.
-  - It is not the F_{q²} x-complex bound (k − 1)/q².
+  - It is not the F_{q²} x-complex bound 2(k − 1)/q².
 - **Exactness, checked exhaustively:** at k = 7 and 8, F is injective on all 4^k k-mers, and S gives exactly 8,192 and
   32,896 values, one per double-stranded class.
 - **Distances.** In the complex embedding (ω = e^{2πi/3}) the squared distances are 1 for transitions (A–G, C–T), 3 for
