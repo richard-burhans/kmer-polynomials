@@ -26,7 +26,10 @@ Identities (the reason for this choice):
 
 **Prior art (corrected 2026-11-10 after the papers were read in full):** the map is NOT Anastassiou's. His complex
 representation makes complement a conjugation, and ours makes it a negation. Ours matches the "trigonometric" mapping
-in Das et al. 2021 (das_2021_dna-encoding) at θ = π/4, up to a rotation; Das, Nanda & Das 2017 introduced it. Genomic
+in Das et al. 2021 (das_2021_dna-encoding) at θ = π/4, up to a rotation. **Corrected 2026-11-11:** the fourth-root map
+itself is Cristea 2002's equation (5) (a = −1, c = −j, g = j, t = 1), ours up to a global sign, and his equation (4) is the
+θ = π/4 point (cristea_2002_genomic-signals). Das, Nanda & Das 2017 own only the θ = π/3 (Eisenstein) choice, and their
+stated rationale largely restates Cristea. Genomic
 signal processing evaluates such encodings at roots of unity, i.e. takes the DFT (for example the period-3 signal of
 coding exons at x = e^{2πi/3}). Mendizabal et al. 2017's REAL mapping (G −0.5, A −1.5, C 0.5, T 1.5; signs from the
 PDF's Table 1, which the text conversion loses) also makes complement a negation; their Table 6 shows it is blind to
