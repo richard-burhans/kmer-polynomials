@@ -58,8 +58,8 @@ results/paper_bench_2026-11-11.md, per-kept section).
 | number | meaning | source |
 |---|---|---|
 | 0.14 | geometric expectation of gaps > 200 k-mers per seed, rate 2/21 | results/kp7_next_steps_2026-11-10.md:50–51 |
-| 1,774 long gaps, all but 2 in soft-masked repeats | across 5 methods × 5 seeds | results/kp7_stats_seeds_eisenstein_2026-11-11.md:25–27 |
-| 367, 0 outside repeats | Eisenstein provable hash's long gaps | results/kp7_stats_seeds_eisenstein_2026-11-11.md:23 |
+| ~~1,774 long gaps, all but 2 in repeats~~ SUPERSEDED (round 1): 1,583 gaps at 151 loci, 147 in repeats, after reseeding | across 5 methods × 5 seeds | commit 0db2b6e; results/kp7_stats_seeds_2026-11-11.gaps.tsv |
+| ~~367, 0 outside repeats~~ SUPERSEDED: dropped from the paper (a zero with no power; after reseeding 2 Eisenstein gaps lie outside repeats) | Eisenstein provable hash's long gaps | results/round1_owed_2026-11-11.md |
 | 0.0009 to 0.0010 (0.00088–0.00103) | mean max per-bit deviation from ½, per method | results/kp7_stats_seeds_eisenstein_2026-11-11.md:19–23 |
 | 0.00090 / 0.00088 | Eisenstein provable / ntHash mean max bit deviation | results/kp7_stats_seeds_eisenstein_2026-11-11.md:19, 23 |
 | within 0.4% (max 0.40%, ntHash) | minimizer density deviation, w = 10, 20, 50, every method | results/kp7_stats_seeds_eisenstein_2026-11-11.md:19–23 |
@@ -69,7 +69,7 @@ results/paper_bench_2026-11-11.md, per-kept section).
 
 | number | meaning | source |
 |---|---|---|
-| 0.76× | Eisenstein spaced-seed hash against ntHash2 SeedNtHash, one mask, first 60 Mb of cs10 (was 0.78× in job af1eb52f65c6d471) | results/paper_bench_2026-11-11.md:58 |
+| 0.75× per hash (0.76× wall-clock; single wall-clock run) | Eisenstein spaced-seed hash against ntHash2 SeedNtHash, one mask, first 60 Mb of cs10 (was 0.78× in job af1eb52f65c6d471) | results/paper_bench_2026-11-11.md:58 |
 | 0.747 (0.74722) | fraction of windows unchanged at 1% SNPs, non-palindromic mask: exact double-stranded value, matched by ours | results/paper_bench_2026-11-11.md:61 |
 | 0.818 (0.81794) | SeedNtHash's value on the same test | results/paper_bench_2026-11-11.md:62 |
 
@@ -77,7 +77,7 @@ results/paper_bench_2026-11-11.md, per-kept section).
 
 | number | meaning | source |
 |---|---|---|
-| 1.58–1.85 | Ts/Tv, cannabis NC_044378.1 pairwise columns | results/ideas_eisenstein_2026-11-10.md:23–26 |
+| 1.58–1.67 (61–63% transitions); 1.85 (65%) between the two haplotypes outside repeats | Ts/Tv, cannabis NC_044378.1 alignments (strata quoted separately after round 1) | results/ideas_eisenstein_2026-11-10.md:23–26 |
 | 61.3–64.9% | fraction of substitutions that are transitions | results/ideas_eisenstein_2026-11-10.md:23–26 |
 
 ## Set reconciliation (KP-9, KP-10)
@@ -96,7 +96,7 @@ results/paper_bench_2026-11-11.md, per-kept section).
 | 26/30 (4 of 30 failed), D = 488 | IBLT on draft partitions 0–3 at 1.05·D | results/kp10_vs_shibuya_2026-11-11.md:92 |
 | 4.2 | extended-syncmer IBLT bytes per true k-mer difference | results/kp10_vs_shibuya_2026-11-11.md:102 |
 | 2.7× | KP-10 / extended syncmers (11.27 / 4.2) | results/kp10_vs_shibuya_2026-11-11.md:102 |
-| 1,986,807 spurious (61%), 7 missed | extended-syncmer recovery, GigaDB | results/kp10_vs_shibuya_2026-11-11.md:105 |
+| 1,986,807 spurious (61% of the true difference D, 38% of the returned set), 7 missed | extended-syncmer recovery, GigaDB | results/kp10_vs_shibuya_2026-11-11.md:105 |
 | 48,293,748 | differing extended syncmers, draft vs final | results/kp10_vs_shibuya_2026-11-11.md:110 |
 | m + c = 66 | field multiplications per element | results/kp10_vs_shibuya_2026-11-11.md:8 |
 | 6.9 million (6,913,034) | elements in the mergeability test | results/kp10_vs_shibuya_2026-11-11.md:68 |
@@ -134,3 +134,12 @@ a numpy prototype and is not timed on laila; the paper quotes its times only as 
 | 45.36% | draft bases on flipped contigs | results/round1_owed_2026-11-11/draft_orientation.json |
 | 1,583 gaps / 151 loci / 147 in repeats / 8–96 per seed | long gaps after reseeding x and λ independently | commit 0db2b6e |
 | 16,512 | reversal orbits of 8-mers (F·R merges further, 16,362) | commit ec9ec66 |
+| 38% / 61% | spurious share of the returned set / of D | results/kp10_vs_shibuya_2026-11-11.md:105 |
+| 1,275 | GigaDB buckets resent in round 2 | results/kp10_vs_shibuya_2026-11-11.md |
+| 11.6% | exact 95% upper bound on IBLT failure from 30/30 | adjudication-L2.md (round 1) |
+| 2.5 pairs | expected colliding pairs allowed by the bound over 442M classes | adjudication-L3.md (round 1) |
+| 2.2–3.0 GHz | measured core clock in job 08653d9e6a7453a2 (turbo on) | adjudication-L4.md (round 1) |
+| 8 vs 3 | multiplications per k-mer, fourth-root vs Eisenstein | adjudication-L1.md F8 (round 1) |
+| 35% | haplotype 31-mer difference over the union (42% over one haplotype) | adjudication-L4.md F12 (round 1) |
+| 0.6% | max minimizer-density deviation after reseeding (v1gate seed 1, w = 50) | results/kp7_stats_seeds_2026-11-11.gaps.tsv |
+| 62 | loci hit by all five methods after reseeding | results/round1_owed_2026-11-11.md |

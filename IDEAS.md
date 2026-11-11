@@ -170,7 +170,7 @@ kazemi_2022_nthash2).
 **Properties KP-7 has that ntHash does not:**
 
 1. **A provable per-pair collision bound.** With x₀ and λ random, distinct double-stranded k-mers collide with
-   probability ≤ about 2k/q² (Schwartz–Zippel), about 10⁻¹⁷ at k = 31. The bound holds for ANY input (repetitive,
+   probability ≤ 2(k−1)/q² (Schwartz–Zippel), about 10⁻¹⁷ at k = 31. The bound holds for ANY input (repetitive,
    adversarial), provided the seeds are drawn after the input is fixed. ntHash uses fixed seed constants, so it is a
    single deterministic function. Its collision behaviour is empirical, and its collisions are the same in every run.
 2. **Provably exact strand canonicalization.** As a polynomial in λ, (F + λ)(R + λ) factors uniquely into F and R, so S
