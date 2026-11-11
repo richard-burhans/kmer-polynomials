@@ -1,0 +1,21 @@
+{
+ "field": "eisenstein",
+ "A": "Cannbio-2",
+ "B": "Cannbio2_GigaDB",
+ "k": 31,
+ "bits": 17,
+ "m": 40,
+ "c": 2,
+ "parts": 1,
+ "D_recovered": 50644,
+ "exact": true,
+ "sketch_elements": 88322,
+ "rounds_max": 2,
+ "splits": 3,
+ "seconds_hash": 27.9,
+ "seconds_reconcile": 12.4,
+ "elements_A": 6913034,
+ "elements_B": 6862418,
+ "sketch_bytes": 706576,
+ "bytes_per_difference": 13.951820551299265
+}

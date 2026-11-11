@@ -1,0 +1,9 @@
+{
+ "genome": "cs10_NCBI_RefSeq_softmasked",
+ "k": 31,
+ "parts": 64,
+ "sequences": 221,
+ "kmers": 736547799,
+ "distinct": 430060850,
+ "seconds": 898.6
+}

@@ -1,0 +1,9 @@
+{
+ "genome": "Salk_ANCa",
+ "k": 31,
+ "parts": 64,
+ "sequences": 10,
+ "kmers": 748251976,
+ "distinct": 395215003,
+ "seconds": 521.8
+}

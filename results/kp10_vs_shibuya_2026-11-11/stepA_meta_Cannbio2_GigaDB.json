@@ -1,0 +1,9 @@
+{
+ "genome": "Cannbio2_GigaDB",
+ "k": 31,
+ "parts": 64,
+ "sequences": 10,
+ "kmers": 902939455,
+ "distinct": 438915343,
+ "seconds": 945.2
+}

@@ -1,0 +1,21 @@
+{
+ "field": "gaussian",
+ "A": "Cannbio-2",
+ "B": "Cannbio2_GigaDB",
+ "k": 31,
+ "bits": 18,
+ "m": 24,
+ "c": 2,
+ "parts": 1,
+ "D_recovered": 50644,
+ "exact": true,
+ "sketch_elements": 110808,
+ "rounds_max": 2,
+ "splits": 4,
+ "seconds_hash": 23.5,
+ "seconds_reconcile": 11.7,
+ "elements_A": 6913034,
+ "elements_B": 6862418,
+ "sketch_bytes": 886464,
+ "bytes_per_difference": 17.50383066108522
+}

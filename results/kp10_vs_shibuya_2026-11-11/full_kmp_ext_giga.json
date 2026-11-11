@@ -1,0 +1,59 @@
+{
+ "mode": "ext",
+ "A": "Cannbio-2",
+ "B": "Cannbio2_GigaDB",
+ "k": 31,
+ "z": 11,
+ "seqs": null,
+ "D_ext": 507221,
+ "D_kmers_canonical": 3238101,
+ "n": 532582,
+ "ratio": 1.05,
+ "trials": [
+  {
+   "listed": 507219,
+   "complete": false,
+   "missing": 7,
+   "spurious": 1986807,
+   "bytes": 13667246,
+   "seconds_build_both": 64.63,
+   "seconds_diff_list": 0.28
+  },
+  {
+   "listed": 507219,
+   "complete": false,
+   "missing": 7,
+   "spurious": 1986807,
+   "bytes": 13667246,
+   "seconds_build_both": 37.77,
+   "seconds_diff_list": 0.24
+  },
+  {
+   "listed": 507219,
+   "complete": false,
+   "missing": 7,
+   "spurious": 1986807,
+   "bytes": 13667246,
+   "seconds_build_both": 30.73,
+   "seconds_diff_list": 0.31
+  },
+  {
+   "listed": 507219,
+   "complete": false,
+   "missing": 7,
+   "spurious": 1986807,
+   "bytes": 13667246,
+   "seconds_build_both": 31.9,
+   "seconds_diff_list": 0.28
+  },
+  {
+   "listed": 507219,
+   "complete": false,
+   "missing": 7,
+   "spurious": 1986807,
+   "bytes": 13667246,
+   "seconds_build_both": 25.05,
+   "seconds_diff_list": 0.29
+  }
+ ]
+}

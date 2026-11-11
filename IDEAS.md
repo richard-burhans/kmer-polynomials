@@ -260,6 +260,8 @@ probability. It is also the streaming form of KP-9.
 
 *Check:* the same data as KP-9, and compare against an IBLT at equal sketch size.
 
+**Status 2026-11-11 (results/kp10_vs_shibuya_2026-11-11.md):** end to end on real near-identical cannabis assemblies, with the KP-7 symmetric hash in both fields (Gaussian CM31 and Eisenstein F_q), recovery is EXACT. Cannbio-2 vs Cannbio2_GigaDB (D = 3,238,101): 11.27 B/diff (36.5 MB), 2 rounds. Cannbio-2 vs its draft (D = 7,931): 17.3 B/diff, 1 round. That is about 1.8× smaller than Shibuya et al.'s k-mer IBLT at equal reliability (20.5 B/diff for 30/30). The Gaussian and Eisenstein sizes are identical (8-byte entries). km-peeler's extended syncmers are smaller (4.2 B/diff) but approximate (61% spurious), and they break on a draft-vs-final pair (48 M vs 7.9 k differences, from contig orientation); KP-10 is orientation-invariant. Cost: about m + c multiplications per element (numpy prototype, about 1 h per pair). A decoder bug (negative Padé index when dB > dA + 1) was found and fixed (771092b).
+
 ### KP-11. Generating functions by k-mer code: concatenation becomes multiplication
 
 F_S(y) = Σ_{s∈S} y^{code(s)}, where code(s) is the base-4 index of s.

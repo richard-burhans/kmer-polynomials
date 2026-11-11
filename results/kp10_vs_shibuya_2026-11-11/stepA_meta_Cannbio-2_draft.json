@@ -1,0 +1,9 @@
+{
+ "genome": "Cannbio-2_draft",
+ "k": 31,
+ "parts": 64,
+ "sequences": 8477,
+ "kmers": 913268739,
+ "distinct": 442159825,
+ "seconds": 874.5
+}

@@ -1,0 +1,24 @@
+{
+ "mode": "kmers",
+ "A": "Cannbio-2",
+ "B": "Cannbio2_GigaDB",
+ "k": 31,
+ "parts": [
+  0,
+  1,
+  2,
+  3
+ ],
+ "elements_A": 27630670,
+ "elements_B": 27428217,
+ "D": 202557,
+ "n": 202557,
+ "ratio": 1.0,
+ "trials": 30,
+ "successes": 15,
+ "failure_rate": 0.5,
+ "iblt_bytes": 3960506,
+ "bytes_per_difference": 19.552550640066748,
+ "seconds_build_both": 6.65,
+ "seconds_diff_list": 7.26
+}

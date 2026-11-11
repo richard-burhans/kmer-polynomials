@@ -1,0 +1,9 @@
+{
+ "genome": "ASM341772v2",
+ "k": 31,
+ "parts": 64,
+ "sequences": 2362,
+ "kmers": 1009221518,
+ "distinct": 484568955,
+ "seconds": 1243.8
+}

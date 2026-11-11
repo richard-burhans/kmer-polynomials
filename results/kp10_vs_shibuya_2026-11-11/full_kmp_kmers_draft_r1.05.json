@@ -1,0 +1,24 @@
+{
+ "mode": "kmers",
+ "A": "Cannbio-2",
+ "B": "Cannbio-2_draft",
+ "k": 31,
+ "parts": [
+  0,
+  1,
+  2,
+  3
+ ],
+ "elements_A": 27630670,
+ "elements_B": 27631158,
+ "D": 488,
+ "n": 512,
+ "ratio": 1.05,
+ "trials": 30,
+ "successes": 26,
+ "failure_rate": 0.1333333333333333,
+ "iblt_bytes": 10106,
+ "bytes_per_difference": 20.709016393442624,
+ "seconds_build_both": 5.03,
+ "seconds_diff_list": 0.0
+}
