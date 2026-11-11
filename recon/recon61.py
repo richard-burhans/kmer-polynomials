@@ -138,10 +138,13 @@ class Result:
     splits: int = 0
     sketch_elements: int = 0
     log: list = dc_field(default_factory=list)
+    unresolved: int = 0  # overflowing buckets left when stop_at_limit ended the protocol early
 
 
 def reconcile(A: SideE, B: SideE, bits: int, m: int, c: int, buckets: np.ndarray | None = None,
-              max_bits: int = 62, max_rounds: int = 12) -> Result:
+              max_bits: int = 62, max_rounds: int = 12, stop_at_limit: bool = False) -> Result:
+    """stop_at_limit: at the round or bit limit, return what was decoded and count the still-overflowing buckets in
+    Result.unresolved instead of raising (used to measure a control that cannot finish)."""
     pending = np.arange(1 << bits, dtype=np.int64) if buckets is None else np.asarray(buckets, np.int64)
     a_out, b_out = [], []
     res = Result(np.empty(0, np.uint64), np.empty(0, np.uint64))
@@ -165,7 +168,10 @@ def reconcile(A: SideE, B: SideE, bits: int, m: int, c: int, buckets: np.ndarray
             b_out.append(B.codes[loB[i]:hiB[i]][fB])
         res.log.append((bits, int(pending.size), len(overflow)))
         if overflow and (bits + 1 > max_bits or res.rounds >= max_rounds):
-            raise RuntimeError(f"bucket split limit reached after {res.rounds} rounds")
+            if not stop_at_limit:
+                raise RuntimeError(f"bucket split limit reached after {res.rounds} rounds")
+            res.unresolved = len(overflow)
+            break
         res.splits += len(overflow)
         ov = np.asarray(overflow, np.int64)
         pending = np.sort(np.concatenate([2 * ov, 2 * ov + 1])) if ov.size else np.empty(0, np.int64)

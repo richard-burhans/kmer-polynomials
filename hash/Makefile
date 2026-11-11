@@ -97,6 +97,10 @@ mutation_e: test_kp7e.c kp7e.c kp7e.h kp7pack.o kp7.o kp7m31.o
 bench_e: bench_e.cpp kp7e.o kp7pack.o kp7.o kp7m31.o
 	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include bench_e.cpp kp7e.o kp7pack.o kp7.o kp7m31.o $(NTHASH)/build_o3/libnthash.a -o $@
 
+# k-mers AS WRITTEN (no packing, no canonicalization) -> partition files of S or F values, any k (recon/aswritten.py)
+kp7e_stream: kp7e_stream.c kp7e.o
+	$(CC) $(CFLAGS) kp7e_stream.c kp7e.o -o $@
+
 # full-genome element-by-element identity: batched ntHash (ntbatch.h) vs the ntHash library (round 1, L1 F11 / L7 F3)
 nteq: nteq.cpp ntbatch.h
 	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include nteq.cpp $(NTHASH)/build_o3/libnthash.a -o $@
