@@ -1,0 +1,11 @@
+seeds: x 1, lam 2
+k=7: 16384 k-mers, 8192 double-stranded classes
+  e1 = F+R            distinct values: 729
+  e2 = F*R            distinct values: 4160
+  (F+lam)(R+lam)      distinct values: 8192
+  e2(s)==e2(reverse(s)): True  sym(s)==sym(reverse(s)): False
+k=8: 65536 k-mers, 32896 double-stranded classes
+  e1 = F+R            distinct values: 6561
+  e2 = F*R            distinct values: 16362
+  (F+lam)(R+lam)      distinct values: 32896
+  e2(s)==e2(reverse(s)): True  sym(s)==sym(reverse(s)): False

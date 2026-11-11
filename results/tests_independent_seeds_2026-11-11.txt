@@ -1,0 +1,121 @@
+run_all.sh at 8c34af9, 2026-11-11T06:14:26Z, claude-cannabis-genome
+===== hash build (hash: make test_kp7 test_kp7m31 test_kp7pack test_kp7e)
+make: 'test_kp7' is up to date.
+make: 'test_kp7m31' is up to date.
+make: 'test_kp7pack' is up to date.
+make: 'test_kp7e' is up to date.
+----- hash build: exit 0
+===== hash tests (hash: make test test_pack test_e)
+./test_kp7
+  gate k=7: distinct 8192 (classes 8192)
+  gate k=8: distinct 32896 (classes 32896)
+  sample seq 0 at 1/16: kept 1801 of 30001 (0.0600)
+  sample seq 1 at 1/16: kept 521 of 30001 (0.0174)
+  sample seq 2 at 1/16: kept 1823 of 30001 (0.0608)
+  variant 0 k=7: 16384 k-mers, F distinct 16384, sym distinct 8192, folded sym distinct 8192 (classes 8192)
+  variant 0 k=8: 65536 k-mers, F distinct 65536, sym distinct 32896, folded sym distinct 32896 (classes 32896)
+  variant 1 k=7: 16384 k-mers, F distinct 16384, sym distinct 8192, folded sym distinct 8192 (classes 8192)
+  variant 1 k=8: 65536 k-mers, F distinct 65536, sym distinct 32896, folded sym distinct 32896 (classes 32896)
+all tests passed
+./test_kp7m31
+  m31 k=7: 8192 sym values for 8192 classes
+  m31 k=8: 32896 sym values for 32896 classes
+  impl 2 not available on this CPU/build: skipped
+all tests passed
+./test_kp7pack
+  pack gate k=7: distinct 8192 (classes 8192)
+  pack gate k=8: distinct 32896 (classes 32896)
+  pack sample at 1/16 (rare N): kept 1793 (0.0598 of k-mers)
+all tests passed
+./test_kp7e
+  metric (complex embedding): transitions 1, A-C/G-T 3, complements 4
+  exhaustive k=7: F distinct 16384 of 16384, sym distinct 8192 (classes 8192)
+  exhaustive k=8: F distinct 65536 of 65536, sym distinct 32896 (classes 32896)
+all tests passed
+----- hash tests: exit 0
+===== hash mutants (hash: make mutation mutation_pack mutation_e)
+mutant killed: FAILED: 150117 check(s)
+karatsuba mutant killed: FAILED: 1196934 check(s)
+opt mutant killed: FAILED: 206 check(s)
+seq mutant killed: FAILED: 30 check(s)
+gate mutant killed: FAILED: 3 check(s)
+m31 odd-lane mutant killed: FAILED: 35 check(s)
+m31 blend mutant killed: FAILED: 20 check(s)
+seed mutant killed: FAILED: 4 check(s)
+m31 seed mutant killed: FAILED: 2 check(s)
+pack gate mutant killed: FAILED: 4 check(s)
+pack rc mutant killed: FAILED: 6710 check(s)
+pack chunk mutant killed: FAILED: 1985 check(s)
+pack lam mutant killed: FAILED: 3920 check(s)
+e ROLL mutant killed: FAILED: 24 check(s)
+e LANE mutant killed: FAILED: 12 check(s)
+e TAB mutant killed: FAILED: 64072 check(s)
+e SEED mutant killed: FAILED: 3 check(s)
+----- hash mutants: exit 0
+===== ideas/algebra tests (ideas/algebra: make test)
+./test_spaced
+  k=7 mask 1101011: 512 distinct hashes, 512 exact classes
+  k=7 mask 1111111: 8192 distinct hashes, 8192 exact classes
+  k=7 mask 1011101: 512 distinct hashes, 512 exact classes
+  k=7 mask 1100111: 2080 distinct hashes, 2080 exact classes
+all tests passed
+----- ideas/algebra tests: exit 0
+===== ideas/algebra mutants (ideas/algebra: make mutation)
+spaced mutant killed: FAILED: 26 check(s)
+----- ideas/algebra mutants: exit 0
+===== ideas/eisenstein tests (ideas/eisenstein: make test)
+./test_spaced_e
+  k=7 mask 1101011: 512 distinct hashes, 512 exact classes
+  k=7 mask 1111111: 8192 distinct hashes, 8192 exact classes
+  k=7 mask 1011101: 512 distinct hashes, 512 exact classes
+  k=7 mask 1100111: 2080 distinct hashes, 2080 exact classes
+all tests passed
+----- ideas/eisenstein tests: exit 0
+===== ideas/eisenstein mutants (ideas/eisenstein: make mutation)
+spaced_e mutant killed: FAILED: 26 check(s)
+----- ideas/eisenstein mutants: exit 0
+===== ideas/kp5_kp11 tests (ideas/kp5_kp11: make test)
+./test.sh
+ok   palin 12: 11
+ok   palin 8: 108
+ok   inv 12 40: 265
+ok   inv 20 40: 217
+ok   inv 33 40: 166
+ok   inv 40 40: 121
+ok   inv 64 40: 10
+ok   inv 6 10: 108
+ok   mismatch k=6 d=0 fft == direct
+ok   mismatch k=6 d=1 fft == direct
+ok   mismatch k=6 d=2 fft == direct
+ok   mismatch k=6 d=3 fft == direct
+ok   mismatch k=7 d=2 fft == direct
+ok   mismatch k=9 d=3 fft == direct
+ok   mismatch k=7 d=2 brute force on 25 targets
+----- ideas/kp5_kp11 tests: exit 0
+===== ideas/kp5_kp11 mutants (ideas/kp5_kp11: make mutation)
+kp5 mutant killed
+kp11 mutant killed
+----- ideas/kp5_kp11 mutants: exit 0
+===== pytest (.: /home/rcb112/project/claude/bench/data/kmer_poly_work/round1_owed/venv/bin/python -m pytest -q)
+................................                                         [100%]
+32 passed in 2.41s
+----- pytest: exit 0
+===== kp7e_hash self-test (.: /home/rcb112/project/claude/bench/data/kmer_poly_work/round1_owed/venv/bin/python recon/kp7e_hash.py)
+kp7e_hash self-test: 20000/20000 equal to C kp7e_sym; strand-symmetric: True
+----- kp7e_hash self-test: exit 0
+===== kp7hash self-test (.: /home/rcb112/project/claude/bench/data/kmer_poly_work/round1_owed/venv/bin/python recon/kp7hash.py)
+kp7hash self-test: 20000/20000 equal to C kp7m31_sym; strand-symmetric: True
+----- kp7hash self-test: exit 0
+===== roots.py (ideas/algebra: /home/rcb112/project/claude/bench/data/kmer_poly_work/round1_owed/venv/bin/python roots.py)
+distances (squared) under complement = negation
+  4th roots (A=1, C=i): transitions A-G 2.0, C-T 2.0; transversions A-C 2.0, G-T 2.0, A-T 4, C-G 4.0
+  6th roots (A=1, C=w): transitions A-G 1.0, C-T 1.0; transversions A-C 3.0, G-T 3.0, A-T 4, C-G 4.0
+q = 2^61-1: q mod 3 = 1, q mod 4 = 3
+  w = 636260618972345635; w^2+w+1 = 0 mod q: True; base values distinct: True
+q = 2^31-1: q mod 3 = 1, q mod 4 = 3
+  w = 634005911; w^2+w+1 = 0 mod q: True; base values distinct: True
+  Eisenstein in F_q, k=7: distinct symmetric values 8192, double-stranded classes 8192
+  Eisenstein in F_q, k=8: distinct symmetric values 32896, double-stranded classes 32896
+all checks passed
+----- roots.py: exit 0
+===== overall: PASS
