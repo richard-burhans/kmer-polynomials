@@ -1,0 +1,9 @@
+{
+ "job": "08653d9e6a7453a2",
+ "state": "ok",
+ "handler": "handler_0",
+ "image": "docker.io/library/gcc:14.2.0",
+ "udt": "laila-perf 0.1.0",
+ "exit_code": 0,
+ "tool_stderr": ""
+}

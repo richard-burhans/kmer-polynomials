@@ -1,0 +1,362 @@
+ntHash c26bd4572a19de81e30d55042dbd33c1fd21d4b6 built with: g++ -O3 -march=native -std=c++17 -> /scratch/rico/gpu/galaxy/database/jobs_directory/052/52062/working/w/kp/hash/../../ntHash/build_o3/libnthash.a
+gcc -O3 -march=native -Wall -Wextra -c kp7.c -o kp7.o
+gcc -O3 -march=native -Wall -Wextra -c kp7m31.c -o kp7m31.o
+g++ -O3 -march=native -std=c++17 -I/scratch/rico/gpu/galaxy/database/jobs_directory/052/52062/working/w/kp/hash/../../ntHash/include bench.cpp kp7.o kp7m31.o /scratch/rico/gpu/galaxy/database/jobs_directory/052/52062/working/w/kp/hash/../../ntHash/build_o3/libnthash.a -o bench
+gcc -O3 -march=native -Wall -Wextra -c kp7e.c -o kp7e.o
+gcc -O3 -march=native -Wall -Wextra -c kp7pack.c -o kp7pack.o
+g++ -O3 -march=native -std=c++17 -I/scratch/rico/gpu/galaxy/database/jobs_directory/052/52062/working/w/kp/hash/../../ntHash/include bench_e.cpp kp7e.o kp7pack.o kp7.o kp7m31.o /scratch/rico/gpu/galaxy/database/jobs_directory/052/52062/working/w/kp/hash/../../ntHash/build_o3/libnthash.a -o bench_e
+gcc -O3 -march=native -Wall -Wextra -c spaced_e.c -o spaced_e.o
+gcc -O3 -march=native -Wall -Wextra -c ../../hash/kp7e.c -o kp7e.o
+gcc -O3 -march=native -Wall -Wextra -c ../../hash/kp7.c -o kp7.o
+gcc -O3 -march=native -Wall -Wextra -c ../algebra/spaced.c -o spaced_g.o
+g++ -O3 -march=native -std=c++17 -I/scratch/rico/gpu/galaxy/database/jobs_directory/052/52062/working/w/kp/ideas/eisenstein/../../../ntHash/include bench_spaced_e.cpp spaced_e.o spaced_g.o kp7e.o kp7.o /scratch/rico/gpu/galaxy/database/jobs_directory/052/52062/working/w/kp/ideas/eisenstein/../../../ntHash/build_o3/libnthash.a -o bench_spaced_e
+=== run_1: cd kp/hash && ./bench_e "$DATA" 31 1 "only=__load_only__"
+loaded 221 records, 876147649 bases in 2.8 s; k=31, rounds=1
+m31 simd impl: AVX-512
+
+THROUGHPUT (median of 1 interleaved rounds)
+=== run_2: cd kp/hash && ./bench_e "$DATA" 31 1 "only=ntHash batched (ntbatch)"
+loaded 221 records, 876147649 bases in 3.2 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 ntHash batched (ntbatch)       2.743 s  268.5 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  ntHash batched (ntbatch)       k-mers 736547799  median 2.743 s  268.5 M k-mers/s
+=== run_3: cd kp/hash && ./bench_e "$DATA" 31 1 "only=ntHash library roll"
+loaded 221 records, 876147649 bases in 3.2 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 ntHash library roll            5.659 s  130.2 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  ntHash library roll            k-mers 736547799  median 5.659 s  130.2 M k-mers/s
+=== run_4: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e scalar roller (reference)"
+loaded 221 records, 876147649 bases in 2.8 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e scalar roller (reference)    18.232 s  40.4 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e scalar roller (reference)    k-mers 736547799  median 18.232 s  40.4 M k-mers/s
+=== run_5: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e sym_seq L1"
+loaded 221 records, 876147649 bases in 2.9 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e sym_seq L1                   6.694 s  110.0 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e sym_seq L1                   k-mers 736547799  median 6.694 s  110.0 M k-mers/s
+=== run_6: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e sym_seq L2"
+loaded 221 records, 876147649 bases in 2.9 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e sym_seq L2                   5.941 s  124.0 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e sym_seq L2                   k-mers 736547799  median 5.941 s  124.0 M k-mers/s
+=== run_7: cd kp/hash && ./bench_e "$DATA" 31 1 "only=gauss61 sym_seq L1"
+loaded 221 records, 876147649 bases in 3.2 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 gauss61 sym_seq L1             12.032 s  61.2 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  gauss61 sym_seq L1             k-mers 736547799  median 12.032 s  61.2 M k-mers/s
+=== run_8: cd kp/hash && ./bench_e "$DATA" 31 1 "only=gauss61 sym_seq L2"
+loaded 221 records, 876147649 bases in 3.2 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 gauss61 sym_seq L2             11.399 s  64.6 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  gauss61 sym_seq L2             k-mers 736547799  median 11.399 s  64.6 M k-mers/s
+=== run_9: cd kp/hash && ./bench_e "$DATA" 31 1 "only=m31 simd (avx512 else avx2)"
+loaded 221 records, 876147649 bases in 2.9 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 m31 simd (avx512 else avx2)    6.405 s  115.0 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  m31 simd (avx512 else avx2)    k-mers 736547799  median 6.405 s  115.0 M k-mers/s
+=== run_10: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e branchy 1/1000"
+loaded 221 records, 876147649 bases in 2.9 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e branchy 1/1000               2.260 s  0.3 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e branchy 1/1000               kept 745710  median 2.260 s  0.3 M k-mers/s
+=== run_11: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e branchy 1/100"
+loaded 221 records, 876147649 bases in 2.8 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e branchy 1/100                2.399 s  3.1 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e branchy 1/100                kept 7382545  median 2.399 s  3.1 M k-mers/s
+=== run_12: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e branchy 1/16"
+loaded 221 records, 876147649 bases in 3.0 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e branchy 1/16                 3.206 s  14.3 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e branchy 1/16                 kept 45892012  median 3.206 s  14.3 M k-mers/s
+=== run_13: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e branchy 1/4"
+loaded 221 records, 876147649 bases in 2.9 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e branchy 1/4                  6.085 s  30.2 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e branchy 1/4                  kept 183856486  median 6.085 s  30.2 M k-mers/s
+=== run_14: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e batched 1/1000"
+loaded 221 records, 876147649 bases in 2.8 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e batched 1/1000               2.394 s  0.3 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e batched 1/1000               kept 745710  median 2.394 s  0.3 M k-mers/s
+=== run_15: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e batched 1/100"
+loaded 221 records, 876147649 bases in 2.8 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e batched 1/100                2.450 s  3.0 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e batched 1/100                kept 7382545  median 2.450 s  3.0 M k-mers/s
+=== run_16: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e batched 1/16"
+loaded 221 records, 876147649 bases in 2.8 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e batched 1/16                 2.809 s  16.3 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e batched 1/16                 kept 45892012  median 2.809 s  16.3 M k-mers/s
+=== run_17: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e batched 1/4"
+loaded 221 records, 876147649 bases in 3.0 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e batched 1/4                  4.106 s  44.8 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e batched 1/4                  kept 183856486  median 4.106 s  44.8 M k-mers/s
+=== run_18: cd kp/hash && ./bench_e "$DATA" 31 1 "only=m31 branchy 1/1000"
+loaded 221 records, 876147649 bases in 2.8 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 m31 branchy 1/1000             2.282 s  0.3 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  m31 branchy 1/1000             kept 745710  median 2.282 s  0.3 M k-mers/s
+=== run_19: cd kp/hash && ./bench_e "$DATA" 31 1 "only=m31 branchy 1/100"
+loaded 221 records, 876147649 bases in 3.0 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 m31 branchy 1/100              2.506 s  2.9 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  m31 branchy 1/100              kept 7382545  median 2.506 s  2.9 M k-mers/s
+=== run_20: cd kp/hash && ./bench_e "$DATA" 31 1 "only=m31 batched 1/16"
+loaded 221 records, 876147649 bases in 2.8 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 m31 batched 1/16               3.267 s  14.0 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  m31 batched 1/16               kept 45892012  median 3.267 s  14.0 M k-mers/s
+=== run_21: cd kp/hash && ./bench_e "$DATA" 31 1 "only=m31 batched 1/4"
+loaded 221 records, 876147649 bases in 2.8 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 m31 batched 1/4                6.235 s  29.5 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  m31 batched 1/4                kept 183856486  median 6.235 s  29.5 M k-mers/s
+=== run_22: cd kp/hash && ./bench "$DATA" 31 1 throughput "only=__load_only__"
+loaded 221 records, 876147649 bases in 3.2 s; k=31, rounds=1
+
+THROUGHPUT (median of 1 interleaved rounds; sink 0000000000000000)
+=== run_23: cd kp/hash && ./bench "$DATA" 31 1 throughput "only=m31 avx2 8-lane"
+loaded 221 records, 876147649 bases in 3.6 s; k=31, rounds=1
+  round 0 m31 avx2 8-lane                6.364 s  115.7 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds; sink 0625214fd1d0189c)
+  m31 avx2 8-lane                k-mers 736547799  median 6.364 s  115.7 M k-mers/s
+=== run_24: cd kp/hash && ./bench "$DATA" 31 1 throughput "only=m31 avx512 16-lane"
+loaded 221 records, 876147649 bases in 3.0 s; k=31, rounds=1
+  round 0 m31 avx512 16-lane             6.421 s  114.7 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds; sink 0625214fd1d0189c)
+  m31 avx512 16-lane             k-mers 736547799  median 6.421 s  114.7 M k-mers/s
+=== run_25: cd kp/hash && ./bench_e "$DATA" 31 1 "only=__load_only__"
+loaded 221 records, 876147649 bases in 3.1 s; k=31, rounds=1
+m31 simd impl: AVX-512
+
+THROUGHPUT (median of 1 interleaved rounds)
+=== run_26: cd kp/hash && ./bench_e "$DATA" 31 1 "only=ntHash batched (ntbatch)"
+loaded 221 records, 876147649 bases in 3.0 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 ntHash batched (ntbatch)       2.742 s  268.6 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  ntHash batched (ntbatch)       k-mers 736547799  median 2.742 s  268.6 M k-mers/s
+=== run_27: cd kp/hash && ./bench_e "$DATA" 31 1 "only=ntHash library roll"
+loaded 221 records, 876147649 bases in 2.9 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 ntHash library roll            5.663 s  130.1 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  ntHash library roll            k-mers 736547799  median 5.663 s  130.1 M k-mers/s
+=== run_28: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e scalar roller (reference)"
+loaded 221 records, 876147649 bases in 2.8 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e scalar roller (reference)    18.984 s  38.8 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e scalar roller (reference)    k-mers 736547799  median 18.984 s  38.8 M k-mers/s
+=== run_29: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e sym_seq L1"
+loaded 221 records, 876147649 bases in 2.8 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e sym_seq L1                   6.687 s  110.1 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e sym_seq L1                   k-mers 736547799  median 6.687 s  110.1 M k-mers/s
+=== run_30: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e sym_seq L2"
+loaded 221 records, 876147649 bases in 3.2 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e sym_seq L2                   5.911 s  124.6 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e sym_seq L2                   k-mers 736547799  median 5.911 s  124.6 M k-mers/s
+=== run_31: cd kp/hash && ./bench_e "$DATA" 31 1 "only=gauss61 sym_seq L1"
+loaded 221 records, 876147649 bases in 2.8 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 gauss61 sym_seq L1             12.055 s  61.1 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  gauss61 sym_seq L1             k-mers 736547799  median 12.055 s  61.1 M k-mers/s
+=== run_32: cd kp/hash && ./bench_e "$DATA" 31 1 "only=gauss61 sym_seq L2"
+loaded 221 records, 876147649 bases in 2.9 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 gauss61 sym_seq L2             11.381 s  64.7 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  gauss61 sym_seq L2             k-mers 736547799  median 11.381 s  64.7 M k-mers/s
+=== run_33: cd kp/hash && ./bench_e "$DATA" 31 1 "only=m31 simd (avx512 else avx2)"
+loaded 221 records, 876147649 bases in 3.3 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 m31 simd (avx512 else avx2)    6.444 s  114.3 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  m31 simd (avx512 else avx2)    k-mers 736547799  median 6.444 s  114.3 M k-mers/s
+=== run_34: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e branchy 1/1000"
+loaded 221 records, 876147649 bases in 2.8 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e branchy 1/1000               2.272 s  0.3 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e branchy 1/1000               kept 745710  median 2.272 s  0.3 M k-mers/s
+=== run_35: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e branchy 1/100"
+loaded 221 records, 876147649 bases in 2.8 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e branchy 1/100                2.401 s  3.1 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e branchy 1/100                kept 7382545  median 2.401 s  3.1 M k-mers/s
+=== run_36: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e branchy 1/16"
+loaded 221 records, 876147649 bases in 2.9 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e branchy 1/16                 3.223 s  14.2 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e branchy 1/16                 kept 45892012  median 3.223 s  14.2 M k-mers/s
+=== run_37: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e branchy 1/4"
+loaded 221 records, 876147649 bases in 3.0 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e branchy 1/4                  6.139 s  30.0 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e branchy 1/4                  kept 183856486  median 6.139 s  30.0 M k-mers/s
+=== run_38: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e batched 1/1000"
+loaded 221 records, 876147649 bases in 3.1 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e batched 1/1000               2.400 s  0.3 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e batched 1/1000               kept 745710  median 2.400 s  0.3 M k-mers/s
+=== run_39: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e batched 1/100"
+loaded 221 records, 876147649 bases in 2.8 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e batched 1/100                2.451 s  3.0 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e batched 1/100                kept 7382545  median 2.451 s  3.0 M k-mers/s
+=== run_40: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e batched 1/16"
+loaded 221 records, 876147649 bases in 2.9 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e batched 1/16                 2.836 s  16.2 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e batched 1/16                 kept 45892012  median 2.836 s  16.2 M k-mers/s
+=== run_41: cd kp/hash && ./bench_e "$DATA" 31 1 "only=e batched 1/4"
+loaded 221 records, 876147649 bases in 3.2 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 e batched 1/4                  4.115 s  44.7 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  e batched 1/4                  kept 183856486  median 4.115 s  44.7 M k-mers/s
+=== run_42: cd kp/hash && ./bench_e "$DATA" 31 1 "only=m31 branchy 1/1000"
+loaded 221 records, 876147649 bases in 2.8 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 m31 branchy 1/1000             2.289 s  0.3 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  m31 branchy 1/1000             kept 745710  median 2.289 s  0.3 M k-mers/s
+=== run_43: cd kp/hash && ./bench_e "$DATA" 31 1 "only=m31 branchy 1/100"
+loaded 221 records, 876147649 bases in 2.8 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 m31 branchy 1/100              2.503 s  2.9 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  m31 branchy 1/100              kept 7382545  median 2.503 s  2.9 M k-mers/s
+=== run_44: cd kp/hash && ./bench_e "$DATA" 31 1 "only=m31 batched 1/16"
+loaded 221 records, 876147649 bases in 2.9 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 m31 batched 1/16               3.301 s  13.9 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  m31 batched 1/16               kept 45892012  median 3.301 s  13.9 M k-mers/s
+=== run_45: cd kp/hash && ./bench_e "$DATA" 31 1 "only=m31 batched 1/4"
+loaded 221 records, 876147649 bases in 2.9 s; k=31, rounds=1
+m31 simd impl: AVX-512
+  round 0 m31 batched 1/4                6.163 s  29.8 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds)
+  m31 batched 1/4                kept 183856486  median 6.163 s  29.8 M k-mers/s
+=== run_46: cd kp/hash && ./bench "$DATA" 31 1 throughput "only=__load_only__"
+loaded 221 records, 876147649 bases in 3.3 s; k=31, rounds=1
+
+THROUGHPUT (median of 1 interleaved rounds; sink 0000000000000000)
+=== run_47: cd kp/hash && ./bench "$DATA" 31 1 throughput "only=m31 avx2 8-lane"
+loaded 221 records, 876147649 bases in 3.0 s; k=31, rounds=1
+  round 0 m31 avx2 8-lane                6.367 s  115.7 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds; sink 0625214fd1d0189c)
+  m31 avx2 8-lane                k-mers 736547799  median 6.367 s  115.7 M k-mers/s
+=== run_48: cd kp/hash && ./bench "$DATA" 31 1 throughput "only=m31 avx512 16-lane"
+loaded 221 records, 876147649 bases in 3.2 s; k=31, rounds=1
+  round 0 m31 avx512 16-lane             6.387 s  115.3 M k-mers/s
+
+THROUGHPUT (median of 1 interleaved rounds; sink 0625214fd1d0189c)
+  m31 avx512 16-lane             k-mers 736547799  median 6.387 s  115.3 M k-mers/s
+=== run_49: cd kp/hash && ./bench_e "$DATA" 31 1 "only=__load_only__"
+loaded 221 records, 876147649 bases in 3.0 s; k=31, rounds=1
+m31 simd impl: AVX-512
+
+THROUGHPUT (median of 1 interleaved rounds)
+=== run_50: cd kp/hash && ./bench "$DATA" 31 1 throughput "only=__load_only__"
+loaded 221 records, 876147649 bases in 3.1 s; k=31, rounds=1
+
+THROUGHPUT (median of 1 interleaved rounds; sink 0000000000000000)
+=== run_51: cd kp/ideas/eisenstein && ./bench_spaced_e "$DATA" 60000000 3
+bases 60000000, rounds 3
+masks 1: Gaussian 42088079 hashes 3.792 s (11.1 M/s)  Eisenstein 42088079 1.953 s (21.5 M/s)  SeedNtHash 42667269 1.482 s (28.8 M/s)  Gaussian/nt 0.39x  Eisenstein/nt 0.76x  (sinks 98df426c5d3a5923 13d43d33e37c7ac9 31e4636cdf9dcd4b)
+[ntHash::SeedNtHash] [33mWARNING: [0mSeed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+[ntHash::SeedNtHash] [33mWARNING: [0mSeed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+[ntHash::SeedNtHash] [33mWARNING: [0mSeed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+masks 2: Gaussian 84176158 hashes 8.280 s (10.2 M/s)  Eisenstein 84176158 4.184 s (20.1 M/s)  SeedNtHash 85334538 2.991 s (28.5 M/s)  Gaussian/nt 0.36x  Eisenstein/nt 0.71x  (sinks 7a6c4c7d53d8845b 0264b0f0e2737252 a24e9c470ef16a29)
+SNP rate 0.001 mask 0: windows 42088079, unchanged: Gaussian 0.97632  Eisenstein 0.97632  SeedNtHash 0.97632  exact(care positions of both strands) 0.97632
+[ntHash::SeedNtHash] [33mWARNING: [0mSeed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+[ntHash::SeedNtHash] [33mWARNING: [0mSeed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+SNP rate 0.001 mask 1: windows 42088079, unchanged: Gaussian 0.97146  Eisenstein 0.97146  SeedNtHash 0.98023  exact(care positions of both strands) 0.97146
+SNP rate 0.010 mask 0: windows 42088079, unchanged: Gaussian 0.78573  Eisenstein 0.78573  SeedNtHash 0.78573  exact(care positions of both strands) 0.78573
+[ntHash::SeedNtHash] [33mWARNING: [0mSeed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+[ntHash::SeedNtHash] [33mWARNING: [0mSeed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+SNP rate 0.010 mask 1: windows 42088079, unchanged: Gaussian 0.74722  Eisenstein 0.74722  SeedNtHash 0.81794  exact(care positions of both strands) 0.74722
+SNP rate 0.050 mask 0: windows 42088079, unchanged: Gaussian 0.29184  Eisenstein 0.29184  SeedNtHash 0.29184  exact(care positions of both strands) 0.29184
+[ntHash::SeedNtHash] [33mWARNING: [0mSeed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+[ntHash::SeedNtHash] [33mWARNING: [0mSeed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+SNP rate 0.050 mask 1: windows 42088079, unchanged: Gaussian 0.22567  Eisenstein 0.22567  SeedNtHash 0.35839  exact(care positions of both strands) 0.22567
