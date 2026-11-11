@@ -1,0 +1,62 @@
+{
+ "k11": {
+  "cpu_s": 0.4,
+  "hits": 190952,
+  "loci": 55,
+  "ref_keys": 4878,
+  "threads": 6,
+  "wall_s": 3.5
+ },
+ "k15": {
+  "cpu_s": 0.0,
+  "hits": 28957,
+  "loci": 39,
+  "ref_keys": 4866,
+  "threads": 6,
+  "wall_s": 2.1
+ },
+ "k15d1": {
+  "cpu_s": 0.2,
+  "hits": 102476,
+  "loci": 60,
+  "ref_keys": 223836,
+  "threads": 6,
+  "wall_s": 2.3
+ },
+ "k21": {
+  "cpu_s": 0.0,
+  "hits": 16872,
+  "loci": 29,
+  "ref_keys": 4848,
+  "threads": 6,
+  "wall_s": 2.6
+ },
+ "k31": {
+  "cpu_s": 0.0,
+  "hits": 8911,
+  "loci": 20,
+  "ref_keys": 4818,
+  "threads": 6,
+  "wall_s": 3.7
+ },
+ "lastz": {
+  "cpu_s": 1.2,
+  "loci": 63,
+  "threads": 1,
+  "wall_s": 4.5
+ },
+ "miniprot": {
+  "cpu_s": 1.9,
+  "loci": 45,
+  "threads": 16,
+  "wall_s": 4.3
+ },
+ "sp31w24": {
+  "cpu_s": 0.0,
+  "hits": 12634,
+  "loci": 30,
+  "ref_keys": 4818,
+  "threads": 6,
+  "wall_s": 3.6
+ }
+}

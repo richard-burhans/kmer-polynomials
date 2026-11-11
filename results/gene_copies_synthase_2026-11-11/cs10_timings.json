@@ -1,0 +1,71 @@
+{
+ "blastn": {
+  "makeblastdb_s": 516.2,
+  "threads": 16,
+  "wall_s": 520.4
+ },
+ "k11": {
+  "cpu_s": 111.5,
+  "hits": 5601041,
+  "loci": 17,
+  "ref_keys": 4878,
+  "threads": 6,
+  "wall_s": 34.6
+ },
+ "k15": {
+  "cpu_s": 145.2,
+  "hits": 56338,
+  "loci": 15,
+  "ref_keys": 4866,
+  "threads": 6,
+  "wall_s": 30.3
+ },
+ "k15d1": {
+  "cpu_s": 168.1,
+  "hits": 1334617,
+  "loci": 19,
+  "ref_keys": 223836,
+  "threads": 6,
+  "wall_s": 34.7
+ },
+ "k21": {
+  "cpu_s": 181.9,
+  "hits": 19280,
+  "loci": 14,
+  "ref_keys": 4848,
+  "threads": 6,
+  "wall_s": 38.0
+ },
+ "k31": {
+  "cpu_s": 229.0,
+  "hits": 13941,
+  "loci": 13,
+  "ref_keys": 4818,
+  "threads": 6,
+  "wall_s": 49.6
+ },
+ "lastz": {
+  "cpu_s": 25.9,
+  "loci": 48,
+  "threads": 1,
+  "wall_s": 71.6
+ },
+ "miniprot": {
+  "cpu_s": 26.8,
+  "loci": 42,
+  "threads": 16,
+  "wall_s": 50.3
+ },
+ "sp31w24": {
+  "cpu_s": 194.3,
+  "hits": 16429,
+  "loci": 14,
+  "ref_keys": 4818,
+  "threads": 6,
+  "wall_s": 41.1
+ },
+ "tblastn": {
+  "threads": 16,
+  "wall_s": 6.3
+ }
+}

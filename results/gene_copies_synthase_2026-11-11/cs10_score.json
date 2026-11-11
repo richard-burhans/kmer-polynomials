@@ -1,0 +1,772 @@
+{
+ "k11": {
+  "loci": 17,
+  "tp_loci": 17,
+  "fp_loci": 0,
+  "precision": 1.0,
+  "fp": [],
+  "time": {
+   "cpu_s": 111.5,
+   "hits": 5601041,
+   "loci": 17,
+   "ref_keys": 4878,
+   "threads": 6,
+   "wall_s": 34.6
+  },
+  "bins": {
+   ">=95": {
+    "truth": 7,
+    "found": 7,
+    "recall": 1.0,
+    "missed": []
+   },
+   "90-95": {
+    "truth": 6,
+    "found": 6,
+    "recall": 1.0,
+    "missed": []
+   },
+   "80-90": {
+    "truth": 0,
+    "found": 0,
+    "recall": null,
+    "missed": []
+   },
+   "<80": {
+    "truth": 35,
+    "found": 4,
+    "recall": 0.114,
+    "missed": [
+     "T001",
+     "T002",
+     "T003",
+     "T004",
+     "T007",
+     "T015",
+     "T021",
+     "T022",
+     "T023",
+     "T024",
+     "T025",
+     "T026",
+     "T027",
+     "T028",
+     "T029",
+     "T030",
+     "T031",
+     "T032",
+     "T034",
+     "T035",
+     "T037",
+     "T038",
+     "T039",
+     "T040",
+     "T041",
+     "T042",
+     "T043",
+     "T044",
+     "T046",
+     "T047",
+     "T048"
+    ]
+   },
+   "<80:70-80": {
+    "truth": 6,
+    "found": 3
+   },
+   "<80:<70": {
+    "truth": 19,
+    "found": 1
+   },
+   "<80:protein-only": {
+    "truth": 10,
+    "found": 0
+   }
+  },
+  "orientation_agree": "17/17",
+  "status_agree": "13/13",
+  "full_agree": "13/13"
+ },
+ "k15": {
+  "loci": 15,
+  "tp_loci": 15,
+  "fp_loci": 0,
+  "precision": 1.0,
+  "fp": [],
+  "time": {
+   "cpu_s": 145.2,
+   "hits": 56338,
+   "loci": 15,
+   "ref_keys": 4866,
+   "threads": 6,
+   "wall_s": 30.3
+  },
+  "bins": {
+   ">=95": {
+    "truth": 7,
+    "found": 7,
+    "recall": 1.0,
+    "missed": []
+   },
+   "90-95": {
+    "truth": 6,
+    "found": 6,
+    "recall": 1.0,
+    "missed": []
+   },
+   "80-90": {
+    "truth": 0,
+    "found": 0,
+    "recall": null,
+    "missed": []
+   },
+   "<80": {
+    "truth": 35,
+    "found": 2,
+    "recall": 0.057,
+    "missed": [
+     "T001",
+     "T002",
+     "T003",
+     "T004",
+     "T007",
+     "T015",
+     "T021",
+     "T022",
+     "T023",
+     "T024",
+     "T025",
+     "T026",
+     "T027",
+     "T028",
+     "T029",
+     "T030",
+     "T031",
+     "T032",
+     "T034",
+     "T035",
+     "T036",
+     "T037",
+     "T038",
+     "T039",
+     "T040",
+     "T041",
+     "T042",
+     "T043",
+     "T044",
+     "T045",
+     "T046",
+     "T047",
+     "T048"
+    ]
+   },
+   "<80:70-80": {
+    "truth": 6,
+    "found": 2
+   },
+   "<80:<70": {
+    "truth": 19,
+    "found": 0
+   },
+   "<80:protein-only": {
+    "truth": 10,
+    "found": 0
+   }
+  },
+  "orientation_agree": "15/15",
+  "status_agree": "13/13",
+  "full_agree": "13/13"
+ },
+ "k21": {
+  "loci": 14,
+  "tp_loci": 14,
+  "fp_loci": 0,
+  "precision": 1.0,
+  "fp": [],
+  "time": {
+   "cpu_s": 181.9,
+   "hits": 19280,
+   "loci": 14,
+   "ref_keys": 4848,
+   "threads": 6,
+   "wall_s": 38.0
+  },
+  "bins": {
+   ">=95": {
+    "truth": 7,
+    "found": 7,
+    "recall": 1.0,
+    "missed": []
+   },
+   "90-95": {
+    "truth": 6,
+    "found": 6,
+    "recall": 1.0,
+    "missed": []
+   },
+   "80-90": {
+    "truth": 0,
+    "found": 0,
+    "recall": null,
+    "missed": []
+   },
+   "<80": {
+    "truth": 35,
+    "found": 1,
+    "recall": 0.029,
+    "missed": [
+     "T001",
+     "T002",
+     "T003",
+     "T004",
+     "T006",
+     "T007",
+     "T015",
+     "T021",
+     "T022",
+     "T023",
+     "T024",
+     "T025",
+     "T026",
+     "T027",
+     "T028",
+     "T029",
+     "T030",
+     "T031",
+     "T032",
+     "T034",
+     "T035",
+     "T036",
+     "T037",
+     "T038",
+     "T039",
+     "T040",
+     "T041",
+     "T042",
+     "T043",
+     "T044",
+     "T045",
+     "T046",
+     "T047",
+     "T048"
+    ]
+   },
+   "<80:70-80": {
+    "truth": 6,
+    "found": 1
+   },
+   "<80:<70": {
+    "truth": 19,
+    "found": 0
+   },
+   "<80:protein-only": {
+    "truth": 10,
+    "found": 0
+   }
+  },
+  "orientation_agree": "14/14",
+  "status_agree": "13/13",
+  "full_agree": "13/13"
+ },
+ "k31": {
+  "loci": 13,
+  "tp_loci": 13,
+  "fp_loci": 0,
+  "precision": 1.0,
+  "fp": [],
+  "time": {
+   "cpu_s": 229.0,
+   "hits": 13941,
+   "loci": 13,
+   "ref_keys": 4818,
+   "threads": 6,
+   "wall_s": 49.6
+  },
+  "bins": {
+   ">=95": {
+    "truth": 7,
+    "found": 7,
+    "recall": 1.0,
+    "missed": []
+   },
+   "90-95": {
+    "truth": 6,
+    "found": 6,
+    "recall": 1.0,
+    "missed": []
+   },
+   "80-90": {
+    "truth": 0,
+    "found": 0,
+    "recall": null,
+    "missed": []
+   },
+   "<80": {
+    "truth": 35,
+    "found": 0,
+    "recall": 0.0,
+    "missed": [
+     "T001",
+     "T002",
+     "T003",
+     "T004",
+     "T005",
+     "T006",
+     "T007",
+     "T015",
+     "T021",
+     "T022",
+     "T023",
+     "T024",
+     "T025",
+     "T026",
+     "T027",
+     "T028",
+     "T029",
+     "T030",
+     "T031",
+     "T032",
+     "T034",
+     "T035",
+     "T036",
+     "T037",
+     "T038",
+     "T039",
+     "T040",
+     "T041",
+     "T042",
+     "T043",
+     "T044",
+     "T045",
+     "T046",
+     "T047",
+     "T048"
+    ]
+   },
+   "<80:70-80": {
+    "truth": 6,
+    "found": 0
+   },
+   "<80:<70": {
+    "truth": 19,
+    "found": 0
+   },
+   "<80:protein-only": {
+    "truth": 10,
+    "found": 0
+   }
+  },
+  "orientation_agree": "13/13",
+  "status_agree": "13/13",
+  "full_agree": "9/13"
+ },
+ "k15d1": {
+  "loci": 19,
+  "tp_loci": 19,
+  "fp_loci": 0,
+  "precision": 1.0,
+  "fp": [],
+  "time": {
+   "cpu_s": 168.1,
+   "hits": 1334617,
+   "loci": 19,
+   "ref_keys": 223836,
+   "threads": 6,
+   "wall_s": 34.7
+  },
+  "bins": {
+   ">=95": {
+    "truth": 7,
+    "found": 7,
+    "recall": 1.0,
+    "missed": []
+   },
+   "90-95": {
+    "truth": 6,
+    "found": 6,
+    "recall": 1.0,
+    "missed": []
+   },
+   "80-90": {
+    "truth": 0,
+    "found": 0,
+    "recall": null,
+    "missed": []
+   },
+   "<80": {
+    "truth": 35,
+    "found": 6,
+    "recall": 0.171,
+    "missed": [
+     "T001",
+     "T002",
+     "T003",
+     "T007",
+     "T015",
+     "T021",
+     "T022",
+     "T023",
+     "T024",
+     "T025",
+     "T026",
+     "T027",
+     "T028",
+     "T029",
+     "T030",
+     "T031",
+     "T032",
+     "T034",
+     "T035",
+     "T037",
+     "T038",
+     "T039",
+     "T041",
+     "T042",
+     "T043",
+     "T044",
+     "T046",
+     "T047",
+     "T048"
+    ]
+   },
+   "<80:70-80": {
+    "truth": 6,
+    "found": 3
+   },
+   "<80:<70": {
+    "truth": 19,
+    "found": 3
+   },
+   "<80:protein-only": {
+    "truth": 10,
+    "found": 0
+   }
+  },
+  "orientation_agree": "19/19",
+  "status_agree": "13/13",
+  "full_agree": "13/13"
+ },
+ "sp31w24": {
+  "loci": 14,
+  "tp_loci": 14,
+  "fp_loci": 0,
+  "precision": 1.0,
+  "fp": [],
+  "time": {
+   "cpu_s": 194.3,
+   "hits": 16429,
+   "loci": 14,
+   "ref_keys": 4818,
+   "threads": 6,
+   "wall_s": 41.1
+  },
+  "bins": {
+   ">=95": {
+    "truth": 7,
+    "found": 7,
+    "recall": 1.0,
+    "missed": []
+   },
+   "90-95": {
+    "truth": 6,
+    "found": 6,
+    "recall": 1.0,
+    "missed": []
+   },
+   "80-90": {
+    "truth": 0,
+    "found": 0,
+    "recall": null,
+    "missed": []
+   },
+   "<80": {
+    "truth": 35,
+    "found": 1,
+    "recall": 0.029,
+    "missed": [
+     "T001",
+     "T002",
+     "T003",
+     "T004",
+     "T006",
+     "T007",
+     "T015",
+     "T021",
+     "T022",
+     "T023",
+     "T024",
+     "T025",
+     "T026",
+     "T027",
+     "T028",
+     "T029",
+     "T030",
+     "T031",
+     "T032",
+     "T034",
+     "T035",
+     "T036",
+     "T037",
+     "T038",
+     "T039",
+     "T040",
+     "T041",
+     "T042",
+     "T043",
+     "T044",
+     "T045",
+     "T046",
+     "T047",
+     "T048"
+    ]
+   },
+   "<80:70-80": {
+    "truth": 6,
+    "found": 1
+   },
+   "<80:<70": {
+    "truth": 19,
+    "found": 0
+   },
+   "<80:protein-only": {
+    "truth": 10,
+    "found": 0
+   }
+  },
+  "orientation_agree": "14/14",
+  "status_agree": "13/13",
+  "full_agree": "13/13"
+ },
+ "lastz": {
+  "loci": 48,
+  "tp_loci": 48,
+  "fp_loci": 0,
+  "precision": 1.0,
+  "fp": [],
+  "time": {
+   "cpu_s": 25.9,
+   "loci": 48,
+   "threads": 1,
+   "wall_s": 71.6
+  },
+  "bins": {
+   ">=95": {
+    "truth": 7,
+    "found": 7,
+    "recall": 1.0,
+    "missed": []
+   },
+   "90-95": {
+    "truth": 6,
+    "found": 6,
+    "recall": 1.0,
+    "missed": []
+   },
+   "80-90": {
+    "truth": 0,
+    "found": 0,
+    "recall": null,
+    "missed": []
+   },
+   "<80": {
+    "truth": 35,
+    "found": 35,
+    "recall": 1.0,
+    "missed": []
+   },
+   "<80:70-80": {
+    "truth": 6,
+    "found": 6
+   },
+   "<80:<70": {
+    "truth": 19,
+    "found": 19
+   },
+   "<80:protein-only": {
+    "truth": 10,
+    "found": 10
+   }
+  },
+  "orientation_agree": "48/48",
+  "status_agree": "13/13",
+  "full_agree": "13/13"
+ },
+ "miniprot": {
+  "loci": 42,
+  "tp_loci": 42,
+  "fp_loci": 0,
+  "precision": 1.0,
+  "fp": [],
+  "time": {
+   "cpu_s": 26.8,
+   "loci": 42,
+   "threads": 16,
+   "wall_s": 50.3
+  },
+  "bins": {
+   ">=95": {
+    "truth": 7,
+    "found": 7,
+    "recall": 1.0,
+    "missed": []
+   },
+   "90-95": {
+    "truth": 6,
+    "found": 5,
+    "recall": 0.833,
+    "missed": [
+     "T016"
+    ]
+   },
+   "80-90": {
+    "truth": 0,
+    "found": 0,
+    "recall": null,
+    "missed": []
+   },
+   "<80": {
+    "truth": 35,
+    "found": 30,
+    "recall": 0.857,
+    "missed": [
+     "T003",
+     "T023",
+     "T030",
+     "T032",
+     "T046"
+    ]
+   },
+   "<80:70-80": {
+    "truth": 6,
+    "found": 6
+   },
+   "<80:<70": {
+    "truth": 19,
+    "found": 19
+   },
+   "<80:protein-only": {
+    "truth": 10,
+    "found": 5
+   }
+  },
+  "orientation_agree": "42/42",
+  "status_agree": "12/12",
+  "full_agree": "12/12"
+ },
+ "blastn": {
+  "loci": 39,
+  "tp_loci": 39,
+  "fp_loci": 0,
+  "precision": 1.0,
+  "fp": [],
+  "time": {
+   "makeblastdb_s": 516.2,
+   "threads": 16,
+   "wall_s": 520.4
+  },
+  "bins": {
+   ">=95": {
+    "truth": 7,
+    "found": 7,
+    "recall": 1.0,
+    "missed": []
+   },
+   "90-95": {
+    "truth": 6,
+    "found": 6,
+    "recall": 1.0,
+    "missed": []
+   },
+   "80-90": {
+    "truth": 0,
+    "found": 0,
+    "recall": null,
+    "missed": []
+   },
+   "<80": {
+    "truth": 35,
+    "found": 25,
+    "recall": 0.714,
+    "missed": [
+     "T001",
+     "T002",
+     "T003",
+     "T023",
+     "T024",
+     "T029",
+     "T030",
+     "T032",
+     "T046",
+     "T048"
+    ]
+   },
+   "<80:70-80": {
+    "truth": 6,
+    "found": 6
+   },
+   "<80:<70": {
+    "truth": 19,
+    "found": 19
+   },
+   "<80:protein-only": {
+    "truth": 10,
+    "found": 0
+   }
+  },
+  "orientation_agree": "38/38",
+  "status_agree": "13/13",
+  "full_agree": "13/13"
+ },
+ "tblastn": {
+  "loci": 48,
+  "tp_loci": 48,
+  "fp_loci": 0,
+  "precision": 1.0,
+  "fp": [],
+  "time": {
+   "threads": 16,
+   "wall_s": 6.3
+  },
+  "bins": {
+   ">=95": {
+    "truth": 7,
+    "found": 7,
+    "recall": 1.0,
+    "missed": []
+   },
+   "90-95": {
+    "truth": 6,
+    "found": 6,
+    "recall": 1.0,
+    "missed": []
+   },
+   "80-90": {
+    "truth": 0,
+    "found": 0,
+    "recall": null,
+    "missed": []
+   },
+   "<80": {
+    "truth": 35,
+    "found": 35,
+    "recall": 1.0,
+    "missed": []
+   },
+   "<80:70-80": {
+    "truth": 6,
+    "found": 6
+   },
+   "<80:<70": {
+    "truth": 19,
+    "found": 19
+   },
+   "<80:protein-only": {
+    "truth": 10,
+    "found": 10
+   }
+  },
+  "orientation_agree": "48/48",
+  "status_agree": "13/13",
+  "full_agree": "11/13"
+ }
+}

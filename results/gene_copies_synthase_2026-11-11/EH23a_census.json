@@ -1,0 +1,72 @@
+{
+ "functional_lastz": {
+  "THCAS": 1,
+  "CBCAS": 3
+ },
+ "methods": {
+  "k11": {
+   "loci": 18,
+   "clade": 14,
+   "outside_clade": 4,
+   "clade_full_intact": 6,
+   "clade_full_pseudogene": 7,
+   "clade_partial": 1
+  },
+  "k15": {
+   "loci": 17,
+   "clade": 14,
+   "outside_clade": 3,
+   "clade_full_intact": 6,
+   "clade_full_pseudogene": 7,
+   "clade_partial": 1
+  },
+  "k21": {
+   "loci": 14,
+   "clade": 14,
+   "outside_clade": 0,
+   "clade_full_intact": 6,
+   "clade_full_pseudogene": 7,
+   "clade_partial": 1
+  },
+  "k31": {
+   "loci": 14,
+   "clade": 14,
+   "outside_clade": 0,
+   "clade_full_intact": 4,
+   "clade_full_pseudogene": 4,
+   "clade_partial": 6
+  },
+  "k15d1": {
+   "loci": 21,
+   "clade": 14,
+   "outside_clade": 7,
+   "clade_full_intact": 6,
+   "clade_full_pseudogene": 7,
+   "clade_partial": 1
+  },
+  "sp31w24": {
+   "loci": 15,
+   "clade": 14,
+   "outside_clade": 1,
+   "clade_full_intact": 6,
+   "clade_full_pseudogene": 6,
+   "clade_partial": 2
+  },
+  "lastz": {
+   "loci": 47,
+   "clade": 14,
+   "outside_clade": 33,
+   "clade_full_intact": 6,
+   "clade_full_pseudogene": 7,
+   "clade_partial": 1
+  },
+  "miniprot": {
+   "loci": 44,
+   "clade": 14,
+   "outside_clade": 30,
+   "clade_full_intact": 6,
+   "clade_full_pseudogene": 7,
+   "clade_partial": 1
+  }
+ }
+}

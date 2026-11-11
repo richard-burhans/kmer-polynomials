@@ -1,0 +1,35 @@
+{
+ "fetched": "NCBI efetch, 2026-11-11 (tool=gene_copies_pilot); CDS file copied from cannabis-genome data/reference/cannabinoid_synthases.fa (fetched 2026-11-03), identical to the 2026-11-11 fetch",
+ "references": {
+  "THCAS": {
+   "nucleotide": "AB057805.1",
+   "cds": [
+    27,
+    1664
+   ],
+   "protein": "BAC41356.1",
+   "source": "Sirikantaramas et al. 2004, mRNA; CDS includes the TAA stop",
+   "sha256_cds": "475b5f5bc631e477eae1eb79882969ddfce026ef2b6a16d0979af1a34b4e4e3f"
+  },
+  "CBDAS": {
+   "nucleotide": "AB292682.1",
+   "cds": [
+    1,
+    1635
+   ],
+   "protein": "BAF65033.1",
+   "source": "Taura et al. 2007, mRNA; CDS includes the TAA stop",
+   "sha256_cds": "2107ab8cf51b620646e6f2f6ed94cf6abd2126af7c0f62bce34c00212fd12f0d"
+  },
+  "CBCAS": {
+   "nucleotide": "LY658671.1",
+   "cds": [
+    1,
+    1635
+   ],
+   "protein": null,
+   "source": "patent KR 1020190025485-A/5 (organism field: synthetic construct); whole record, no stop codon; protein = its translation, 545 aa",
+   "sha256_cds": "c5f6ce9fa95b372a458eebc208ce2981bb17e042317d454ea4186477280db4f2"
+  }
+ }
+}
