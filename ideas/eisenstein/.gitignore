@@ -6,3 +6,4 @@ test_spaced_e
 test_spaced_e_mutant
 bench_spaced_e
 mutant.out
+seedrc

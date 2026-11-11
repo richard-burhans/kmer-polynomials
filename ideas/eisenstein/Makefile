@@ -37,3 +37,7 @@ bench_spaced_e: bench_spaced_e.cpp spaced_e.o kp7e.o ../algebra/spaced.c ../alge
 
 clean:
 	rm -f *.o dbg_e31 dbg_e47 dbg_e63 test_spaced_e test_spaced_e_mutant bench_spaced_e mutant.out
+
+# direct h(w) == h(rc w) test of SeedNtHash and the Eisenstein S_m, palindromic and non-palindromic masks (round 1)
+seedrc: seedrc.cpp spaced_e.o kp7e.o
+	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include seedrc.cpp spaced_e.o kp7e.o $(NTHASH)/build_o3/libnthash.a -o $@
