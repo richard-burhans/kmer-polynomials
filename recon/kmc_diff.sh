@@ -4,7 +4,7 @@
 #
 #   bash recon/kmc_diff.sh <genomeA> <genomeB> <k> <workdir>
 #
-# KMC is run with -ci1 (keep singletons: we want the SET of k-mers, not the solid ones) and -cs1 (counts irrelevant),
+# KMC is run with -ci1 (keep singletons: we want the SET of k-mers, not the solid ones) and -cs255 (counts are irrelevant, but kmc_tools cannot subtract counter-less sets made with -cs1),
 # canonical (KMC's default), from FASTA made by twoBitToFa. KMC is case-blind and skips k-mers with N, as
 # recon/kmerset.py and hash/kp7e_stream.c do. Outputs in <workdir>/k<k>/: <g>.kmc_{pre,suf}, amb.txt / bma.txt (dumped
 # k-mers of A\B and B\A), and summary.json with the counts. KMC_BIN defaults to the bioconda env made for round 1.
@@ -20,7 +20,7 @@ mkdir -p "$D/tmp" "$W/fa"
 for g in "$A" "$B"; do
   [ -s "$W/fa/$g.fa" ] || "$KENT/twoBitToFa" "$TWOBIT/$g.2bit" "$W/fa/$g.fa"
   if [ ! -s "$D/$g.kmc_suf" ]; then
-    "$KMC_BIN/kmc" -k"$K" -ci1 -cs1 -fm -m"$MEM_GB" -t"$THREADS" "$W/fa/$g.fa" "$D/$g" "$D/tmp" > "$D/$g.kmc.log" 2>&1
+    "$KMC_BIN/kmc" -k"$K" -ci1 -cs255 -fm -m"$MEM_GB" -t"$THREADS" "$W/fa/$g.fa" "$D/$g" "$D/tmp" > "$D/$g.kmc.log" 2>&1
   fi
 done
 "$KMC_BIN/kmc_tools" -t"$THREADS" simple "$D/$A" "$D/$B" kmers_subtract "$D/amb" reverse_kmers_subtract "$D/bma" \
