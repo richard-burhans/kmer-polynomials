@@ -13,8 +13,8 @@ different jobs must not be compared directly in the paper, because between-job v
 | 4,160 / 16,362 | distinct values of F·R, k = 7 / 8 (Gaussian) | results/kp7_symmetric_check_2026-11-10.txt:3, 8 |
 | 8,192 / 32,896 | distinct values of (F+λ)(R+λ), k = 7 / 8, equal to the number of double-stranded classes (Gaussian) | results/kp7_symmetric_check_2026-11-10.txt:1, 4, 6, 9 |
 | 8,192 / 32,896 | the same for the Eisenstein hash, with F injective on all 4^k k-mers | results/kp7_eisenstein_2026-11-10.md:33–34 |
-| ≈ 2k/q ≈ 2.7 × 10⁻¹⁷ | collision bound of the Eisenstein symmetric hash per pair, k = 31, q = 2⁶¹ − 1 | results/kp7_eisenstein_2026-11-10.md:29–30 |
-| ≈ 1.4 × 10⁻¹⁷ | collision bound of the CM31 (x complex) hash per pair, k = 31 | results/kp7_m31_simd_2026-11-10.md (Method paragraph) |
+| 2(k−1)/q ≈ 2.6 × 10⁻¹⁷ | collision bound of the Eisenstein symmetric hash per pair, k = 31, q = 2⁶¹ − 1 (corrected in round 1; was 2.7, which is 2k/q) | results/kp7_eisenstein_2026-11-10.md:29–30 |
+| 2(k−1)/p² ≈ 1.3 × 10⁻¹⁷ | collision bound of the CM31 (x complex) hash per pair, k = 31 (corrected in round 1; was 1.4) | results/kp7_m31_simd_2026-11-10.md (Method paragraph) |
 | 1 / 3 / 4 | squared distances in ℂ: transitions, A–C/G–T transversions, complements (Eisenstein) | results/kp7_eisenstein_2026-11-10.md:35–36 |
 | 3 multiplies per k-mer | Eisenstein rolling cost | results/kp7_eisenstein_2026-11-10.md:19–20 |
 | 16 KB | Eisenstein v2 table size (8-byte entries) | results/kp7_eisenstein_2026-11-10.md:22 |
@@ -121,3 +121,16 @@ Items 1–6 of the earlier requirement (ntHash batched and library; Eisenstein s
 CM31 AVX2 and AVX-512; Eisenstein and CM31 samplers at 1/1000 to 1/4; spaced seeds with one and two masks) ran in
 one job, two interleaved repeats, three load baselines per binary. Item 7, the KP-10 sketch build and recovery, is
 a numpy prototype and is not timed on laila; the paper quotes its times only as prototype times.
+
+## Round 1 additions (2026-11-11; results/round1_owed_2026-11-11.md)
+
+| number | meaning | source |
+|---|---|---|
+| 7,931 / 137,216 B / 1 round | sketch of k-mers as written, k = 31, buckets from bits of S, exact | results/round1_owed_2026-11-11.md |
+| 398,217,248 | differences seen by a forward-only hash in the same sketch | results/round1_owed_2026-11-11.md |
+| 21,382 / 548,864 B / 1 round | k = 63, S from the sequence, exact, KMC 3.2.4 agrees element by element | results/round1_owed_2026-11-11.md |
+| 0 of 736,547,799 | batched ntHash vs library mismatches, full cs10 | results (nteq), commit 9b1347e |
+| 0 of 199,970 | SeedNtHash windows agreeing with their reverse complement, non-symmetric masks | results (seedrc), commit ef2fd8c |
+| 45.36% | draft bases on flipped contigs | results/round1_owed_2026-11-11/draft_orientation.json |
+| 1,583 gaps / 151 loci / 147 in repeats / 8–96 per seed | long gaps after reseeding x and λ independently | commit 0db2b6e |
+| 16,512 | reversal orbits of 8-mers (F·R merges further, 16,362) | commit ec9ec66 |

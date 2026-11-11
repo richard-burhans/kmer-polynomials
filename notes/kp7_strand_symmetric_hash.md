@@ -24,7 +24,7 @@ invariant under plain reversal (it merges s with reverse(s), confirmed), and it 
 
 **(F + λ)(R + λ) = λ² + λe₁ + e₂ is right.** As a polynomial in λ over F(x), it factors uniquely into its roots, so it
 determines the unordered pair {p_s, rc(p_s)}, i.e. the double-stranded k-mer. By Schwartz–Zippel, two distinct
-double-stranded k-mers collide with probability ≤ about 2k / q² over random (x₀, λ).
+double-stranded k-mers collide with probability ≤ 2(k−1) / q² over random (x₀, λ).
 
 ## Rolling, both strands in O(1)
 

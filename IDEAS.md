@@ -154,7 +154,7 @@ Next steps (results/kp7_next_steps_2026-11-10.md): v2 with chunk-table evaluatio
 
 Kept-k-mer evaluation (results/kp7_kept_eval_2026-11-10.md): 142 → 64 cycles per kept k-mer (CM31 tables, batched). v2 now beats batched ntHash at sampling sparser than about 1/36 (it was 1/71), and beats the CM31 SIMD every-k-mer hash below about 1/4 (it was 1/8.5).
 
-Eisenstein encoding (ω ∈ F_q, one field element per hash): provable every-k-mer hashing at 24.6 cycles/k-mer on laila (0.46× batched ntHash, beating CM31 AVX-512 without SIMD); v2 sampler at about 29 cycles per kept k-mer, beating batched ntHash below about 1/19 (1.21× at 1/1000, 0.96× at 1/16). Bound about 2k/q, as Gaussian x-real (results/kp7_eisenstein_2026-11-10.md).
+Eisenstein encoding (ω ∈ F_q, one field element per hash): provable every-k-mer hashing at 24.6 cycles/k-mer on laila (0.46× batched ntHash, beating CM31 AVX-512 without SIMD); v2 sampler at about 29 cycles per kept k-mer, beating batched ntHash below about 1/19 (1.21× at 1/1000, 0.96× at 1/16). Bound 2(k−1)/q = 2.6e-17 at k = 31, as Gaussian x-real (results/kp7_eisenstein_2026-11-10.md).
 
 *Check (KP-6 + KP-7):* compare against ntHash on cs10 for throughput, uniformity of minimizer selection (density and
 spacing between chosen positions), and collision rate.
