@@ -72,9 +72,11 @@ exactly our squared distances: 1 for A–G and C–T (transitions), 3 for A–C 
 Eisenstein map up to a rotation. Their stated reasons are that purines and pyrimidines share imaginary parts and that
 complements sum to zero. They do NOT mention transitions or distances.
 
-What remains unclaimed, as far as these searches go:
-1. the explicit criterion (transitions separate from A–C/G–T exactly when Re(A·C̄) ≠ 0, so no fourth-root map can) and
-   transition-cheapest as the REASON for θ = π/3;
+What remains unclaimed, as far as these searches go (NARROWED 2026-11-11 after the second reads: Yu et al. 2018's
+survey shows binary-code mappings designed so Hamming/Euclidean distance reflects transitions vs transversions, so
+the idea of a distance-aware encoding is established):
+1. only the specific criterion for complement-as-negation complex maps (transitions separate from A–C/G–T exactly
+   when Re(A·C̄) ≠ 0, so no fourth-root map can, and θ = π/3 does);
 2. the use as polynomial-hash coefficients over F_q with ω ∈ F_q, and the strand-symmetric product (F+λ)(R+λ).
 
 The other papers: Grandhi & Kumar 2007's 2-simplex map puts three bases on a triangle and the fourth at 0 (different).
@@ -87,6 +89,15 @@ das_2017_trigonometric-mapping, das_2017_kaiser-window, cristea_2002_genomic-sig
 roy_2017_polyphase-mapping, yu_2018_encoding-survey, gulocak_2022_mapping-effect, benarjee_2025_static-encoding,
 yu_2016_gene-identification (OCR re-render), sajjad_2023_eisenstein-bch and sajjad_2026_eisenstein-dna-bch. Second
 reads are owed.
+
+**Still to fetch (2026-11-11):** Das, Nanda & Das 2019, "An integrated approach for identification of exon locations
+using recursive Gauss Newton tuned adaptive Kaiser window", *Genomics* 111(3):284-296, doi 10.1016/j.ygeno.2018.10.008.
+It is the mapping's cited source in Gulocak 2022 (its ref. 22) and may state a rationale for θ. (Earlier listed as
+"2018", its online year; the issue is 2019. The owner supplied the I2CT Kaiser paper in its place.)
+
+The second reads (library commit after 4ec1833) also corrected: the Kaiser paper has three authors (Das, Das, Nanda);
+Cristea gives a value-spacing argument but none from distances between bases; Das 2017 MAMI's printed sensitivity is
+its specificity formula's value (labels swapped); Gulocak's trigonometric row cites Das 2019 Genomics, not MAMI 2017.
 
 Filing found two more things:
 - `cristea_2002_genomic-signals` equation (5) is the fourth-root map itself (up to a global sign), and its equation
