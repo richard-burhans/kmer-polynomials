@@ -1,12 +1,9 @@
-# ideas/eisenstein/seedrc; repo d70f949; ntHash c26bd45; host claude-cannabis-genome; 2026-11-11T06:27:30Z
+# ideas/eisenstein/seedrc; repo 5ea7be8; ntHash c26bd45; host claude-cannabis-genome; 2026-11-11T15:33:36Z
 # seedrc n=200000 random seed=7 k=31; window p of s vs window n-k-p of rc(s)
 mask	palindromic	weight	hash	windows	h(w)==h(rc w)
 1101100111010111011100101110101	no	20	SeedNtHash	199970	0
 1101100111010111011100101110101	no	20	Eisenstein S_m	199970	199970
-# stderr: [ntHash::SeedNtHash] [33mWARNING: [0mSeed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
-# stderr: [ntHash::SeedNtHash] [33mWARNING: [0mSeed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
-# stderr: [ntHash::SeedNtHash] [33mWARNING: [0mSeed 1101100111010111011100101110111 is not symmetric, reverse-complement hashing will be inconsistent
-# stderr: [ntHash::SeedNtHash] [33mWARNING: [0mSeed 111101100111010111011100101110111	no	21	SeedNtHash	199970	0
+1101100111010111011100101110111	no	21	SeedNtHash	199970	0
 1101100111010111011100101110111	no	21	Eisenstein S_m	199970	199970
 1111111111111110000000000000001	no	16	SeedNtHash	199970	0
 1111111111111110000000000000001	no	16	Eisenstein S_m	199970	199970
@@ -14,6 +11,9 @@ mask	palindromic	weight	hash	windows	h(w)==h(rc w)
 1110111011101110111011101110111	yes	24	Eisenstein S_m	199970	199970
 1111111111111111111111111111111	yes	31	SeedNtHash	199970	199970
 1111111111111111111111111111111	yes	31	Eisenstein S_m	199970	199970
-01100111010111011100101110111 is not symmetric, reverse-complement hashing will be inconsistent
+# stderr: [ntHash::SeedNtHash] [33mWARNING: [0mSeed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+# stderr: [ntHash::SeedNtHash] [33mWARNING: [0mSeed 1101100111010111011100101110101 is not symmetric, reverse-complement hashing will be inconsistent
+# stderr: [ntHash::SeedNtHash] [33mWARNING: [0mSeed 1101100111010111011100101110111 is not symmetric, reverse-complement hashing will be inconsistent
+# stderr: [ntHash::SeedNtHash] [33mWARNING: [0mSeed 1101100111010111011100101110111 is not symmetric, reverse-complement hashing will be inconsistent
 # stderr: [ntHash::SeedNtHash] [33mWARNING: [0mSeed 1111111111111110000000000000001 is not symmetric, reverse-complement hashing will be inconsistent
 # stderr: [ntHash::SeedNtHash] [33mWARNING: [0mSeed 1111111111111110000000000000001 is not symmetric, reverse-complement hashing will be inconsistent
