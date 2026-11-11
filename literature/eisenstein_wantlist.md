@@ -79,3 +79,17 @@ What remains unclaimed, as far as these searches go:
 
 The other papers: Grandhi & Kumar 2007's 2-simplex map puts three bases on a triangle and the fourth at 0 (different).
 Roy & Barman 2017 use a codon-level map with angle π/8. Cristea 2002 and Yu et al. 2018 are background.
+
+## Filed in the library (2026-11-11)
+
+All 11 papers are filed on `methods-tooling` (library commits 82664ac and 4ec1833). The slugs are
+das_2017_trigonometric-mapping, das_2017_kaiser-window, cristea_2002_genomic-signals, grandhi_2007_2simplex-mapping,
+roy_2017_polyphase-mapping, yu_2018_encoding-survey, gulocak_2022_mapping-effect, benarjee_2025_static-encoding,
+yu_2016_gene-identification (OCR re-render), sajjad_2023_eisenstein-bch and sajjad_2026_eisenstein-dna-bch. Second
+reads are owed.
+
+Filing found two more things:
+- `cristea_2002_genomic-signals` equation (5) is the fourth-root map itself (up to a global sign), and its equation
+  (4) is the θ = π/4 trigonometric point. Das, Nanda & Das 2017's stated rationale restates Cristea's.
+- `gulocak_2022_mapping-effect`'s registered DOI is 10.35377/saucis...1191850 (three dots). Its trigonometric row
+  swaps A and G relative to Das, and its θ = 60° example vector contradicts that row at every C and T.
