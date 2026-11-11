@@ -2,6 +2,8 @@
 # Multi-seed sampling statistics on cs10 (KP-7 next steps, item 3).
 #   hash/run_stats_seeds.sh [k=31] [seeds=5] [label]
 # Writes results/kp7_stats_seeds_<date>[.<label>].tsv; REFUSES to overwrite. Untimed, so a shared host is fine.
+# Also logs every long gap (<out>.gaps.tsv) and merges them into distinct loci across runs (hash/merge_gaps.py:
+# <out>.loci.tsv and <out>.loci.json), since one repeat gaps in many runs (round-1 adjudication L2 F1).
 set -euo pipefail
 cd "$(dirname "$0")"
 K=${1:-31}; SEEDS=${2:-5}; LABEL=${3:-}
@@ -16,5 +18,6 @@ make -s test_kp7pack stats_seeds
 [ -s "$FA" ] || "$B/kent-bin/twoBitToFa" "$B/hub-build/2bit/cs10_NCBI_RefSeq_softmasked.2bit" "$FA"
 {
   echo "# $(date -Is) kp7 commit $(git rev-parse --short HEAD)$(git diff --quiet -- . || echo '+dirty'); input $FA"
-  ./stats_seeds "$FA" "$K" "$SEEDS"
+  ./stats_seeds "$FA" "$K" "$SEEDS" "gaps=${OUT%.tsv}.gaps.tsv"
 } | tee "$OUT"
+python3 merge_gaps.py "${OUT%.tsv}.gaps.tsv" --out "${OUT%.tsv}.loci.tsv" --json "${OUT%.tsv}.loci.json"

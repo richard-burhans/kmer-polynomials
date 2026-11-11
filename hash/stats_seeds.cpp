@@ -1,6 +1,11 @@
 // Multi-seed sampling statistics for strand-symmetric k-mer hashes on a genome (KP-7 next steps, item 3).
 //
-//   stats_seeds <fasta> [k=31] [seeds=5] [only=<method>]
+//   stats_seeds <fasta> [k=31] [seeds=5] [only=<method>] [gaps=<file>]
+//
+// gaps=<file> logs every long gap as a TSV row (method, seed, record, start, end, gap_kmers, lowercase_bases), so
+// gaps can be merged into distinct loci across runs (hash/merge_gaps.py; round-1 adjudication L2 F1: the same repeat
+// gaps in run after run, so gap events are not independent). Seed i draws x and lam independently, from seed_x =
+// 0x5eed + 1000 i and seed_lam = 0x1a3d + 1000 i (before 2026-11-11 both came from one stream seeded 0x5eed + 1000 i).
 //
 // Methods, each with `seeds` different hash functions:
 //   ntHash   canonical (fwd + rev) from the library; seed i > 0 uses ntHash's own multi-hash extension
@@ -48,6 +53,9 @@ static const double RATE = 2.0 / 21.0;
 static const uint64_t THR = (uint64_t)(RATE * 18446744073709551615.0);
 static const uint64_t LONG = 200;
 
+static FILE* g_gaps = nullptr; // gaps=<file>
+static const char* g_meth = ""; static int g_seed = 0; static const char* g_rec = "";
+
 struct Stats {
   uint64_t kmers = 0, bits[64] = { 0 };
   int ws[3] = { 10, 20, 50 };
@@ -84,6 +92,8 @@ static void run_stats(Stats& st, const std::vector<uint64_t>& h, size_t start, c
         size_t lower = 0;
         for (size_t q = a; q < b; q++) lower += seq[q] >= 'a';
         if (2 * lower < b - a) st.long_outside++;
+        if (g_gaps)
+          fprintf(g_gaps, "%s\t%d\t%s\t%zu\t%zu\t%llu\t%zu\n", g_meth, g_seed, g_rec, a, b, (unsigned long long)g, lower);
       }
     }
     prev = (long)i;
@@ -142,10 +152,17 @@ template <class Fn> static void hash_record(int m, int seed, const std::string& 
 
 int main(int argc, char** argv)
 {
-  if (argc < 2) { fprintf(stderr, "usage: stats_seeds <fasta> [k] [seeds] [only=<method>]\n"); return 2; }
+  if (argc < 2) { fprintf(stderr, "usage: stats_seeds <fasta> [k] [seeds] [only=<method>] [gaps=<file>]\n"); return 2; }
   unsigned k = argc > 2 ? (unsigned)atoi(argv[2]) : 31;
   int seeds = argc > 3 ? atoi(argv[3]) : 5;
-  const char* only = argc > 4 && !strncmp(argv[4], "only=", 5) ? argv[4] + 5 : nullptr;
+  const char* only = nullptr;
+  for (int i = 4; i < argc; i++) {
+    if (!strncmp(argv[i], "only=", 5)) only = argv[i] + 5;
+    else if (!strncmp(argv[i], "gaps=", 5)) {
+      if (!(g_gaps = fopen(argv[i] + 5, "w"))) { perror(argv[i] + 5); return 2; }
+      fprintf(g_gaps, "method\tseed\trecord\tstart\tend\tgap_kmers\tlowercase_bases\n");
+    } else { fprintf(stderr, "unknown argument %s\n", argv[i]); return 2; }
+  }
   std::vector<Rec> recs = load_fasta(argv[1]);
   size_t bases = 0, lower = 0;
   for (auto& r : recs) { bases += r.seq.size(); for (char c : r.seq) lower += c >= 'a' && c <= 'z'; }
@@ -156,10 +173,14 @@ int main(int argc, char** argv)
     if (only && strcmp(only, NAMES[m])) continue;
     for (int seed = 0; seed < seeds; seed++) {
       kp7_params p;
-      kp7_init(&p, k, KP7_XREAL, 0x5eed + 1000 * (uint64_t)seed, (0x5eed + 1000 * (uint64_t)seed) + 1);
-      kp7e_init(&g_ep, k, 0x5eed + 1000 * (uint64_t)seed, (0x5eed + 1000 * (uint64_t)seed) + 1);
+      const uint64_t sx = 0x5eed + 1000 * (uint64_t)seed, sl = 0x1a3d + 1000 * (uint64_t)seed;
+      kp7_init(&p, k, KP7_XREAL, sx, sl);
+      kp7e_init(&g_ep, k, sx, sl);
+      g_meth = NAMES[m];
+      g_seed = seed;
       Stats st;
       for (const Rec& r : recs) {
+        g_rec = r.name.c_str();
         std::vector<uint64_t> run;
         size_t prev = SIZE_MAX, start = 0;
         hash_record(m, seed, r.seq, k, &p, [&](size_t pos, uint64_t h) {
@@ -181,5 +202,6 @@ int main(int argc, char** argv)
       fflush(stdout);
     }
   }
+  if (g_gaps && fclose(g_gaps)) { perror("gaps"); return 1; }
   return 0;
 }
