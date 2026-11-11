@@ -14,3 +14,4 @@ test_kp7e_mutant
 mutant_e.out
 bench_e
 stats_seeds
+nteq
