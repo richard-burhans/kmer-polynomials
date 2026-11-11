@@ -104,3 +104,24 @@ kp7e_stream: kp7e_stream.c kp7e.o
 # full-genome element-by-element identity: batched ntHash (ntbatch.h) vs the ntHash library (round 1, L1 F11 / L7 F3)
 nteq: nteq.cpp ntbatch.h
 	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include nteq.cpp $(NTHASH)/build_o3/libnthash.a -o $@
+
+# ---- cheaper evaluation of kept k-mers (kp7kept; results/kp7_kept_eval_2026-11-11.md) ----
+# The ntHash-on-kept and universal-hash baselines live in the same library and bench, built with the same OPT.
+kp7kept.o: kp7kept.c kp7kept.h kp7.h kp7e.h kp7m31.h
+	$(CC) $(CFLAGS) -c kp7kept.c -o $@
+
+test_kp7kept: test_kp7kept.cpp kp7kept.o kp7e.o kp7pack.o kp7.o kp7m31.o ntbatch.h
+	$(CXX) $(OPT) -Wall -Wextra -std=c++17 test_kp7kept.cpp kp7kept.o kp7e.o kp7pack.o kp7.o kp7m31.o -o $@
+
+test_kept: test_kp7kept
+	./test_kp7kept
+
+mutation_kept: test_kp7kept.cpp kp7kept.c kp7kept.h kp7e.o kp7pack.o kp7.o kp7m31.o
+	@for m in CONST PLANE; do \
+	  $(CC) $(CFLAGS) -DKP7KEPT_MUTATE_$$m -c kp7kept.c -o kp7kept_mutant.o || exit 1; \
+	  $(CXX) $(OPT) -std=c++17 test_kp7kept.cpp kp7kept_mutant.o kp7e.o kp7pack.o kp7.o kp7m31.o -o test_kp7kept_mutant || exit 1; \
+	  if ./test_kp7kept_mutant > mutant_kept.out; then echo "KEPT $$m MUTANT SURVIVED"; exit 1; else echo "kept $$m mutant killed: $$(tail -1 mutant_kept.out)"; fi; \
+	done
+
+bench_kept: bench_kept.cpp kp7kept.o kp7e.o kp7pack.o kp7.o kp7m31.o ntbatch.h
+	$(CXX) $(OPT) -std=c++17 bench_kept.cpp kp7kept.o kp7e.o kp7pack.o kp7.o kp7m31.o -o $@

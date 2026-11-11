@@ -16,3 +16,7 @@ bench_e
 stats_seeds
 kp7e_stream
 nteq
+test_kp7kept
+test_kp7kept_mutant
+mutant_kept.out
+bench_kept
