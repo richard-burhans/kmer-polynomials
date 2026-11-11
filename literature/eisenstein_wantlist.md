@@ -42,7 +42,7 @@ coefficients with an exact strand-symmetric product. Both are pending the fetch 
 | 2 | 2-Simplex mapping for identifying the protein coding regions in DNA, TENCON 2007 (IEEE) | 10.1109/tencon.2007.4429086 | a "2-simplex" (triangle) mapping may use 120° geometry; check whether it is Eisenstein-like |
 | 2 | Roy & Barman 2016, Polyphase filtering with variable mapping rule in protein coding region prediction, Microsyst. Technol. | 10.1007/s00542-016-2884-5 | complex "twiddle factor" mappings varying by codon position; check the angles used |
 | 3 | Cristea 2002, Conversion of nucleotides sequences into genomic signals, J. Cell. Mol. Med. | 10.1111/j.1582-4934.2002.tb00196.x | the classic complex (quadrantal) representation, which discusses purine/pyrimidine structure. OA (PMC6740102), download blocked |
-| 3 | Yu, Li & Zeng 2018, Survey on encoding schemes for genomic data representation and feature learning, Big Data Mining and Analytics | 10.26599/bdma.2018.9020018 | survey of mappings, to check for any 120°/Eisenstein entry. OA, download blocked |
+| 3 | Yu, Li & Yu 2018, Survey on encoding schemes for genomic data representation and feature learning, Big Data Mining and Analytics | 10.26599/bdma.2018.9020018 | survey of mappings, to check for any 120°/Eisenstein entry. OA, download blocked |
 
 ## Open-access PDFs downloaded (bench/data/papers/eisenstein_oa/)
 
