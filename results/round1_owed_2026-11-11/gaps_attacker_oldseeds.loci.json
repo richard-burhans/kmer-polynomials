@@ -1,0 +1,45 @@
+{
+ "gaps": 1774,
+ "runs_with_gaps": 25,
+ "methods": [
+  "eprovable",
+  "ntHash",
+  "provable",
+  "v1gate",
+  "v2gate"
+ ],
+ "loci": 154,
+ "records": 12,
+ "loci_in_repeats": 152,
+ "loci_outside_repeats": 2,
+ "loci_hit_by_all_methods": 59,
+ "per_method": {
+  "eprovable": {
+   "gaps": 367,
+   "loci": 91
+  },
+  "ntHash": {
+   "gaps": 341,
+   "loci": 98
+  },
+  "provable": {
+   "gaps": 332,
+   "loci": 81
+  },
+  "v1gate": {
+   "gaps": 371,
+   "loci": 89
+  },
+  "v2gate": {
+   "gaps": 363,
+   "loci": 91
+  }
+ },
+ "largest_locus": {
+  "where": "NC_044374.1:21995814-22046193",
+  "bases": 50379,
+  "gaps": 203,
+  "runs": 16
+ },
+ "gaps_per_locus": 11.52
+}
