@@ -49,7 +49,7 @@ typedef struct { size_t n; uint8_t* valid; uint64_t* hf; uint64_t* hr; unsigned 
 static void keys_hash(const char* s, size_t len, unsigned a, keys* K)
 {
   kp7e_params p;
-  kp7e_init(&p, a, 0x6b70355ULL); /* seed fixed so runs are reproducible */
+  kp7e_init(&p, a, 0x6b70355ULL, 0x6b70355ULL + 1); /* seed fixed so runs are reproducible */
   uint64_t xa = mulq(p.xk1, p.x); /* x^a */
   uint64_t tf[16], tr[16];
   for (int co = 0; co < 4; co++)

@@ -79,8 +79,12 @@ kp7_fe kp7_base(int code); /* 0..3 = A C G T */
 int kp7_code(char c);      /* A C G T (either case) -> 0..3, else -1 */
 uint64_t kp7_fold(kp7_fe z);
 
-/* setup: seed chooses x and lam deterministically (splitmix64) */
-void kp7_init(kp7_params* p, unsigned k, int variant, uint64_t seed);
+/* setup: x and lam are drawn independently (hash/kp7seed.h).
+ *   kp7_init_seeds: seed_x / seed_lam NULL -> that parameter from OS randomness (getrandom), the default for use;
+ *                   non-NULL -> a deterministic stream for it (tests, benchmarks).
+ *   kp7_init:       both deterministic. */
+void kp7_init_seeds(kp7_params* p, unsigned k, int variant, const uint64_t* seed_x, const uint64_t* seed_lam);
+void kp7_init(kp7_params* p, unsigned k, int variant, uint64_t seed_x, uint64_t seed_lam);
 
 /* direct (non-rolling) evaluation of one k-mer; returns 0 if it contains a non-ACGT base */
 int kp7_direct(const kp7_params* p, const char* kmer, kp7_fe* F, kp7_fe* R);

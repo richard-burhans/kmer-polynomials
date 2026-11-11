@@ -37,7 +37,12 @@ typedef struct {
   m31c tf[16], tr[16]; /* merged lam-state tables, index code(out)*4 + code(in) */
 } kp7m31_params;
 
-void kp7m31_init(kp7m31_params* p, unsigned k, uint64_t seed);
+/* x and lam are drawn independently (hash/kp7seed.h).
+ *   kp7m31_init_seeds: seed_x / seed_lam NULL -> that parameter from OS randomness (getrandom), the default for use;
+ *                      non-NULL -> a deterministic stream for it (tests, benchmarks).
+ *   kp7m31_init:       both deterministic. */
+void kp7m31_init_seeds(kp7m31_params* p, unsigned k, const uint64_t* seed_x, const uint64_t* seed_lam);
+void kp7m31_init(kp7m31_params* p, unsigned k, uint64_t seed_x, uint64_t seed_lam);
 int kp7m31_code(char c); /* A C T G either case -> 0..3, else -1 */
 
 /* field (exported for tests) */

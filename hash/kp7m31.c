@@ -6,6 +6,7 @@
  * correction by min_epu32(t, t - p). No code was copied; the techniques are public folklore for M31.
  */
 #include "kp7m31.h"
+#include "kp7seed.h"
 #include <string.h>
 #if defined(__x86_64__)
 #include <immintrin.h>
@@ -66,22 +67,30 @@ int kp7m31_code(char c) { if (!code_ready) code_init(); return CODE[(unsigned ch
 
 /* ---- setup ---- */
 
-static uint64_t splitmix64(uint64_t* s)
+void kp7m31_init(kp7m31_params* p, unsigned k, uint64_t seed_x, uint64_t seed_lam)
 {
-  uint64_t z = (*s += 0x9E3779B97F4A7C15ULL);
-  z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ULL;
-  z = (z ^ (z >> 27)) * 0x94D049BB133111EBULL;
-  return z ^ (z >> 31);
+  kp7m31_init_seeds(p, k, &seed_x, &seed_lam);
 }
-static uint32_t rand_p(uint64_t* s) { for (;;) { uint32_t v = (uint32_t)(splitmix64(s) & P); if (v && v != P) return v; } }
 
-void kp7m31_init(kp7m31_params* p, unsigned k, uint64_t seed)
+void kp7m31_init_seeds(kp7m31_params* p, unsigned k, const uint64_t* seed_x, const uint64_t* seed_lam)
 {
   if (!code_ready) code_init();
-  uint64_t s = seed;
   p->k = k;
-  p->x.re = rand_p(&s); p->x.im = rand_p(&s);
-  p->lam.re = rand_p(&s); p->lam.im = rand_p(&s);
+  /* x uniform on F_{p^2} \ {0}, lam uniform on F_{p^2}, from two independent sources (kp7seed.h); each part uniform
+   * on [0, p) by masking to 31 bits and rejecting p */
+  kp7_rng rx = kp7_rng_from(seed_x, KP7_TAG_X);
+#ifdef KP7M31_MUTATE_SEED /* test-only: lam from x's stream, the pre-2026-11-11 derivation; the seed tests must fail */
+  kp7_rng* rl = &rx;
+  (void)seed_lam;
+#else
+  kp7_rng rlam = kp7_rng_from(seed_lam, KP7_TAG_LAM), *rl = &rlam;
+#endif
+  do {
+    p->x.re = (uint32_t)kp7_uniform(&rx, P, 0);
+    p->x.im = (uint32_t)kp7_uniform(&rx, P, 0);
+  } while (p->x.re == 0 && p->x.im == 0);
+  p->lam.re = (uint32_t)kp7_uniform(rl, P, 0);
+  p->lam.im = (uint32_t)kp7_uniform(rl, P, 0);
   p->xinv = cinv(p->x);
   m31c one = { 1, 0 };
   p->xk1 = one;

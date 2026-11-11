@@ -1,5 +1,7 @@
 /* Tests for kp7m31 (CM31, p = 2^31 - 1): rolling == direct, strand symmetry, exhaustive class counts, and
- * scalar / AVX2 / AVX-512 sym_seq bit-identical to the reference roller (hashes AND positions). Exit 0 iff all pass. */
+ * scalar / AVX2 / AVX-512 sym_seq bit-identical to the reference roller (hashes AND positions). Exit 0 iff all pass.
+ * Also: x and lam independent of each other (separate seeds), OS mode, ranges.
+ */
 #include "kp7m31.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,7 +29,7 @@ static void rc(const char* s, char* out, unsigned k)
 static void test_rolling(unsigned k, const char* seq, size_t len, const char* label)
 {
   kp7m31_params p;
-  kp7m31_init(&p, k, 0xC0FFEE + k);
+  kp7m31_init(&p, k, 0xC0FFEE + k, (0xC0FFEE + k) + 1);
   kp7m31_roller r;
   kp7m31_start(&r, &p, seq, len);
   size_t n = 0, valid = 0;
@@ -57,7 +59,7 @@ static int cmpu64(const void* a, const void* b) { uint64_t x = *(const uint64_t*
 static void test_exhaustive(unsigned k, size_t classes)
 {
   kp7m31_params p;
-  kp7m31_init(&p, k, 0xBEEF);
+  kp7m31_init(&p, k, 0xBEEF, 0xBEEF + 1);
   size_t nk = (size_t)1 << (2 * k), distinct = 0;
   uint64_t* v = malloc(nk * sizeof *v);
   char w[16];
@@ -89,7 +91,7 @@ static void emit(void* vc, size_t start, const uint64_t* h, size_t n)
 static void seq_case(const char* seq, size_t len, int impl, size_t cap, const char* label)
 {
   kp7m31_params p;
-  kp7m31_init(&p, 31, 4242);
+  kp7m31_init(&p, 31, 4242, 4242 + 1);
   ctx_t c = { { 0 }, &p, 0, 0 };
   kp7m31_start(&c.r0, &p, seq, len);
   uint64_t* buf = malloc(cap * sizeof *buf);
@@ -100,8 +102,34 @@ static void seq_case(const char* seq, size_t len, int impl, size_t cap, const ch
   free(buf);
 }
 
+/* x and lam are independent (round-1 L1 F1): x depends only on seed_x, lam only on seed_lam; equal seeds give
+ * unrelated x and lam; OS mode (NULL seeds) gives fresh values; every draw is in range */
+static void test_seeds(void)
+{
+  kp7m31_params a, b, c, d;
+  kp7m31_init(&a, 31, 11, 22);
+  kp7m31_init(&b, 31, 11, 23);
+  kp7m31_init(&c, 31, 12, 22);
+  CHECK(a.x.re == b.x.re && a.x.im == b.x.im && (a.lam.re != b.lam.re || a.lam.im != b.lam.im),
+        "seeds: changing seed_lam must change lam only");
+  CHECK((a.x.re != c.x.re || a.x.im != c.x.im) && a.lam.re == c.lam.re && a.lam.im == c.lam.im,
+        "seeds: changing seed_x must change x only (lam derived from x?)");
+  kp7m31_init(&d, 31, 5, 5);
+  CHECK(d.x.re != d.lam.re || d.x.im != d.lam.im, "seeds: equal seeds gave x == lam");
+  kp7m31_init_seeds(&a, 31, NULL, NULL);
+  kp7m31_init_seeds(&b, 31, NULL, NULL);
+  CHECK(a.x.re != b.x.re && a.lam.re != b.lam.re, "seeds: two OS-random inits agree");
+  int bad = 0;
+  for (uint64_t s = 0; s < 2000; s++) {
+    kp7m31_init(&a, 3, s, s * 3 + 1);
+    bad += !(a.x.re < KP7M31_P && a.x.im < KP7M31_P && (a.x.re | a.x.im) && a.lam.re < KP7M31_P && a.lam.im < KP7M31_P);
+  }
+  CHECK(!bad, "seeds: %d draws out of range", bad);
+}
+
 int main(void)
 {
+  test_seeds();
   uint64_t s = 31337;
   const size_t len = 30000;
   char* seqs[4] = { malloc(len), malloc(len), malloc(len), malloc(len) };

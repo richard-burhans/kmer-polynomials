@@ -125,10 +125,10 @@ int main(int argc, char** argv)
   printf("loaded %zu records, %zu bases in %.1f s; k=%u, rounds=%d\n", recs.size(), bases,
          std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count(), k, rounds);
 
-  static kp7e_params pe; kp7e_init(&pe, k, 0x5eedE); g_pe = &pe;
+  static kp7e_params pe; kp7e_init(&pe, k, 0x5eedE, 0x5eedE + 1); g_pe = &pe;
   static kp7e_tab te; kp7e_tab_init(&te, &pe); g_te = &te;
-  static kp7_params pg; kp7_init(&pg, k, KP7_XREAL, 0x5eed); g_pg = &pg;
-  static kp7m31_params p31; kp7m31_init(&p31, k, 0x5eed31); g_p31 = &p31;
+  static kp7_params pg; kp7_init(&pg, k, KP7_XREAL, 0x5eed, 0x5eed + 1); g_pg = &pg;
+  static kp7m31_params p31; kp7m31_init(&p31, k, 0x5eed31, 0x5eed31 + 1); g_p31 = &p31;
   static kp7pack_mtab mtab; kp7pack_mtab_init(&mtab, &p31); g_mtab = &mtab;
   static ntbatch::Tables nt(k); g_nt = &nt;
   g_m31_impl = kp7m31_have(KP7M31_AVX512) ? KP7M31_AVX512 : kp7m31_have(KP7M31_AVX2) ? KP7M31_AVX2 : KP7M31_SCALAR;

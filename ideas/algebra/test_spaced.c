@@ -33,7 +33,7 @@ int main(void)
 {
   uint64_t s = 2024;
   kp7_params kp;
-  kp7_init(&kp, 31, KP7_XREAL, 0x5eed);
+  kp7_init(&kp, 31, KP7_XREAL, 0x5eed, 0x5eed + 1);
   const size_t len = 60000;
   char* seq[2] = { malloc(len), malloc(len) };
   for (size_t i = 0; i < len; i++) {
@@ -90,7 +90,7 @@ int main(void)
     const char* masks7[] = { "1101011", "1111111", "1011101", "1100111" };
     for (int m = 0; m < 4; m++) {
       kp7_params kp7k;
-      kp7_init(&kp7k, 7, KP7_XREAL, 77);
+      kp7_init(&kp7k, 7, KP7_XREAL, 77, 77 + 1);
       sp_params p;
       sp_init(&p, &kp7k, masks7[m]);
       size_t n = 1u << 14;

@@ -1,4 +1,6 @@
-/* Tests for kp7: rolling == direct, strand symmetry, exhaustive collision counts. Exit 0 iff all pass. */
+/* Tests for kp7: rolling == direct, strand symmetry, exhaustive collision counts. Exit 0 iff all pass.
+ * Also: x and lam independent of each other (separate seeds), OS mode, ranges.
+ */
 #include "kp7.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,7 +23,7 @@ static void rc(const char* s, char* out, unsigned k)
 static void test_rolling(int variant, unsigned k, size_t len, uint64_t seed)
 {
   kp7_params p;
-  kp7_init(&p, k, variant, seed);
+  kp7_init(&p, k, variant, seed, seed + 1);
   char* s = malloc(len + 1);
   srand((unsigned)seed);
   for (size_t i = 0; i < len; i++) s[i] = "ACGTACGTACGTACGTacgtN"[rand() % 21]; /* ~5% N, some lowercase */
@@ -94,7 +96,7 @@ static size_t distinct_fe(kp7_fe* v, size_t n)
 static void test_exhaustive(int variant, unsigned k, size_t classes)
 {
   kp7_params p;
-  kp7_init(&p, k, variant, 12345);
+  kp7_init(&p, k, variant, 12345, 12345 + 1);
   size_t n = (size_t)1 << (2 * k);
   kp7_fe* fs = malloc(n * sizeof *fs);
   kp7_fe* ss = malloc(n * sizeof *ss);
@@ -155,8 +157,8 @@ static void test_karatsuba(void)
   for (size_t i = 0; i < len; i++) seq[i] = "ACGTN"[sm(&s) % 1000 == 0 ? 4 : sm(&s) % 4]; /* ~97% of 31-mer windows N-free */
   for (int variant = 0; variant < 2; variant++) {
     kp7_params p0, p1;
-    kp7_init(&p0, 31, variant, 99);
-    kp7_init(&p1, 31, variant, 99);
+    kp7_init(&p0, 31, variant, 99, 99 + 1);
+    kp7_init(&p1, 31, variant, 99, 99 + 1);
     p1.karatsuba = 1;
     kp7_roller r0, r1;
     kp7_start(&r0, &p0, seq, len);
@@ -201,8 +203,8 @@ static void test_roll_sym(void)
       for (int opt = 0; opt < 8; opt++)
         for (int q = 0; q < 2; q++) {
           kp7_params p0, p1;
-          kp7_init(&p0, 31, variant, 1234);
-          kp7_init(&p1, 31, variant, 1234);
+          kp7_init(&p0, 31, variant, 1234, 1234 + 1);
+          kp7_init(&p1, 31, variant, 1234, 1234 + 1);
           p1.karatsuba = kar;
           p1.opt = opt;
           kp7_roller r0, r1;
@@ -227,8 +229,8 @@ static void test_roll_sym(void)
 static void batch_case(const char* seq, size_t len, int variant, int kar, size_t bufsz, const char* label)
 {
   kp7_params p0, p1;
-  kp7_init(&p0, 31, variant, 4321);
-  kp7_init(&p1, 31, variant, 4321);
+  kp7_init(&p0, 31, variant, 4321, 4321 + 1);
+  kp7_init(&p1, 31, variant, 4321, 4321 + 1);
   p1.karatsuba = kar;
   kp7_roller r0, r1;
   kp7_start(&r0, &p0, seq, len);
@@ -290,7 +292,7 @@ static void seq_emit(void* vctx, size_t start, const uint64_t* h, size_t n)
 static void seq_case(const char* seq, size_t len, int variant, int lanes, size_t cap, const char* label)
 {
   kp7_params p;
-  kp7_init(&p, 31, variant, 777);
+  kp7_init(&p, 31, variant, 777, 777 + 1);
   seq_ctx c = { seq, len, { 0 }, 0, 0 };
   kp7_start(&c.r0, &p, seq, len);
   uint64_t* buf = malloc(cap * sizeof *buf);
@@ -357,7 +359,7 @@ static void test_hybrid(void)
   }
   seqs[1][0] = 'N';
   kp7_params p;
-  kp7_init(&p, 31, KP7_XREAL, 2468);
+  kp7_init(&p, 31, KP7_XREAL, 2468, 2468 + 1);
   const size_t caps[4] = { 1, 3, 64, 4096 };
   /* (a) gate_seq equals the reference gate, for both lane counts and several block sizes */
   for (int q = 0; q < 3; q++)
@@ -390,7 +392,7 @@ static void test_hybrid(void)
   /* (c) exhaustive: one gate value per double-stranded class at k = 7 and 8 (heuristic quality, 64-bit gate) */
   for (unsigned k = 7; k <= 8; k++) {
     kp7_params pk;
-    kp7_init(&pk, k, KP7_XREAL, 13579);
+    kp7_init(&pk, k, KP7_XREAL, 13579, 13579 + 1);
     size_t nk = (size_t)1 << (2 * k), classes = k == 7 ? 8192 : 32896, distinct = 0;
     uint64_t* v = malloc(nk * sizeof *v);
     char w[16];
@@ -439,8 +441,37 @@ static void test_hybrid(void)
   free(seqs[0]); free(seqs[1]); free(seqs[2]);
 }
 
+/* x and lam are independent (round-1 L1 F1): x depends only on seed_x, lam only on seed_lam; equal seeds give
+ * unrelated x and lam; OS mode (NULL seeds) gives fresh values; every draw is in range */
+static void test_seeds(void)
+{
+  for (int variant = KP7_XREAL; variant <= KP7_XCOMPLEX; variant++) {
+    kp7_params a, b, c, d;
+    kp7_init(&a, 31, variant, 11, 22);
+    kp7_init(&b, 31, variant, 11, 23);
+    kp7_init(&c, 31, variant, 12, 22);
+    CHECK(a.x.re == b.x.re && a.x.im == b.x.im && (a.lam.re != b.lam.re || a.lam.im != b.lam.im),
+          "seeds v%d: changing seed_lam must change lam only", variant);
+    CHECK(a.x.re != c.x.re && a.lam.re == c.lam.re && a.lam.im == c.lam.im,
+          "seeds v%d: changing seed_x must change x only (lam derived from x?)", variant);
+    CHECK(variant == KP7_XCOMPLEX || a.x.im == 0, "seeds: x real has a nonzero imaginary part");
+    kp7_init(&d, 31, variant, 5, 5);
+    CHECK(d.x.re != d.lam.re, "seeds v%d: equal seeds gave x == lam", variant);
+    kp7_init_seeds(&a, 31, variant, NULL, NULL);
+    kp7_init_seeds(&b, 31, variant, NULL, NULL);
+    CHECK(a.x.re != b.x.re && a.lam.re != b.lam.re, "seeds v%d: two OS-random inits agree", variant);
+    int bad = 0;
+    for (uint64_t s = 0; s < 1000; s++) {
+      kp7_init(&a, 3, variant, s, s * 3 + 1);
+      bad += !(a.x.re < KP7_Q && a.x.im < KP7_Q && (a.x.re | a.x.im) && a.lam.re < KP7_Q && a.lam.im < KP7_Q);
+    }
+    CHECK(!bad, "seeds v%d: %d draws out of range", variant, bad);
+  }
+}
+
 int main(void)
 {
+  test_seeds();
   test_field();
   test_karatsuba();
   test_roll_sym();

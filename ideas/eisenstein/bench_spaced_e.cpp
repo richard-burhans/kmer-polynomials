@@ -81,9 +81,9 @@ int main(int argc, char** argv)
   int rounds = argc > 3 ? atoi(argv[3]) : 3;
   std::string s = load(argv[1], maxb);
   kp7_params kp;
-  kp7_init(&kp, 31, KP7_XREAL, 0x5eed);
+  kp7_init(&kp, 31, KP7_XREAL, 0x5eed, 0x5eed + 1);
   kp7e_params kpe;
-  kp7e_init(&kpe, 31, 0x5eed);
+  kp7e_init(&kpe, 31, 0x5eed, 0x5eed + 1);
   printf("bases %zu, rounds %d\n", s.size(), rounds);
   for (int nmask = 1; nmask <= 2; nmask++) {
     std::vector<sp_params> ps(nmask);

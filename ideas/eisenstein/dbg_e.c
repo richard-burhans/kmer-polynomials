@@ -57,7 +57,7 @@ int main(int argc, char** argv)
   }
   fclose(f);
   kp7e_params kp;
-  kp7e_init(&kp, K, 0x5eed);
+  kp7e_init(&kp, K, 0x5eed, 0x5eed + 1);
   const pk_t one = 1;
   const pk_t cmask = (K == 64) ? ~(pk_t)0 : ((one << (2 * K)) - 1);
   size_t m = 0;

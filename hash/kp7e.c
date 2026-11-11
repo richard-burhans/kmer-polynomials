@@ -1,5 +1,6 @@
 /* KP-7 over the Eisenstein encoding in F_q, q = 2^61 - 1; see kp7e.h. */
 #include "kp7e.h"
+#include "kp7seed.h"
 
 #define Q KP7E_Q
 
@@ -36,19 +37,12 @@ static void code_init(void)
 }
 int kp7e_code(char c) { if (!code_ready) code_init(); return CODE[(unsigned char)c]; }
 
-static uint64_t splitmix64(uint64_t* s)
+void kp7e_init(kp7e_params* p, unsigned k, uint64_t seed_x, uint64_t seed_lam)
 {
-  uint64_t z = (*s += 0x9E3779B97F4A7C15ULL);
-  z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ULL;
-  z = (z ^ (z >> 27)) * 0x94D049BB133111EBULL;
-  return z ^ (z >> 31);
-}
-static uint64_t rand_q(uint64_t* s)
-{
-  for (;;) { uint64_t v = splitmix64(s) & Q; if (v > 1 && v != Q) return v; }
+  kp7e_init_seeds(p, k, &seed_x, &seed_lam);
 }
 
-void kp7e_init(kp7e_params* p, unsigned k, uint64_t seed)
+void kp7e_init_seeds(kp7e_params* p, unsigned k, const uint64_t* seed_x, const uint64_t* seed_lam)
 {
   if (!code_ready) code_init();
   /* w: the first g = 2, 3, ... with g^((q-1)/3) != 1 */
@@ -57,9 +51,16 @@ void kp7e_init(kp7e_params* p, unsigned k, uint64_t seed)
   p->k = k;
   p->w = w;
   p->val[0] = 1; p->val[1] = w; p->val[2] = subq(0, w); p->val[3] = Q - 1;
-  uint64_t s = seed;
-  p->x = rand_q(&s);
-  p->lam = rand_q(&s);
+  /* x uniform on F_q \ {0} (x^{-1} is needed), lam uniform on F_q, from two independent sources (kp7seed.h) */
+  kp7_rng rx = kp7_rng_from(seed_x, KP7_TAG_X);
+#ifdef KP7E_MUTATE_SEED /* test-only: lam from x's stream, the pre-2026-11-11 derivation; the seed tests must fail */
+  kp7_rng* rl = &rx;
+  (void)seed_lam;
+#else
+  kp7_rng rlam = kp7_rng_from(seed_lam, KP7_TAG_LAM), *rl = &rlam;
+#endif
+  p->x = kp7_uniform(&rx, Q, 1);
+  p->lam = kp7_uniform(rl, Q, 0);
   p->xinv = kp7e_inv(p->x);
   p->xk1 = powq(p->x, k - 1);
   p->xk = mulq(p->xk1, p->x);

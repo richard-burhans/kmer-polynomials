@@ -43,7 +43,7 @@ int main(int argc, char** argv)
   }
   fclose(f);
   kp7_params kp;
-  kp7_init(&kp, K, KP7_XREAL, 0x5eed);
+  kp7_init(&kp, K, KP7_XREAL, 0x5eed, 0x5eed + 1);
   const uint64_t xinv = kp.xinv.re, x = kp.x.re, xk1 = f61_pow(x, K - 1), xk = f61_pow(x, K);
   const uint64_t cmask = (K == 32) ? ~0ULL : ((1ULL << (2 * K)) - 1);
   /* distinct k-mers: packed code (first base high) and F */

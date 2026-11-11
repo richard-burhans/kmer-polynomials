@@ -263,12 +263,12 @@ int main(int argc, char** argv)
          std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count(), k, rounds);
 
   kp7_params real, cplx;
-  kp7_init(&real, k, KP7_XREAL, 0x5eed);
-  kp7_init(&cplx, k, KP7_XCOMPLEX, 0x5eed);
+  kp7_init(&real, k, KP7_XREAL, 0x5eed, 0x5eed + 1);
+  kp7_init(&cplx, k, KP7_XCOMPLEX, 0x5eed, 0x5eed + 1);
   kp7_params real_k = real, cplx_k = cplx;
   real_k.karatsuba = cplx_k.karatsuba = 1;
   g_real_k = &real_k; g_cplx_k = &cplx_k;
-  kp7m31_init(&g_m31, k, 0x5eed);
+  kp7m31_init(&g_m31, k, 0x5eed, 0x5eed + 1);
   for (int m = 0; m < NMETHODS; m++)
     if (sym_opt(m) >= 0) { g_opt[m] = is_cplx_opt(m) ? cplx : real; g_opt[m].opt = sym_opt(m); }
 

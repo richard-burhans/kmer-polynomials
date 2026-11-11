@@ -26,7 +26,9 @@ from prototype.kmers import K, poly_hash  # noqa: E402
 
 HASH = pathlib.Path(__file__).resolve().parents[1] / "hash"
 LIB = pathlib.Path("/home/rcb112/project/claude/bench/data/kmer_poly_work/libkp7m31.so")
-SEED = 0x5EED
+# Deterministic seeds for tests and benchmarks. params() without seeds draws x and lam from OS randomness, each
+# independently (hash/kp7seed.h; round-1 adjudication L1 F1).
+SEED_X, SEED_LAM = 0x5EED, 0x1A3D
 
 
 class M31C(ctypes.Structure):
@@ -42,10 +44,12 @@ def lib() -> ctypes.CDLL:
     """Build (if needed) and load the C library as a shared object. Scalar build: only its parameters and the scalar
     reference functions are used here."""
     src = HASH / "kp7m31.c"
-    if not LIB.exists() or LIB.stat().st_mtime < src.stat().st_mtime:
+    newest = max(src.stat().st_mtime, (HASH / "kp7seed.h").stat().st_mtime)
+    if not LIB.exists() or LIB.stat().st_mtime < newest:
         subprocess.run(["gcc", "-O2", "-shared", "-fPIC", "-march=native", "-o", str(LIB), str(src)], check=True)
     so = ctypes.CDLL(str(LIB))
-    so.kp7m31_init.argtypes = [ctypes.POINTER(Params), ctypes.c_uint, ctypes.c_uint64]
+    so.kp7m31_init_seeds.argtypes = [ctypes.POINTER(Params), ctypes.c_uint, ctypes.POINTER(ctypes.c_uint64),
+                                     ctypes.POINTER(ctypes.c_uint64)]
     so.kp7m31_direct.argtypes = [ctypes.POINTER(Params), ctypes.c_char_p, ctypes.POINTER(M31C), ctypes.POINTER(M31C)]
     so.kp7m31_direct.restype = ctypes.c_int
     so.kp7m31_sym.argtypes = [ctypes.POINTER(Params), M31C, M31C]
@@ -53,9 +57,13 @@ def lib() -> ctypes.CDLL:
     return so
 
 
-def params(k: int = K, seed: int = SEED) -> Params:
+def params(k: int = K, seed_x: int | None = None, seed_lam: int | None = None) -> Params:
+    """x and lam from two independent sources: a given seed is a deterministic stream for that parameter, None draws
+    it from OS randomness (getrandom). Both None is the default for use; tests and benchmarks pass both."""
     p = Params()
-    lib().kp7m31_init(ctypes.byref(p), k, seed)
+    sx = None if seed_x is None else ctypes.byref(ctypes.c_uint64(seed_x))
+    sl = None if seed_lam is None else ctypes.byref(ctypes.c_uint64(seed_lam))
+    lib().kp7m31_init_seeds(ctypes.byref(p), k, sx, sl)
     return p
 
 
@@ -92,8 +100,8 @@ def decode(code: int, k: int = K) -> bytes:
     return bytes(b"ACGT"[(code >> (2 * (k - 1 - t))) & 3] for t in range(k))
 
 
-def self_test(n: int = 20000) -> int:
-    so, p = lib(), params()
+def self_test(n: int = 20000, seed_x: int = SEED_X, seed_lam: int = SEED_LAM) -> int:
+    so, p = lib(), params(K, seed_x, seed_lam)
     rng = np.random.default_rng(7)
     codes = rng.integers(0, 1 << (2 * K), n, dtype=np.uint64)
     mine = pack(sym_hash(codes, p))

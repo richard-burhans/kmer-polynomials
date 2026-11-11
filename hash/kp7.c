@@ -1,5 +1,6 @@
 /* KP-6 / KP-7 rolling hashes; see kp7.h. */
 #include "kp7.h"
+#include "kp7seed.h"
 #include <string.h>
 
 #define Q KP7_Q
@@ -94,32 +95,40 @@ int kp7_code(char c) { if (!code_ready) code_init(); return CODE[(unsigned char)
 
 /* ---- setup ---- */
 
-static uint64_t splitmix64(uint64_t* s)
-{
-  uint64_t z = (*s += 0x9E3779B97F4A7C15ULL);
-  z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ULL;
-  z = (z ^ (z >> 27)) * 0x94D049BB133111EBULL;
-  return z ^ (z >> 31);
-}
-static uint64_t rand_q(uint64_t* s) /* uniform in [1, q) */
-{
-  for (;;) { uint64_t v = splitmix64(s) & Q; if (v != 0 && v != Q) return v; }
-}
-
 static kp7_fe fneg(kp7_fe a) { kp7_fe r = { subq(0, a.re), subq(0, a.im) }; return r; }
 
-void kp7_init(kp7_params* p, unsigned k, int variant, uint64_t seed)
+void kp7_init(kp7_params* p, unsigned k, int variant, uint64_t seed_x, uint64_t seed_lam)
+{
+  kp7_init_seeds(p, k, variant, &seed_x, &seed_lam);
+}
+
+void kp7_init_seeds(kp7_params* p, unsigned k, int variant, const uint64_t* seed_x, const uint64_t* seed_lam)
 {
   if (!code_ready) code_init();
-  uint64_t s = seed;
   p->k = k;
   p->variant = variant;
   p->karatsuba = 0;
   p->opt = 0;
-  p->x.re = rand_q(&s);
-  p->x.im = variant == KP7_XREAL ? 0 : rand_q(&s);
-  p->lam.re = rand_q(&s);
-  p->lam.im = rand_q(&s);
+  /* x and lam from two independent sources (kp7seed.h), each part uniform on [0, q) by rejection.
+   * KP7_XREAL: x uniform on F_q \ {0}. KP7_XCOMPLEX: x uniform on F_{q^2} \ {0}. lam uniform on F_{q^2}. */
+  kp7_rng rx = kp7_rng_from(seed_x, KP7_TAG_X);
+#ifdef KP7_MUTATE_SEED /* test-only: lam from x's stream, the pre-2026-11-11 derivation; the seed tests must fail */
+  kp7_rng* rl = &rx;
+  (void)seed_lam;
+#else
+  kp7_rng rlam = kp7_rng_from(seed_lam, KP7_TAG_LAM), *rl = &rlam;
+#endif
+  if (variant == KP7_XREAL) {
+    p->x.re = kp7_uniform(&rx, Q, 1);
+    p->x.im = 0;
+  } else {
+    do {
+      p->x.re = kp7_uniform(&rx, Q, 0);
+      p->x.im = kp7_uniform(&rx, Q, 0);
+    } while (p->x.re == 0 && p->x.im == 0);
+  }
+  p->lam.re = kp7_uniform(rl, Q, 0);
+  p->lam.im = kp7_uniform(rl, Q, 0);
   p->xinv = kp7_inv(p->x);
   kp7_fe xk1 = { 1, 0 };
   for (unsigned t = 0; t + 1 < k; t++) xk1 = fmul(xk1, p->x); /* x^{k-1} */

@@ -22,7 +22,8 @@ from . import kmers, recon
 
 W = pathlib.Path("/home/rcb112/project/claude/bench/data/kmer_poly_work")
 M, C = 64, 4  # solve points and check points per bucket
-SEED = 20261110
+SEED = 20261110      # evaluation points and sampling
+SEED_X = 0x5EED      # the hash point x0, from its own stream (round-1 adjudication L1 F1)
 
 
 def load_set(name: str) -> np.ndarray:
@@ -35,9 +36,9 @@ def load_set(name: str) -> np.ndarray:
 
 
 def x0_and_points():
-    rng = np.random.default_rng(SEED)
-    x0 = fq.random_elements(rng, 1)
-    return (x0[0][0], x0[1][0]), fq.random_elements(rng, M + C)
+    """x0 and the evaluation points from independent generators; numpy's integers() is uniform (unbiased)."""
+    x0 = fq.random_elements(np.random.default_rng(SEED_X), 1)
+    return (x0[0][0], x0[1][0]), fq.random_elements(np.random.default_rng(SEED), M + C)
 
 
 def side(codes, x0):

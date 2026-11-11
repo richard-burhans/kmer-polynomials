@@ -51,8 +51,17 @@ def side(codes: np.ndarray, p, fieldname: str = "gaussian"):
     return Side.build(codes, kp7hash.sym_hash(codes, p), mix64(codes))
 
 
-def field_params(fieldname: str, k: int):
-    return kp7e_hash.params(k) if fieldname == "eisenstein" else kp7hash.params(k)
+def field_params(fieldname: str, k: int, seed_x: int | None = None, seed_lam: int | None = None):
+    """x and lam drawn independently; a None seed draws that parameter from OS randomness."""
+    mod = kp7e_hash if fieldname == "eisenstein" else kp7hash
+    return mod.params(k, seed_x, seed_lam)
+
+
+def describe_params(p, fieldname: str) -> dict:
+    """The drawn x and lam, recorded in every result so a run with OS-random parameters can be audited."""
+    if fieldname == "eisenstein":
+        return {"x": int(p.x), "lam": int(p.lam)}
+    return {"x": [int(p.x.re), int(p.x.im)], "lam": [int(p.lam.re), int(p.lam.im)]}
 
 
 def part_buckets(part: int, bits: int) -> np.ndarray:
@@ -60,10 +69,12 @@ def part_buckets(part: int, bits: int) -> np.ndarray:
     return np.arange(part * span, (part + 1) * span, dtype=np.int64)
 
 
-def run(ga: str, gb: str, k: int, bits: int, m: int, c: int, nparts: int, fieldname: str = "gaussian") -> dict:
+def run(ga: str, gb: str, k: int, bits: int, m: int, c: int, nparts: int, fieldname: str = "gaussian",
+        seed_x: int | None = None, seed_lam: int | None = None) -> dict:
     assert bits >= PART_BITS
-    p = field_params(fieldname, k)
+    p = field_params(fieldname, k, seed_x, seed_lam)
     tot = {"field": fieldname, "A": ga, "B": gb, "k": k, "bits": bits, "m": m, "c": c, "parts": nparts,
+           "seed_x": seed_x, "seed_lam": seed_lam, **describe_params(p, fieldname),
            "D_recovered": 0, "exact": True,
            "sketch_elements": 0, "rounds_max": 0, "splits": 0, "seconds_hash": 0.0, "seconds_reconcile": 0.0,
            "elements_A": 0, "elements_B": 0}
@@ -98,9 +109,10 @@ def run(ga: str, gb: str, k: int, bits: int, m: int, c: int, nparts: int, fieldn
     return tot
 
 
-def merge_test(g: str, k: int, bits: int, m: int, part: int = 0, fieldname: str = "gaussian") -> bool:
+def merge_test(g: str, k: int, bits: int, m: int, part: int = 0, fieldname: str = "gaussian",
+               seed_x: int | None = None, seed_lam: int | None = None) -> bool:
     """Linearity: the power-sum sketch of a set equals the sum of the sketches of a split of it."""
-    p = field_params(fieldname, k)
+    p = field_params(fieldname, k, seed_x, seed_lam)
     a = kmerset.load_part(g, k, part)
     rng = np.random.default_rng(3)
     mask = rng.random(a.size) < 0.5
@@ -132,10 +144,13 @@ def main() -> int:
     ap.add_argument("--parts", type=int, default=64)
     ap.add_argument("--field", choices=["gaussian", "eisenstein"], default="gaussian")
     ap.add_argument("--out", type=pathlib.Path)
+    ap.add_argument("--seed-x", type=lambda v: int(v, 0), default=None, help="default: x from OS randomness")
+    ap.add_argument("--seed-lam", type=lambda v: int(v, 0), default=None, help="default: lam from OS randomness")
     a = ap.parse_args()
     if a.cmd == "merge-test":
-        return 0 if merge_test(a.genomes[0], a.k, a.bits, a.m, fieldname=a.field) else 1
-    res = run(a.genomes[0], a.genomes[1], a.k, a.bits, a.m, a.c, a.parts, a.field)
+        return 0 if merge_test(a.genomes[0], a.k, a.bits, a.m, fieldname=a.field, seed_x=a.seed_x,
+                               seed_lam=a.seed_lam) else 1
+    res = run(a.genomes[0], a.genomes[1], a.k, a.bits, a.m, a.c, a.parts, a.field, a.seed_x, a.seed_lam)
     print(json.dumps(res))
     if a.out:
         a.out.write_text(json.dumps(res, indent=1) + "\n")

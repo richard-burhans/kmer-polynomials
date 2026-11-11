@@ -5,7 +5,8 @@
  *  4. sym(s) == sym(rc s) at every window
  *  5. exhaustive k = 7, 8: F distinct for all 4^k k-mers, S distinct per double-stranded class (8192, 32896)
  *  6. kp7e_sym_seq (1 and 2 lanes) == the reference, hashes AND positions, block sizes 1/3/5/64/4096
- *  7. table evaluation == direct for k = 1..32; gate == kp7pack_gate; samplers == {gate < thr} with reference S */
+ *  7. table evaluation == direct for k = 1..32; gate == kp7pack_gate; samplers == {gate < thr} with reference S *  8. seeds: x and lam independent, OS mode, ranges
+ */
 #include "kp7e.h"
 #include "kp7pack.h"
 #include <complex.h>
@@ -35,7 +36,7 @@ static void rc(const char* s, char* out, unsigned k)
 static void test_field(void)
 {
   kp7e_params p;
-  kp7e_init(&p, 31, 1);
+  kp7e_init(&p, 31, 1, 1 + 1);
   uint64_t w = p.w, w2 = kp7e_mul(w, w), w3 = kp7e_mul(w2, w);
   CHECK(w != 1 && w3 == 1, "w is not a primitive cube root of unity");
   CHECK(kp7e_add(kp7e_add(w2, w), 1) == 0, "w^2 + w + 1 != 0");
@@ -67,7 +68,7 @@ static char* mkseq(size_t len, unsigned nrate, uint64_t* s)
 static void test_rolling(unsigned k, size_t len, uint64_t seed)
 {
   kp7e_params p;
-  kp7e_init(&p, k, seed);
+  kp7e_init(&p, k, seed, seed + 1);
   uint64_t s = seed * 7 + 1;
   char* seq = mkseq(len, 50, &s);
   kp7e_roller r;
@@ -93,7 +94,7 @@ static int cmp64(const void* a, const void* b) { uint64_t x = *(const uint64_t*)
 static void test_exhaustive(unsigned k, size_t classes)
 {
   kp7e_params p;
-  kp7e_init(&p, k, 99 + k);
+  kp7e_init(&p, k, 99 + k, (99 + k) + 1);
   size_t nk = (size_t)1 << (2 * k), dF = 0, dS = 0;
   uint64_t* F = malloc(nk * 8);
   uint64_t* S = malloc(nk * 8);
@@ -127,7 +128,7 @@ static void seq_emit(void* vc, size_t start, const uint64_t* h, size_t n)
 static void seq_case(const char* seq, size_t len, int lanes, size_t cap, const char* label)
 {
   kp7e_params p;
-  kp7e_init(&p, 31, 777);
+  kp7e_init(&p, 31, 777, 777 + 1);
   seq_ctx c = { { 0 }, &p, 0, 0 };
   kp7e_start(&c.r0, &p, seq, len);
   uint64_t* buf = malloc(cap * 8);
@@ -171,7 +172,7 @@ static void test_tables(void)
   /* table == direct for every k, random k-mers including all-A and all-T */
   for (unsigned k = 1; k <= 32; k++) {
     kp7e_params p;
-    kp7e_init(&p, k, 500 + k);
+    kp7e_init(&p, k, 500 + k, (500 + k) + 1);
     static kp7e_tab t;
     kp7e_tab_init(&t, &p);
     char w[40];
@@ -190,7 +191,7 @@ static void test_tables(void)
   for (size_t i = 0; i < len; i++) seqs[2][i] = (i / 997) % 3 == 1 && i % 997 < 40 ? 'N' : "ACGT"[sm(&s) % 4];
   seqs[1][0] = 'N';
   kp7e_params p;
-  kp7e_init(&p, 31, 2468);
+  kp7e_init(&p, 31, 2468, 2468 + 1);
   static kp7e_tab t;
   kp7e_tab_init(&t, &p);
   const uint64_t thrs[4] = { 0, 1ULL << 60, 1ULL << 62, ~0ULL };
@@ -223,8 +224,36 @@ static void test_tables(void)
   free(seqs[0]); free(seqs[1]); free(seqs[2]);
 }
 
+/* x and lam are independent (round-1 L1 F1): x depends only on seed_x, lam only on seed_lam; equal seeds give
+ * unrelated x and lam; OS mode (NULL seeds) gives fresh values; every draw is in range */
+static void test_seeds(void)
+{
+  kp7e_params a, b, c, d;
+  kp7e_init(&a, 31, 11, 22);
+  kp7e_init(&b, 31, 11, 23);
+  kp7e_init(&c, 31, 12, 22);
+  CHECK(a.x == b.x && a.lam != b.lam, "seeds: changing seed_lam must change lam only");
+  CHECK(a.x != c.x && a.lam == c.lam, "seeds: changing seed_x must change x only (lam derived from x?)");
+  kp7e_init(&d, 31, 5, 5);
+  CHECK(d.x != d.lam, "seeds: equal seeds gave x == lam");
+  kp7e_init_seeds(&a, 31, NULL, NULL);
+  kp7e_init_seeds(&b, 31, NULL, NULL);
+  CHECK(a.x != b.x && a.lam != b.lam, "seeds: two OS-random inits agree");
+  uint64_t sx = 11;
+  kp7e_init_seeds(&c, 31, &sx, NULL);
+  kp7e_init(&d, 31, 11, 22);
+  CHECK(c.x == d.x && c.lam != d.lam, "seeds: seed_x given, lam from the OS");
+  int bad = 0;
+  for (uint64_t s = 0; s < 2000; s++) {
+    kp7e_init(&a, 3, s, s * 3 + 1);
+    bad += !(a.x >= 1 && a.x < KP7E_Q && a.lam < KP7E_Q && kp7e_mul(a.x, a.xinv) == 1);
+  }
+  CHECK(!bad, "seeds: %d draws out of range", bad);
+}
+
 int main(void)
 {
+  test_seeds();
   test_field();
   test_metric();
   test_rolling(31, 200000, 7);

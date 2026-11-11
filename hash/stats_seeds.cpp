@@ -156,8 +156,8 @@ int main(int argc, char** argv)
     if (only && strcmp(only, NAMES[m])) continue;
     for (int seed = 0; seed < seeds; seed++) {
       kp7_params p;
-      kp7_init(&p, k, KP7_XREAL, 0x5eed + 1000 * (uint64_t)seed);
-      kp7e_init(&g_ep, k, 0x5eed + 1000 * (uint64_t)seed);
+      kp7_init(&p, k, KP7_XREAL, 0x5eed + 1000 * (uint64_t)seed, (0x5eed + 1000 * (uint64_t)seed) + 1);
+      kp7e_init(&g_ep, k, 0x5eed + 1000 * (uint64_t)seed, (0x5eed + 1000 * (uint64_t)seed) + 1);
       Stats st;
       for (const Rec& r : recs) {
         std::vector<uint64_t> run;

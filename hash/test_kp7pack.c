@@ -143,7 +143,7 @@ static void test_sample(void)
   for (int variant = 0; variant < 2; variant++)
     for (int kar = 0; kar < 2; kar++) {
       kp7_params p;
-      kp7_init(&p, 31, variant, 8642);
+      kp7_init(&p, 31, variant, 8642, 8642 + 1);
       p.karatsuba = kar;
       kp7pack_tab_init(&tab, &p);
       for (int q = 0; q < NSEQ; q++)
@@ -184,7 +184,7 @@ static void test_eval(void)
   for (int variant = 0; variant < 2; variant++)
     for (unsigned k = 1; k <= 32; k++) {
       kp7_params p;
-      kp7_init(&p, k, variant, 1000 + k);
+      kp7_init(&p, k, variant, 1000 + k, (1000 + k) + 1);
       kp7pack_tab_init(&tab, &p);
       for (int rep = 0; rep < 300; rep++) {
         for (unsigned t = 0; t < k; t++) w[t] = "ACGT"[sm(&s) % 4];
@@ -222,7 +222,7 @@ static void test_sym_all(void)
   const size_t caps[4] = { 1, 3, 64, 4096 };
   for (int variant = 0; variant < 2; variant++) {
     kp7_params p;
-    kp7_init(&p, 31, variant, 97531);
+    kp7_init(&p, 31, variant, 97531, 97531 + 1);
     kp7pack_tab_init(&tab, &p);
     for (int q = 0; q < NSEQ; q++)
       for (int c = 0; c < 4; c++) {
@@ -274,8 +274,8 @@ static void test_fast(void)
           const unsigned k = ks[ki];
           kp7_params p;
           kp7m31_params p31;
-          kp7_init(&p, k, variant, 1357 + k);
-          kp7m31_init(&p31, k, 2468 + k);
+          kp7_init(&p, k, variant, 1357 + k, (1357 + k) + 1);
+          kp7m31_init(&p31, k, 2468 + k, (2468 + k) + 1);
           if (m31) kp7pack_mtab_init(&mt, &p31); else kp7pack_ftab_init(&ft, &p);
           for (int q = 0; q < NSEQ; q++)
             for (int c = 0; c < 5; c++) {

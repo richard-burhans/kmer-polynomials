@@ -7,7 +7,7 @@
  * G-T transversions and 4 for complements. That metric lives in C only; F_q has no conjugation or absolute value, so
  * the hash does not "know" the metric. The field version keeps only the algebra (complement = negation, w^2+w+1 = 0).
  *
- * With x and lam random in F_q:
+ * With x and lam independent and uniform in F_q (x != 0; see kp7e_init_seeds):
  *   F(s) = sum_t s_t x^t                 R(s) = rc(p_s)(x) = -x^{k-1} p_s(1/x)
  *   S(s) = (F + lam)(R + lam)            one canonical 61-bit value
  * Collision bound. The four base values are distinct in F_q, so two different k-mers give a nonzero difference
@@ -43,7 +43,12 @@ typedef struct {
   uint64_t tf[16], tr[16]; /* merged, lam-state tables [s_out*4 + s_in] */
 } kp7e_params;
 
-void kp7e_init(kp7e_params* p, unsigned k, uint64_t seed);
+/* x and lam are drawn independently (hash/kp7seed.h): x uniform on F_q \ {0}, lam uniform on F_q.
+ *   kp7e_init_seeds: seed_x / seed_lam NULL -> that parameter from OS randomness (getrandom), the default for use;
+ *                    non-NULL -> a deterministic stream for it (tests, benchmarks).
+ *   kp7e_init:       both deterministic. */
+void kp7e_init_seeds(kp7e_params* p, unsigned k, const uint64_t* seed_x, const uint64_t* seed_lam);
+void kp7e_init(kp7e_params* p, unsigned k, uint64_t seed_x, uint64_t seed_lam);
 /* field helpers (canonical inputs and outputs) */
 uint64_t kp7e_mul(uint64_t a, uint64_t b);
 uint64_t kp7e_add(uint64_t a, uint64_t b);

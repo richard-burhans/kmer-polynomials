@@ -63,8 +63,9 @@ q = 2**61 - 1
 w = cube_root_of_unity(q)
 V = {"A": 1, "C": w, "G": (-w) % q, "T": q - 1}
 COMP = {"A": "T", "C": "G", "G": "C", "T": "A"}
-random.seed(7)
-x = random.randrange(2, q - 1); lam = random.randrange(2, q - 1)
+# x and lam from two independent, fixed streams (round-1 adjudication L1 F1: they were one stream); randrange is
+# uniform by rejection. x != 0; the exhaustive counts do not depend on the draw unless a chance collision occurs.
+x = random.Random(7).randrange(1, q); lam = random.Random(8).randrange(0, q)
 for k in (7, 8):
     xs = [pow(x, t, q) for t in range(k)]
     seen = set(); classes = set()

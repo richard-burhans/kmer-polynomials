@@ -15,7 +15,7 @@ def sides(n=20000, d=300, seed=5):
     extra = np.setdiff1d(extra, base)
     a = np.union1d(base, extra[:d])
     b = np.union1d(base[: base.size - d // 2], extra[d:])
-    p = params()
+    p = params(31, 0x5EED, 0x1A3D)
     mk = lambda c: Side.build(c, sym_hash(c, p), mix64(c))
     return a, b, mk(a), mk(b), p
 
@@ -48,7 +48,7 @@ def test_sketch_is_linear():
 
 def test_hash_is_strand_symmetric():
     c = np.random.default_rng(2).integers(0, 1 << 62, 5000, dtype=np.uint64)
-    p = params()
+    p = params(31, 0x5EED, 0x1A3D)
     h1, h2 = sym_hash(c, p), sym_hash(rc_codes(c), p)
     assert np.array_equal(h1[0], h2[0]) and np.array_equal(h1[1], h2[1])
 
@@ -60,7 +60,7 @@ from recon import fq61, kp7e_hash, recon61  # noqa: E402
 
 def sides_e(n=20000, d=300, seed=5):
     a, b, _, _, _ = sides(n, d, seed)
-    p = kp7e_hash.params()
+    p = kp7e_hash.params(31, 0x5EED, 0x1A3D)
     mk = lambda c: recon61.SideE.build(c, kp7e_hash.sym_hash(c, p), mix64(c))
     return a, b, mk(a), mk(b), p
 
@@ -105,7 +105,7 @@ def _one_sided(d=200, seed=9):
 
 def test_one_sided_decodes_in_one_round_gaussian():
     a, b = _one_sided()
-    p = params()
+    p = params(31, 0x5EED, 0x1A3D)
     mk = lambda c: Side.build(c, sym_hash(c, p), mix64(c))
     res = reconcile(mk(a), mk(b), 6, 16, 2, None, method="power")  # ~3 differences per bucket, all on B's side
     assert res.splits == 0 and res.rounds == 1
@@ -114,7 +114,7 @@ def test_one_sided_decodes_in_one_round_gaussian():
 
 def test_one_sided_decodes_in_one_round_eisenstein():
     a, b = _one_sided()
-    p = kp7e_hash.params()
+    p = kp7e_hash.params(31, 0x5EED, 0x1A3D)
     mk = lambda c: recon61.SideE.build(c, kp7e_hash.sym_hash(c, p), mix64(c))
     res = recon61.reconcile(mk(a), mk(b), 6, 16, 2)
     assert res.splits == 0 and res.rounds == 1

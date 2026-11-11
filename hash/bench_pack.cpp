@@ -225,7 +225,7 @@ int main(int argc, char** argv)
          std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count(), k, rounds);
 
   kp7_params real;
-  kp7_init(&real, k, KP7_XREAL, 0x5eed);
+  kp7_init(&real, k, KP7_XREAL, 0x5eed, 0x5eed + 1);
   static kp7pack_tab tab;
   kp7pack_tab_init(&tab, &real);
   g_tab = &tab;
@@ -233,7 +233,7 @@ int main(int argc, char** argv)
   kp7pack_ftab_init(&ftab, &real);
   g_ftab = &ftab;
   static kp7m31_params p31;
-  kp7m31_init(&p31, k, 0x5eed31);
+  kp7m31_init(&p31, k, 0x5eed31, 0x5eed31 + 1);
   g_p31 = &p31;
   static kp7pack_mtab mtab;
   kp7pack_mtab_init(&mtab, &p31);

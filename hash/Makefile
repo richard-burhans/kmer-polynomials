@@ -7,14 +7,14 @@ NTHASH ?= /home/rcb112/project/claude/bench/data/kmer_poly_work/ntHash
 
 all: test_kp7 test_kp7m31 bench
 
-kp7.o: kp7.c kp7.h
+kp7.o: kp7.c kp7.h kp7seed.h
 	$(CC) $(CFLAGS) -c kp7.c -o $@
 
 test_kp7: test_kp7.c kp7.o
 	$(CC) $(CFLAGS) test_kp7.c kp7.o -o $@
 
 # CM31 (p = 2^31 - 1) scalar / AVX2 / AVX-512; the AVX-512 path is built only when -march targets it
-kp7m31.o: kp7m31.c kp7m31.h
+kp7m31.o: kp7m31.c kp7m31.h kp7seed.h
 	$(CC) $(CFLAGS) -c kp7m31.c -o $@
 
 test_kp7m31: test_kp7m31.c kp7m31.o
@@ -25,7 +25,7 @@ test: test_kp7 test_kp7m31
 	./test_kp7m31
 
 # break one rolling term; the tests must fail
-mutation: test_kp7.c kp7.c kp7.h
+mutation: test_kp7.c kp7.c kp7.h kp7seed.h
 	$(CC) $(CFLAGS) -DKP7_MUTATE test_kp7.c kp7.c -o test_kp7_mutant
 	@if ./test_kp7_mutant > mutant.out; then echo "MUTANT SURVIVED"; exit 1; else echo "mutant killed: $$(tail -1 mutant.out)"; fi
 	$(CC) $(CFLAGS) -DKP7_MUTATE_K test_kp7.c kp7.c -o test_kp7_mutant
@@ -40,6 +40,10 @@ mutation: test_kp7.c kp7.c kp7.h
 	@if ./test_kp7_mutant > mutant.out; then echo "M31 ODD-LANE MUTANT SURVIVED"; exit 1; else echo "m31 odd-lane mutant killed: $$(tail -1 mutant.out)"; fi
 	$(CC) $(CFLAGS) -DKP7M31_MUTATE_BLEND test_kp7m31.c kp7m31.c -o test_kp7_mutant
 	@if ./test_kp7_mutant > mutant.out; then echo "M31 BLEND MUTANT SURVIVED"; exit 1; else echo "m31 blend mutant killed: $$(tail -1 mutant.out)"; fi
+	$(CC) $(CFLAGS) -DKP7_MUTATE_SEED test_kp7.c kp7.c -o test_kp7_mutant
+	@if ./test_kp7_mutant > mutant.out; then echo "SEED MUTANT SURVIVED"; exit 1; else echo "seed mutant killed: $$(tail -1 mutant.out)"; fi
+	$(CC) $(CFLAGS) -DKP7M31_MUTATE_SEED test_kp7m31.c kp7m31.c -o test_kp7_mutant
+	@if ./test_kp7_mutant > mutant.out; then echo "M31 SEED MUTANT SURVIVED"; exit 1; else echo "m31 seed mutant killed: $$(tail -1 mutant.out)"; fi
 
 bench: bench.cpp kp7.o kp7m31.o
 	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include bench.cpp kp7.o kp7m31.o $(NTHASH)/build_o3/libnthash.a -o $@
@@ -75,7 +79,7 @@ stats_seeds: stats_seeds.cpp kp7pack.o kp7.o kp7m31.o kp7e.o
 	$(CXX) $(OPT) -std=c++17 -I$(NTHASH)/include stats_seeds.cpp kp7pack.o kp7.o kp7m31.o kp7e.o $(NTHASH)/build_o3/libnthash.a -o $@
 
 # ---- Eisenstein KP-7 (kp7e: A=1, C=w, G=-w, T=-1 with w in F_q, q = 2^61 - 1; one field element per hash) ----
-kp7e.o: kp7e.c kp7e.h
+kp7e.o: kp7e.c kp7e.h kp7seed.h
 	$(CC) $(CFLAGS) -c kp7e.c -o $@
 
 test_kp7e: test_kp7e.c kp7e.o kp7pack.o kp7.o kp7m31.o
@@ -85,7 +89,7 @@ test_e: test_kp7e
 	./test_kp7e
 
 mutation_e: test_kp7e.c kp7e.c kp7e.h kp7pack.o kp7.o kp7m31.o
-	@for m in ROLL LANE TAB; do \
+	@for m in ROLL LANE TAB SEED; do \
 	  $(CC) $(CFLAGS) -DKP7E_MUTATE_$$m test_kp7e.c kp7e.c kp7pack.o kp7.o kp7m31.o -lm -o test_kp7e_mutant || exit 1; \
 	  if ./test_kp7e_mutant > mutant_e.out; then echo "E $$m MUTANT SURVIVED"; exit 1; else echo "e $$m mutant killed: $$(tail -1 mutant_e.out)"; fi; \
 	done
