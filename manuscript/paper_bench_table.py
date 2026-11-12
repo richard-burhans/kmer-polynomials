@@ -41,8 +41,11 @@ def load(d: pathlib.Path):
     return cmds, logs, ctr, meta
 
 
-def main() -> int:
-    d = pathlib.Path(sys.argv[1])
+def compute(d: pathlib.Path):
+    """Validate one job's raw outputs and return (load baselines, per-method rows, spaced-seed run, run logs).
+
+    rows maps (binary, method) to (median cycles/k-mer, spread, min, instructions/k-mer, branch-miss rate, n).
+    """
     cmds, logs, ctr, meta = load(d)
     bad = {k: v for k, v in meta.items() if (k.startswith("pcount_exit_") or k == "build_exit") and v.strip() != "0"}
     if bad:
@@ -90,6 +93,18 @@ def main() -> int:
         bm = statistics.median(ctr[r]["branch-misses"] / ctr[r]["branches"] for r in runs)
         med = statistics.median(cyc)
         rows[(b, meth)] = (med, (max(cyc) - min(cyc)) / med, min(cyc), statistics.median(ins), bm, len(runs))
+    return base, rows, spaced, logs
+
+
+def slope_fit(rows, b: str, fam: str):
+    """Cycles per kept k-mer and intercept of a batched sampler, from its 1/16 and 1/4 medians."""
+    lo, hi = rows[(b, f"{fam} 1/16")][0], rows[(b, f"{fam} 1/4")][0]
+    slope = (hi - lo) / (0.25 - 0.0625)
+    return slope, lo - slope * 0.0625
+
+
+def main() -> int:
+    base, rows, spaced, logs = compute(pathlib.Path(sys.argv[1]))
     print("Load baselines (median of each binary's __load_only__ runs): " + "; ".join(
         f"{b} {c / 1e9:.2f}e9 cycles (n = {n}, spread {sp:.1%})" for b, (c, _, n, sp) in base.items()) + "\n")
     print("| method | binary | cycles/k-mer (median) | spread | min | instructions/k-mer | branch-miss rate | n "
@@ -100,9 +115,7 @@ def main() -> int:
         print(f"| {meth} | {b} | {c:.2f} | {sp:.1%} | {mn:.2f} | {i:.1f} | {bm:.2%} | {n} | {ref / c:.2f}× |")
     print()
     for b, fam in SLOPES:
-        lo, hi = rows[(b, f"{fam} 1/16")][0], rows[(b, f"{fam} 1/4")][0]
-        slope = (hi - lo) / (0.25 - 0.0625)
-        b0 = lo - slope * 0.0625
+        slope, b0 = slope_fit(rows, b, fam)
         ref = rows[(b, NT[b])][0]
         be = f"1/{slope / (ref - b0):.1f}" if ref > b0 else "never"
         print(f"- {b} `{fam}`: {slope:.1f} cycles per kept k-mer, intercept {b0:.2f}; beats batched ntHash "

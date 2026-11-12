@@ -197,3 +197,21 @@ two pairs. The compute comparison (326 vs about 460 CPU-s) is not quoted: the re
 | reseeded sampling statistics (1,583 gaps, 151 loci, 147 in repeats) | OPEN: unchanged, not re-examined. |
 | unmeasured baselines: canonical code + universal hash row, and gate + ntHash on kept k-mers (critic gaps 2–3) | MEASURED: results/kp7_kept_eval_2026-11-11.md, and in the frozen job (results/paper_bench_2026-11-12.md). |
 | km-peeler extended syncmers, 61% spurious vs about 3% in the authors' tests; harness error not ruled out (critic gap 5) | OPEN: the extended-syncmer method was not rerun (results/kp10_vs_shibuya_2026-11-11.md, section 6). The paper still quotes it as measured. |
+
+## Figures (2026-11-12; `manuscript/figures/make_figures.py`, run by `make -C manuscript figures`)
+
+Every plotted value is read by the script from the file below, never typed into it. Figure 3 recomputes its medians
+from the raw counters through `paper_bench_table.compute`, the same code that wrote the table it is checked against.
+
+| figure | values | source |
+|---|---|---|
+| 1A | A = 1, C = ω, G = −ω, T = −1; squared distances 1 / 3 / 4 | paper.md definitions (diagram); results/kp7_eisenstein_2026-11-10.md:35–36 |
+| 1B | AACG and CGTT: F and R swap (the script asserts F(rc(s)) = R(s) before drawing) | paper.md definitions (diagram) |
+| 2 | 16,384 7-mers, 8,192 classes; F + R 729, F·R 4,160, (F+λ)(R+λ) 8,192 | results/kp7_symmetric_check_2026-11-10.txt:1–4 |
+| 3A | batched ntHash 11.37; Eisenstein every k-mer, 2 lanes 24.67; sampler 9.43 / 9.94 / 11.74 / 17.12 at 1/1000 / 1/100 / 1/16 / 1/4; break-even 1/20.2 (slope 28.7, intercept 9.95) | job c84a395ba84b315e, results/paper_bench_2026-11-12/counters.tsv + run.log; agrees with results/paper_bench_2026-11-12.md:30, 33, 37–40, 42 |
+| 3B | batched ntHash 11.43; canonical code + universal hash every k-mer 10.24; sampler 9.39 / 9.90 / 11.21 / 15.43; same filter + universal hash 9.15 / 9.52 / 10.25 / 11.36 | job c84a395ba84b315e, same raw files; agrees with results/paper_bench_2026-11-12/table.md (bench_kept rows `lib-e 8 br`, `lib-e 8 bat`, `uh 0`) |
+| 4A | protocol (diagram): buckets of S, count and power sums 1..m + c, overflowing bucket split and resent | paper.md Methods, "Set sketches from power sums" |
+| 4B | GigaDB pair, D_est/D = 1/8, 1/4, 1/2, 1: sketch 20.76 / 19.40 / 16.69 / 11.27 B/diff in 5 / 4 / 3 / 2 rounds, table 38.49 / 35.93 / 30.79 / 20.53 in 4 / 3 / 2 / 1 rounds | results/kp10_vs_shibuya_2026-11-11/laila_b69c5c76/tables/kp10_dest.tsv:2–4, 6 and iblt_protocol.tsv:6–9; agrees with results/kp10_vs_shibuya_2026-11-11.md:141–144 |
+
+Figure 3's panels are the two benchmark programs and are never compared with each other (per-kept cost 28.7 vs 22.5,
+unexplained). No optional spaced-seed figure: the text already says what it would show.
