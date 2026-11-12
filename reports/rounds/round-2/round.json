@@ -167,7 +167,15 @@
     "kmer-polynomials": "0ec083f603723dcf32d33fb803f8ca92378b3085"
   },
   "drift_reviewed": [],
-  "sealed": {},
+  "sealed": {
+    "attack-L1-correctness.md": "a1b5b20e561473c0a5a65242667936f6658a079137e91878e1a12ff76060d24a",
+    "attack-L2-sampling.md": "3f8cc8e39824e03102e6a9f9b79cf78017d8a382c88cd8da542f727923e51d6a",
+    "attack-L3-statistics.md": "c4f6e91c0e761e0ff2f1d0e9587fce5f5c2fd12367e0f82a6d0e519dc24e32a3",
+    "attack-L4-provenance.md": "4b1d1ee5555b45f4459ed688b619973080cf2332af92d0b5bc8cc098b14875e7",
+    "attack-L5-inference.md": "509e54e1891e4f601b1a9ca3e622a534c25ee5dd7f8cf1b842df39cc85832147",
+    "attack-L6-prior-art.md": "78b04ebfa2579d20cba4cc65264212f52e59e2a485b53b37de68939cf896da14",
+    "attack-L7-reproduction.md": "2692cd5685d85b5dea4faf91114f7d85b17dd2e89f2c8e61f5939c81821ac67b"
+  },
   "aborted": [],
   "unbriefed": [],
   "lens_drops": {},
@@ -229,5 +237,35 @@
       }
     ]
   },
-  "decisions": []
+  "decisions": [],
+  "sealed_blobs": {
+    "attack-L1-correctness.md": {
+      "blob": "367c665353af9f1d4ea790e845309d57d7eff2a8",
+      "ref": "refs/round/seal/2/attack-L1-correctness.md"
+    },
+    "attack-L2-sampling.md": {
+      "blob": "2bd828a5df77926d9e3b565677ad29af4926db81",
+      "ref": "refs/round/seal/2/attack-L2-sampling.md"
+    },
+    "attack-L3-statistics.md": {
+      "blob": "e056f04c8a0f071d6b018ea9a76afcd11861a21f",
+      "ref": "refs/round/seal/2/attack-L3-statistics.md"
+    },
+    "attack-L4-provenance.md": {
+      "blob": "c63a9fb2b5ef5ca8bb218c045f90f40d73bd3f65",
+      "ref": "refs/round/seal/2/attack-L4-provenance.md"
+    },
+    "attack-L5-inference.md": {
+      "blob": "5e66245e86f88a4746a7d3727defce2033c96c8e",
+      "ref": "refs/round/seal/2/attack-L5-inference.md"
+    },
+    "attack-L6-prior-art.md": {
+      "blob": "ab6b7b600b82d8ea4594590489d187e15c035984",
+      "ref": "refs/round/seal/2/attack-L6-prior-art.md"
+    },
+    "attack-L7-reproduction.md": {
+      "blob": "faec7b351fd2dcf828b25063f17b9abac65afd0e",
+      "ref": "refs/round/seal/2/attack-L7-reproduction.md"
+    }
+  }
 }
