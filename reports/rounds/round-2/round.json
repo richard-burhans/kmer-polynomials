@@ -1,0 +1,233 @@
+{
+  "round": 2,
+  "draft": "d2",
+  "subject": "kmer-polynomials manuscript: the set sketch, claims 4-6 of the abstract with the Results set-sketch section, Figure 4 and their ledger rows (FULL tier: no round has ruled on the KP-10 whole-genome comparison, the D/8 sweep or the as-written k=31/k=63 results)",
+  "date": "2026-11-12",
+  "claims": [
+    {
+      "id": "C1",
+      "type": "human",
+      "text": "[the user's claim 4, abstract] Between two cannabis assemblies differing in 3.2 million canonical 31-mers (Cannbio-2 vs its GigaDB release), the power-sum sketch recovered every difference in 30 of 30 runs at 11.3 bytes per difference over two rounds, against 20.5 for a one-round invertible Bloom lookup table (km-peeler). Refuted if the numbers do not reproduce from the raw outputs, if 'every difference' or '30 of 30' misstates what was scored, if the byte accounting is not like for like (one side's message, both rounds, entry and cell sizes), if the comparison is unfair to the table (its sizing rule, hash count, input, protocol), or if the sentence implies a conclusion the design cannot support. Evidence: results/kp10_vs_shibuya_2026-11-11.md; raw outputs results/kp10_vs_shibuya_2026-11-11/laila_b69c5c76/ (run.log, counters.tsv, tables/*.tsv); recon/kp10c.c, recon/kmtools.c, recon/kp10_vs_iblt_job.sh, recon/kp10_vs_iblt_launch.sh, recon/kp10_vs_iblt_summarize.py, recon/kp10_vs_iblt_fetch.py; results/round1_owed_2026-11-11.md and results/round1_owed_2026-11-11/; manuscript/ledger.md.",
+      "source": {
+        "file": "reports/rounds/round-2/ATTACKED-paper.md",
+        "quote": "Between two cannabis assemblies differing in 3.2 million 31-mers, it recovered every difference in 30 of 30 runs with 11.3 bytes per difference over two rounds, against 20.5 for a one-round invertible Bloom lookup table."
+      }
+    },
+    {
+      "id": "C2",
+      "type": "human",
+      "text": "[the user's claim 5, abstract] Because an overflowing bucket is resent alone, an eightfold underestimate of the difference raised the sketch's cost to 20.8 bytes per difference, against 38.5 for the table. Refuted if the numbers do not reproduce (tables/kp10_dest.tsv, tables/iblt_protocol.tsv), if the causal 'because' is not what the design isolates, if the table's resend-at-double protocol is a straw man or not what km-peeler supports, if one fixed-seed sketch run against a 10-repetition table mean is not a fair comparison, or if the protocol decisions read the truth. Evidence: results/kp10_vs_shibuya_2026-11-11.md; raw outputs results/kp10_vs_shibuya_2026-11-11/laila_b69c5c76/ (run.log, counters.tsv, tables/*.tsv); recon/kp10c.c, recon/kmtools.c, recon/kp10_vs_iblt_job.sh, recon/kp10_vs_iblt_launch.sh, recon/kp10_vs_iblt_summarize.py, recon/kp10_vs_iblt_fetch.py; results/round1_owed_2026-11-11.md and results/round1_owed_2026-11-11/; manuscript/ledger.md.",
+      "source": {
+        "file": "reports/rounds/round-2/ATTACKED-paper.md",
+        "quote": "Because an overflowing bucket is resent alone, an eightfold underestimate of the difference raised this to 20.8, against 38.5 for the table."
+      }
+    },
+    {
+      "id": "C3",
+      "type": "human",
+      "text": "[the user's claim 6, abstract] Power sums of these hashes form a linear set sketch that needs no canonicalization, with the as-written results that support it: at k = 31 the sketch of k-mers as written recovered the 7,931 differences between Cannbio-2 and its draft exactly (137 KB, one round), where a forward-only polynomial hash in the same sketch saw 398,217,248 differences; at k = 63, hashed from the sequence with no packed code, it recovered all 21,382 differences in 549 KB and one round, matching KMC element by element. The k = 63 run used a numpy prototype whose hashes match the C code on 20,000 sampled k-mers, with buckets sized from the true difference. Refuted if 'needs no canonicalization' overstates what was shown (e.g. if canonical k-mers or a canonical truth set enter anywhere in the pipeline the claim credits to S), if the forward-only control is not a fair control, if the k = 63 run did not test what is claimed, if any number fails to reproduce, or if 'linear' is false of the sketch as implemented. Evidence: results/kp10_vs_shibuya_2026-11-11.md; raw outputs results/kp10_vs_shibuya_2026-11-11/laila_b69c5c76/ (run.log, counters.tsv, tables/*.tsv); recon/kp10c.c, recon/kmtools.c, recon/kp10_vs_iblt_job.sh, recon/kp10_vs_iblt_launch.sh, recon/kp10_vs_iblt_summarize.py, recon/kp10_vs_iblt_fetch.py; results/round1_owed_2026-11-11.md and results/round1_owed_2026-11-11/; manuscript/ledger.md.",
+      "source": {
+        "file": "reports/rounds/round-2/ATTACKED-paper.md",
+        "quote": "Power sums of these hashes form a linear set sketch that needs no canonicalization."
+      },
+      "carries": [
+        "1-h1a2a46",
+        "1-h47de7e"
+      ]
+    },
+    {
+      "id": "C4",
+      "text": "[empirical, Results and Table 4] Sized for a single round the sketch needed 21.7 bytes per difference (2^17 buckets, one run), so its smaller size comes from the second round; it started from 2^16 buckets and resent about 1,250 in round 2. Refuted if the numbers do not reproduce or if the attribution 'comes from the second round' is not supported. Evidence: results/kp10_vs_shibuya_2026-11-11.md; raw outputs results/kp10_vs_shibuya_2026-11-11/laila_b69c5c76/ (run.log, counters.tsv, tables/*.tsv); recon/kp10c.c, recon/kmtools.c, recon/kp10_vs_iblt_job.sh, recon/kp10_vs_iblt_launch.sh, recon/kp10_vs_iblt_summarize.py, recon/kp10_vs_iblt_fetch.py; results/round1_owed_2026-11-11.md and results/round1_owed_2026-11-11/; manuscript/ledger.md.",
+      "source": {
+        "file": "reports/rounds/round-2/ATTACKED-paper.md",
+        "quote": "Sized for a single round, the sketch needed 21.7, so its smaller size comes from the second round."
+      }
+    },
+    {
+      "id": "C5",
+      "text": "[statistical] Each 30 of 30 bounds the failure rate only below 9.5 percent (one-sided, 95 percent), so the runs do not compare reliability; neither method returned a wrong difference, but the sketch detects an overfull bucket only with high probability over the random hash. Refuted if the bound is computed wrong, if the 30 runs are not independent in the sense the bound needs (seeds, host, shared inputs), or if 'neither method returned a wrong difference' is not what was measured. Evidence: results/kp10_vs_shibuya_2026-11-11.md; raw outputs results/kp10_vs_shibuya_2026-11-11/laila_b69c5c76/ (run.log, counters.tsv, tables/*.tsv); recon/kp10c.c, recon/kmtools.c, recon/kp10_vs_iblt_job.sh, recon/kp10_vs_iblt_launch.sh, recon/kp10_vs_iblt_summarize.py, recon/kp10_vs_iblt_fetch.py; results/round1_owed_2026-11-11.md and results/round1_owed_2026-11-11/; manuscript/ledger.md.",
+      "source": {
+        "file": "reports/rounds/round-2/ATTACKED-paper.md",
+        "quote": "Each 30 of 30 bounds the failure rate only below 9.5 percent (one-sided, 95 percent), so the runs do not compare the two methods' reliability."
+      }
+    },
+    {
+      "id": "C6",
+      "text": "[empirical] For the draft pair (difference 7,931) the sketch used 17.3 bytes per difference in one round, against 20.5 for the table. Refuted if the numbers do not reproduce or the comparison is not like for like. Evidence: results/kp10_vs_shibuya_2026-11-11.md; raw outputs results/kp10_vs_shibuya_2026-11-11/laila_b69c5c76/ (run.log, counters.tsv, tables/*.tsv); recon/kp10c.c, recon/kmtools.c, recon/kp10_vs_iblt_job.sh, recon/kp10_vs_iblt_launch.sh, recon/kp10_vs_iblt_summarize.py, recon/kp10_vs_iblt_fetch.py; results/round1_owed_2026-11-11.md and results/round1_owed_2026-11-11/; manuscript/ledger.md.",
+      "source": {
+        "file": "reports/rounds/round-2/ATTACKED-paper.md",
+        "quote": "For a difference of 7,931 between an assembly and its draft, it used 17.3 bytes per difference in one round, against 20.5."
+      }
+    },
+    {
+      "id": "C7",
+      "text": "[methods / fairness] km-peeler ran unmodified with its default three hash functions on the canonical k-mer sets of both assemblies, each method ran 30 times with independent random seeds on one host, and the k-mer table was sized to succeed in 30 of 30 trials; the sketch's first round uses the smallest power of two of buckets holding at most 0.8m estimated differences each; each party checks its buckets with its own data only. Refuted if km-peeler was modified, mis-built or mis-fed, if its seeds were not independent, if sizing the table 'to succeed in 30 of 30' used the outcome in a way the sketch's sizing did not, or if the decode in fact used the other side's data. Evidence: results/kp10_vs_shibuya_2026-11-11.md; raw outputs results/kp10_vs_shibuya_2026-11-11/laila_b69c5c76/ (run.log, counters.tsv, tables/*.tsv); recon/kp10c.c, recon/kmtools.c, recon/kp10_vs_iblt_job.sh, recon/kp10_vs_iblt_launch.sh, recon/kp10_vs_iblt_summarize.py, recon/kp10_vs_iblt_fetch.py; results/round1_owed_2026-11-11.md and results/round1_owed_2026-11-11/; manuscript/ledger.md.",
+      "source": {
+        "file": "reports/rounds/round-2/ATTACKED-paper.md",
+        "quote": "km-peeler ran unmodified with its default three hash functions on the canonical k-mer sets of both assemblies, and each method ran 30 times with independent random seeds on one host."
+      }
+    },
+    {
+      "id": "C8",
+      "text": "[empirical, about the competitor] km-peeler's extended-syncmer method was 2.7 times smaller than the sketch on the GigaDB pair but returned spurious syncmers numbering 61 percent of the true difference (1,986,807), against about 3 percent in the authors' tests, and missed 7; between draft and final 48,293,748 extended syncmers differed and the run ran out of memory while listing. Round 1 left open whether this is a harness error. Refuted if the run misused the method, if the comparison of 61% with the authors' 3% compares unlike quantities, if the numbers come from a superseded run that the paper presents as current, or if Table 4's row is not like for like with the other rows. Evidence: results/kp10_vs_shibuya_2026-11-11.md; raw outputs results/kp10_vs_shibuya_2026-11-11/laila_b69c5c76/ (run.log, counters.tsv, tables/*.tsv); recon/kp10c.c, recon/kmtools.c, recon/kp10_vs_iblt_job.sh, recon/kp10_vs_iblt_launch.sh, recon/kp10_vs_iblt_summarize.py, recon/kp10_vs_iblt_fetch.py; results/round1_owed_2026-11-11.md and results/round1_owed_2026-11-11/; manuscript/ledger.md. Also results/kp10_vs_shibuya_2026-11-10_prior.md.",
+      "source": {
+        "file": "reports/rounds/round-2/ATTACKED-paper.md",
+        "quote": "On the GigaDB pair it was 2.7 times smaller than our sketch but returned spurious syncmers numbering 61 percent of the true difference, against about 3 percent in the authors' tests, and missed 7 differences, which we did not trace."
+      },
+      "carries": [
+        "1-h25a985"
+      ]
+    },
+    {
+      "id": "C9",
+      "text": "[figure, Figure 4B and caption] Bytes per difference on the GigaDB pair with buckets or table sized from an estimate of the difference; the table is resent at double size after each failed listing; both methods ended exact at every point, the sketch in one fixed-seed run per point and the table in all 10 repetitions, whose mean is plotted. Refuted if the plotted values do not match the raw tables, if the figure or caption misdescribes the protocol, or if plotting one sketch run against a 10-run mean misleads. Script: manuscript/figures/make_figures.py. Evidence: results/kp10_vs_shibuya_2026-11-11.md; raw outputs results/kp10_vs_shibuya_2026-11-11/laila_b69c5c76/ (run.log, counters.tsv, tables/*.tsv); recon/kp10c.c, recon/kmtools.c, recon/kp10_vs_iblt_job.sh, recon/kp10_vs_iblt_launch.sh, recon/kp10_vs_iblt_summarize.py, recon/kp10_vs_iblt_fetch.py; results/round1_owed_2026-11-11.md and results/round1_owed_2026-11-11/; manuscript/ledger.md.",
+      "source": {
+        "file": "reports/rounds/round-2/ATTACKED-paper.md",
+        "quote": "Both methods ended exact at every point, the sketch in one fixed-seed run per point and the table in all 10 repetitions, whose mean is plotted."
+      }
+    },
+    {
+      "id": "C10",
+      "text": "[data description] Cannbio-2 and its GigaDB release differ in 3,238,101 canonical 31-mers, 0.73 percent of the set, almost all from unplaced scaffolds that the release drops; Cannbio-2 and its draft differ in 7,931; KMC confirmed both element by element. Refuted if any count fails to reproduce, if 'almost all from unplaced scaffolds' is unmeasured, or if KMC's agreement is not independent of the pipeline it checks. Evidence: results/kp10_vs_shibuya_2026-11-11.md; raw outputs results/kp10_vs_shibuya_2026-11-11/laila_b69c5c76/ (run.log, counters.tsv, tables/*.tsv); recon/kp10c.c, recon/kmtools.c, recon/kp10_vs_iblt_job.sh, recon/kp10_vs_iblt_launch.sh, recon/kp10_vs_iblt_summarize.py, recon/kp10_vs_iblt_fetch.py; results/round1_owed_2026-11-11.md and results/round1_owed_2026-11-11/; manuscript/ledger.md.",
+      "source": {
+        "file": "reports/rounds/round-2/ATTACKED-paper.md",
+        "quote": "Cannbio-2 and its GigaDB release differ in 3,238,101 canonical 31-mers, 0.73 percent of the set, almost all from unplaced scaffolds that the release drops."
+      }
+    },
+    {
+      "id": "C11",
+      "text": "[methods, provenance] The whole-genome comparison hashes every 31-mer as written with no canonical code, so only S supplies strand symmetry, and a bucket is a range of S; and, in Implementation, 'the GigaDB sketch ran before x and lambda were separated'. Refuted if the code that produced the paper's numbers does otherwise, or if either sentence describes a run other than the one the paper's numbers come from. Evidence: results/kp10_vs_shibuya_2026-11-11.md; raw outputs results/kp10_vs_shibuya_2026-11-11/laila_b69c5c76/ (run.log, counters.tsv, tables/*.tsv); recon/kp10c.c, recon/kmtools.c, recon/kp10_vs_iblt_job.sh, recon/kp10_vs_iblt_launch.sh, recon/kp10_vs_iblt_summarize.py, recon/kp10_vs_iblt_fetch.py; results/round1_owed_2026-11-11.md and results/round1_owed_2026-11-11/; manuscript/ledger.md.",
+      "source": {
+        "file": "reports/rounds/round-2/ATTACKED-paper.md",
+        "quote": "It hashes every 31-mer as written, with no canonical code, so only $S$ supplies strand symmetry, and a bucket is a range of $S$."
+      }
+    },
+    {
+      "id": "C12",
+      "text": "[cost] Recovery costs more computation than a table listing: about m + c = 66 field multiplications per element against 3 cell updates. Refuted if the per-element count is wrong for the implementation, or if omitting the measured CPU times (results file section 5) hides a material cost. Evidence: results/kp10_vs_shibuya_2026-11-11.md; raw outputs results/kp10_vs_shibuya_2026-11-11/laila_b69c5c76/ (run.log, counters.tsv, tables/*.tsv); recon/kp10c.c, recon/kmtools.c, recon/kp10_vs_iblt_job.sh, recon/kp10_vs_iblt_launch.sh, recon/kp10_vs_iblt_summarize.py, recon/kp10_vs_iblt_fetch.py; results/round1_owed_2026-11-11.md and results/round1_owed_2026-11-11/; manuscript/ledger.md.",
+      "source": {
+        "file": "reports/rounds/round-2/ATTACKED-paper.md",
+        "quote": "The sketch needs about $m + c = 66$ field multiplications per element, against 3 cell updates for an invertible Bloom lookup table."
+      }
+    },
+    {
+      "id": "C13",
+      "text": "[inference, Introduction and Discussion] An invertible Bloom lookup table that fails must be resent whole; the as-written result shows the hash supplies the symmetry, not that it beats canonicalization; the sketch's advantage over the table is due to resending only overfull buckets. Refuted if IBLTs in the literature (or km-peeler) can in fact be extended or partially reused on failure, if the Discussion's inference outruns two pairs from one genome, or if the comparison omits a known stronger baseline (e.g. IBLT variants, other reconciliation sketches). Evidence: results/kp10_vs_shibuya_2026-11-11.md; raw outputs results/kp10_vs_shibuya_2026-11-11/laila_b69c5c76/ (run.log, counters.tsv, tables/*.tsv); recon/kp10c.c, recon/kmtools.c, recon/kp10_vs_iblt_job.sh, recon/kp10_vs_iblt_launch.sh, recon/kp10_vs_iblt_summarize.py, recon/kp10_vs_iblt_fetch.py; results/round1_owed_2026-11-11.md and results/round1_owed_2026-11-11/; manuscript/ledger.md.",
+      "source": {
+        "file": "reports/rounds/round-2/ATTACKED-paper.md",
+        "quote": "A table of canonical k-mers is orientation-blind too, so this shows that the hash supplies the symmetry, not that it beats canonicalization."
+      }
+    },
+    {
+      "id": "C14",
+      "text": "[reframing, carried from round 1] For k-mers that fit a machine word, a canonical packed code and a universal hash give strand symmetry with a proof, and in these measurements ran 1.12 times as fast as batched ntHash and 2.4 times as fast as the paper's hash; the strand-symmetric product earns its place for long k-mers, spaced seeds and values that must be added. Refuted if the baseline is mis-measured or misdescribed (results/paper_bench_2026-11-12.md), if 'with a proof' is false for the baseline, or if the claimed niche is not supported. Evidence: results/paper_bench_2026-11-12.md, results/kp7_kept_eval_2026-11-11.md, manuscript/ledger.md.",
+      "source": {
+        "file": "reports/rounds/round-2/ATTACKED-paper.md",
+        "quote": "For k-mers that fit a machine word, a canonical packed code and a universal hash already give strand symmetry with a proven bound, and in our measurements they ran 1.12 times as fast as batched ntHash and 2.4 times as fast as our hash."
+      },
+      "carries": [
+        "1-h726821"
+      ]
+    },
+    {
+      "id": "C15",
+      "text": "[ledger] The ledger rows for the set-sketch section and Figure 4 trace each published number to its source, e.g. '20.8 vs 38.5 | B/diff from D_est = D/8, GigaDB'. Refuted if any ledger row in the 'KP-10 vs km-peeler, whole genome' section, the Set reconciliation section, the round-1 carried-items table or the Figure 4 rows cites a source line that does not say what the row says, or if a published sketch number has no row.",
+      "source": {
+        "file": "reports/rounds/round-2/ATTACKED-ledger.md",
+        "quote": "| 20.8 vs 38.5 | B/diff from D_est = D/8, GigaDB: KP-10 vs IBLT resend at double size |"
+      }
+    }
+  ],
+  "lenses": [
+    "correctness",
+    "sampling",
+    "statistics",
+    "provenance",
+    "inference",
+    "prior-art",
+    "reproduction"
+  ],
+  "attacked": [
+    {
+      "path": "manuscript/paper.md",
+      "snapshot": "ATTACKED-paper.md",
+      "read": "working tree",
+      "pinned": true,
+      "sha256": "095e60e73a9845cb3a2fd276ae0cd0eb3a4218889f183e64ba08741d2ce19ad8"
+    },
+    {
+      "path": "manuscript/ledger.md",
+      "snapshot": "ATTACKED-ledger.md",
+      "read": "working tree",
+      "pinned": true,
+      "sha256": "be9c641e3674fb8df135f6d92b45583dcbee86410ebc9e2dc79f4c496d0d0275"
+    }
+  ],
+  "code": {
+    "kmer-polynomials": "0ec083f603723dcf32d33fb803f8ca92378b3085"
+  },
+  "drift_reviewed": [],
+  "sealed": {},
+  "aborted": [],
+  "unbriefed": [],
+  "lens_drops": {},
+  "briefs_required": true,
+  "runner_is_author": true,
+  "claim_list_author": "runner",
+  "human_claim": "Claims 4 to 6 of the abstract together, chosen by the user on 2026-11-12: (4) \"Between two cannabis assemblies differing in 3.2 million 31-mers, it recovered every difference in 30 of 30 runs with 11.3 bytes per difference over two rounds, against 20.5 for a one-round invertible Bloom lookup table.\" (5) \"Because an overflowing bucket is resent alone, an eightfold underestimate of the difference raised this to 20.8, against 38.5 for the table.\" (6) \"Power sums of these hashes form a linear set sketch that needs no canonicalization\", with the as-written k=31 and k=63 results that support it; plus the Results set-sketch section, Figure 4 and their ledger rows.",
+  "carried": [
+    {
+      "from": 1,
+      "kind": "open",
+      "item": "New in the corrected draft and unattacked: the as-written k=31 sketch result (7,931 exact, 137 KB) and the forward-only control (398,217,248); results/round1_owed_2026-11-11.md",
+      "id": "1-h1a2a46"
+    },
+    {
+      "from": 1,
+      "kind": "open",
+      "item": "New and unattacked: the k=63 sketch result (21,382 exact, 549 KB, KMC 3.2.4 agreement), with bucket counts set from the true difference",
+      "id": "1-h47de7e"
+    },
+    {
+      "from": 1,
+      "kind": "open",
+      "item": "New and unattacked: the reframing (k<=32 canonical code + universal hash is the cheaper provable baseline; S is for k>32, spaced seeds, additive sketches)",
+      "id": "1-h726821"
+    },
+    {
+      "from": 1,
+      "kind": "open",
+      "item": "New and unattacked: reseeded sampling statistics (1,583 long gaps at 151 loci, 147 in repeats, 4 outside with one gap each)",
+      "id": "1-h1274db"
+    },
+    {
+      "from": 1,
+      "kind": "open",
+      "item": "km-peeler extended-syncmer row: 38% spurious here vs about 3% in the authors' tests; harness error not ruled out (critic gap 5)",
+      "id": "1-h25a985"
+    }
+  ],
+  "dropped": [
+    {
+      "item": "New and unattacked: reseeded sampling statistics (1,583 long gaps at 151 loci, 147 in repeats, 4 outside with one gap each)",
+      "id": "1-h1274db",
+      "reason": "Outside this round's subject: the user chose claims 4-6 (the set sketch) on 2026-11-12, and the sampling paragraph neither feeds nor depends on any sketch claim. Still unattacked; re-filed in this round's open[] so round 3 carries it."
+    }
+  ],
+  "corrections": [],
+  "findings": [],
+  "open": [
+    "New and unattacked (carried from round 1, dropped from round 2's scope): reseeded sampling statistics (1,583 long gaps at 151 loci, 147 in repeats, 4 outside with one gap each)"
+  ],
+  "unchallenged": [],
+  "discharges": {
+    "1": [
+      {
+        "id": "1-hb4183e",
+        "item": "Not measured: a speed-table row for canonical code + universal hash, and the same packed-code filter followed by ntHash on kept k-mers (critic gaps 2-3)",
+        "evidence": "Measured in one frozen laila job c84a395ba84b315e at commit 5bee54c: canonical code + universal hash on every k-mer 10.24 cycles (1.12x batched ntHash), same packed-code filter then ntHash on kept k-mers 9.72/10.23 at 1/1000 and 1/100 (19.3 cycles per kept k-mer); results/paper_bench_2026-11-12.md lines 51-56, published as Table 3 of manuscript/paper.md"
+      }
+    ]
+  },
+  "decisions": []
+}
