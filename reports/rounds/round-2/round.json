@@ -290,7 +290,7 @@
     {
       "item": "New and unattacked: reseeded sampling statistics (1,583 long gaps at 151 loci, 147 in repeats, 4 outside with one gap each)",
       "id": "1-h1274db",
-      "reason": "Outside this round's subject: the user chose claims 4-6 (the set sketch) on 2026-11-12, and the sampling paragraph neither feeds nor depends on any sketch claim. Still unattacked; re-filed in this round's open[] so round 3 carries it."
+      "reason": "Outside this round's subject: the user chose claims 4-6 (the set sketch) on 2026-11-12, and the sampling paragraph neither feeds nor depends on any sketch claim. Still unattacked; outstanding() re-seeds a dropped item into round 3."
     }
   ],
   "corrections": [
@@ -972,7 +972,6 @@
     }
   ],
   "open": [
-    "New and unattacked (carried from round 1, dropped from round 2's scope): reseeded sampling statistics (1,583 long gaps at 151 loci, 147 in repeats, 4 outside with one gap each)",
     "New and unattacked: round 2's corrected set-sketch text (per-party 11.3, stored-encoding disclosure, 3.5% below a doubling, 1.84/1.87, 'about 20.5' doubling-IBLT arithmetic, 0.05% set-size estimate, below 0.04 silent losses per run, 89/110 vs 205/3.5 CPU-s) has been read by the cold auditor only",
     "Owed run (laila): a sketch with a non-power-of-two bucket count or m = 88 at 2^16, to measure one-round cost off the power-of-two grid (adjudications L1 F3, L2 F2, L5 F1)",
     "Owed run (laila): km-peeler with spaced or random seeds, and a held-out check of its 1.05 sizing, so the table's 30/30 bounds something (adjudications L2 F3, L4 F3)",
@@ -1083,5 +1082,9 @@
     "by": "cold auditor agent (did not see the round; read the diff and ran the gate before any round artifact)",
     "date": "2026-11-12",
     "evidence": "Gate green (make -C manuscript check; pytest 33 passed via uv); 19/19 corrections applied. Found: 'at most m/2 per bucket' false (a mean of 20.9); packed per-message comparison misleading once totals are 22.5 vs 20.5; ledger said the 326-vs-460 CPU comparison was unquoted; Discussion and Results disagreed on compute; four numbers traced only to adjudications; 'the cheapest position' and 'every sketch bucket overflowed' unsupported; 2.1-3.1 vs 2.2-3.0 GHz between paper and a results note. All fixed by cutting or by pointing the ledger at committed sources."
+  },
+  "closed": "2026-11-12",
+  "closed_at_code": {
+    "kmer-polynomials": "8001a2e2334304967c895ca821c935170f722bb8"
   }
 }
