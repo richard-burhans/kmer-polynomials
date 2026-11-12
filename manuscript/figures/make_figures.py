@@ -291,17 +291,17 @@ def fig4():
 
     bx = fig.add_axes([0.62, 0.17, 0.36, 0.69])
     panel(bx, "B")
-    bx.plot([p[0] for p in kp], [p[1] for p in kp], "-o", color=OURS, ms=5, mec="white", mew=0.6,
-            label="power-sum sketch")
-    bx.plot([p[0] for p in ib], [p[1] for p in ib], "--s", color=OTHER, ms=5, mec="white", mew=0.6,
-            label="invertible Bloom lookup table")
+    bx.plot([p[0] for p in kp], [p[1] for p in kp], "o", color=OURS, ms=5, mec="white", mew=0.6,
+            label="power-sum sketch, one party")
+    bx.plot([p[0] for p in ib], [p[1] for p in ib], "s", color=OTHER, ms=5, mec="white", mew=0.6,
+            label="km-peeler table, resent at double size")
     for (f, y, r), off in [(p, (0, -9)) for p in kp] + [(p, (8, 7)) for p in ib]:
         bx.annotate(f"{r} round{'s' if r > 1 else ''}", (f, y), xytext=off, textcoords="offset points",
                     ha="center", va="center", fontsize=6, color=INK2)
     bx.set_xscale("log", base=2)
     bx.set_xticks(fracs, ["1/8", "1/4", "1/2", "1"])
     bx.minorticks_off()
-    bx.set_xlim(0.1, 1.5)
+    bx.set_xlim(0.1, 1.25)
     bx.set_ylim(0, 45)
     bx.set_xlabel("difference estimate / true difference")
     bx.set_ylabel("bytes per difference")

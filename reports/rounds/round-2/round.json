@@ -222,10 +222,693 @@
       "reason": "Outside this round's subject: the user chose claims 4-6 (the set sketch) on 2026-11-12, and the sampling paragraph neither feeds nor depends on any sketch claim. Still unattacked; re-filed in this round's open[] so round 3 carries it."
     }
   ],
-  "corrections": [],
-  "findings": [],
+  "corrections": [
+    {
+      "id": "R2-01",
+      "what": "C1/C2 abstract: claims 4 and 5's comparisons cut; 11.3 stated per party (both sketches crossed; table stored with 8-byte counters; km-peeler-only 38.5)",
+      "file": "manuscript/paper.md",
+      "absent": [
+        "against 20.5 for a one-round invertible Bloom lookup table.",
+        "Because an overflowing bucket is resent alone"
+      ],
+      "present": [
+        "each party sending 11.3 bytes per difference over two rounds"
+      ],
+      "finding": [
+        "correctness F1",
+        "reproduction F1",
+        "inference F2",
+        "inference F3",
+        "prior-art F1",
+        "completeness Gap 1"
+      ],
+      "status": "applied"
+    },
+    {
+      "id": "R2-02",
+      "what": "C1/C6: one table message gives both sides; stored encodings disclosed, packing not built; draft pair one-sided",
+      "file": "manuscript/paper.md",
+      "absent": [
+        "sized to succeed in 30 of 30 trials. Sized for a single round"
+      ],
+      "present": [
+        "One message of km-peeler's table, 20.5 bytes per difference, gave both sides in one round",
+        "We built neither packing",
+        "half of each a 64-bit counter",
+        "all lie on the draft's side, so one sketch of 17.3 bytes per difference sufficed"
+      ],
+      "finding": [
+        "reproduction F1",
+        "completeness Gap 1"
+      ],
+      "status": "applied"
+    },
+    {
+      "id": "R2-03",
+      "what": "C4: 'comes from the second round' removed; power-of-two position disclosed",
+      "file": "manuscript/paper.md",
+      "absent": [
+        "so its smaller size comes from the second round",
+        "Sized for one round, it needed 21.7"
+      ],
+      "present": [
+        "This pair sits 3.5 percent below a doubling, the cheapest position",
+        "power-sum sketch with twice the buckets"
+      ],
+      "finding": [
+        "correctness F3",
+        "sampling F1",
+        "sampling F2",
+        "statistics F1",
+        "statistics F2",
+        "inference F1",
+        "prior-art F2"
+      ],
+      "status": "applied"
+    },
+    {
+      "id": "R2-04",
+      "what": "C2/C9: D/8 causal clause removed; equal degradation, imposed estimates, table's best case, doubling-IBLT arithmetic",
+      "file": "manuscript/paper.md",
+      "absent": [
+        "Because an overflowing bucket is split and resent on its own",
+        "Resending only overfull buckets keeps the sketch small"
+      ],
+      "present": [
+        "Each grew by about the same factor, 1.84 and 1.87 times",
+        "These underestimates are imposed",
+        "its last listing always lands on its tuned size",
+        "a table that sends only its new cells would total about 20.5"
+      ],
+      "finding": [
+        "correctness F2",
+        "inference F3",
+        "inference F4",
+        "statistics F3",
+        "sampling F4",
+        "prior-art F1"
+      ],
+      "status": "applied"
+    },
+    {
+      "id": "R2-05",
+      "what": "C13: 'an IBLT that fails must be resent whole' scoped to km-peeler; doubling and rateless IBLTs cited",
+      "file": "manuscript/paper.md",
+      "absent": [
+        "an invertible Bloom lookup table that fails must be resent whole"
+      ],
+      "present": [
+        "The invertible Bloom lookup table we compare against is resent whole",
+        "or be made rateless [@yang_2024_rateless-reconciliation]"
+      ],
+      "finding": [
+        "inference F5",
+        "prior-art F1",
+        "reproduction F8"
+      ],
+      "status": "applied"
+    },
+    {
+      "id": "R2-06",
+      "what": "C5/C7: km-peeler seeds 1001-1030 share hash functions; 9.5% bound for the sketch only",
+      "file": "manuscript/paper.md",
+      "absent": [
+        "with independent random seeds on one host",
+        "Each 30 of 30 bounds the failure rate"
+      ],
+      "present": [
+        "seed, seed + 1 and seed + 2, so neighbouring trials share two",
+        "while the table's trials share hash functions and are not independent"
+      ],
+      "finding": [
+        "correctness F4",
+        "sampling F3",
+        "statistics F4",
+        "provenance F3",
+        "reproduction F6"
+      ],
+      "status": "applied"
+    },
+    {
+      "id": "R2-07",
+      "what": "C11: stale x/lambda clause deleted; OS seeds for the 30-run comparisons",
+      "file": "manuscript/paper.md",
+      "absent": [
+        "the GigaDB sketch ran before"
+      ],
+      "present": [
+        "The 30 runs per pair of the sketch comparison drew their seeds from the operating system"
+      ],
+      "finding": [
+        "correctness F5",
+        "provenance F1",
+        "inference F9",
+        "reproduction F2"
+      ],
+      "status": "applied"
+    },
+    {
+      "id": "R2-08",
+      "what": "C3: k=63 provenance (C hash, numpy reconcile) and its m/2 sizing",
+      "file": "manuscript/paper.md",
+      "absent": [
+        "The $k = 63$ run used a numpy prototype, whose hashes match the C code on 20,000 sampled k-mers"
+      ],
+      "present": [
+        "The $k = 63$ run hashed with the same C code and reconciled in a numpy prototype",
+        "with buckets sized for at most $m/2$ differences each"
+      ],
+      "finding": [
+        "correctness F6",
+        "sampling F5",
+        "statistics F5",
+        "provenance F2",
+        "reproduction F3"
+      ],
+      "status": "applied"
+    },
+    {
+      "id": "R2-09",
+      "what": "C3: forward-only control 'faced', in the numpy prototype of the same sketch",
+      "file": "manuscript/paper.md",
+      "absent": [
+        "saw 398"
+      ],
+      "present": [
+        "faced 398,217,248 differences",
+        "in the numpy prototype of the same sketch",
+        "faced 398 million"
+      ],
+      "finding": [
+        "inference F6",
+        "completeness Gap 4"
+      ],
+      "status": "applied"
+    },
+    {
+      "id": "R2-10",
+      "what": "C8: extended-syncmer row: earlier 5-trial run, spurious k-mers, authors' regimes, same 7 misses",
+      "file": "manuscript/paper.md",
+      "absent": [
+        "returned spurious syncmers",
+        "which we did not trace"
+      ],
+      "present": [
+        "In an earlier run of five trials",
+        "tests on viral and simulated genomes",
+        "missed the same 7 differences in every trial",
+        "The extended-syncmer row is an earlier run of five trials"
+      ],
+      "finding": [
+        "correctness F7",
+        "sampling F6",
+        "provenance F4",
+        "inference F10",
+        "prior-art F4",
+        "reproduction F5"
+      ],
+      "status": "applied"
+    },
+    {
+      "id": "R2-11",
+      "what": "C12: 66 is the build cost; recovery cost and measured CPU stated both ways",
+      "file": "manuscript/paper.md",
+      "absent": [
+        "The sketch needs about $m + c = 66$ field multiplications per element"
+      ],
+      "present": [
+        "Building the sketch costs $m + c = 66$",
+        "110 to recover the difference",
+        "326 against about 460"
+      ],
+      "finding": [
+        "correctness F8",
+        "provenance F6",
+        "inference F8",
+        "prior-art F6",
+        "reproduction F7"
+      ],
+      "status": "applied"
+    },
+    {
+      "id": "R2-12",
+      "what": "C10: 'almost all from unplaced scaffolds' replaced by the measured split",
+      "file": "manuscript/paper.md",
+      "absent": [
+        "almost all from unplaced scaffolds",
+        "each dominated by one structural difference"
+      ],
+      "present": [
+        "all but 775 of them in Cannbio-2"
+      ],
+      "finding": [
+        "sampling F7",
+        "provenance F9",
+        "inference F11",
+        "reproduction F10"
+      ],
+      "status": "applied"
+    },
+    {
+      "id": "R2-13",
+      "what": "C4/C7: table 1.28 cells per difference; 2,500 halves sent",
+      "file": "manuscript/paper.md",
+      "absent": [
+        "k-mer table at 1.05 times the difference",
+        "resent about 1,250 of them"
+      ],
+      "present": [
+        "1.28 cells per difference",
+        "sending about 2,500 halves"
+      ],
+      "finding": [
+        "prior-art F3",
+        "reproduction F4"
+      ],
+      "status": "applied"
+    },
+    {
+      "id": "R2-14",
+      "what": "C14: 2.4x chained through each program's ntHash; niche worded as expected; 'values that must be added' for k > 32",
+      "file": "manuscript/paper.md",
+      "absent": [],
+      "present": [
+        "Chained through each benchmark program's own ntHash",
+        "should earn its place",
+        "values that must be added when $k > 32$"
+      ],
+      "finding": [
+        "provenance F8",
+        "inference F7",
+        "reproduction F11",
+        "inference F6"
+      ],
+      "status": "applied"
+    },
+    {
+      "id": "R2-15",
+      "what": "C7: joint acceptance and the sketch's tuning on the test pair disclosed",
+      "file": "manuscript/paper.md",
+      "absent": [
+        "checks its buckets with its own data only"
+      ],
+      "present": [
+        "a bucket is accepted when both sides' checks pass",
+        "We chose $m$ and $2^{16}$ buckets for size on 1/64 of the GigaDB pair"
+      ],
+      "finding": [
+        "inference F12",
+        "provenance F5"
+      ],
+      "status": "applied"
+    },
+    {
+      "id": "R2-16",
+      "what": "C5/Fig 4A: silent loss by collision with the other party's k-mer; Fig 4A check hedged and power sums signed",
+      "file": "manuscript/paper.md",
+      "absent": [
+        "fails its check and is split and resent alone"
+      ],
+      "present": [
+        "cancels unseen, which the bound puts below 0.04 times per run here",
+        "fails its check, except with small probability, and is split",
+        "leaves the signed power sums of the difference"
+      ],
+      "finding": [
+        "completeness Gap 2",
+        "completeness Gap 3"
+      ],
+      "status": "applied"
+    },
+    {
+      "id": "R2-17",
+      "what": "C13 Discussion: size advantage claim removed",
+      "file": "manuscript/paper.md",
+      "absent": [
+        "where a one-round table spent 20.5",
+        "stayed exact at 20.8 when the difference"
+      ],
+      "present": [
+        "packed, km-peeler's table would be about as small"
+      ],
+      "finding": [
+        "reproduction F1",
+        "completeness Gap 1",
+        "inference F3"
+      ],
+      "status": "applied"
+    },
+    {
+      "id": "R2-18",
+      "what": "Fig 4B: markers only, x-axis trimmed, one-party label; caption 'identically'",
+      "file": "manuscript/figures/make_figures.py",
+      "absent": [
+        "label=\"power-sum sketch\")",
+        "bx.set_xlim(0.1, 1.5)"
+      ],
+      "present": [
+        "label=\"power-sum sketch, one party\"",
+        "bx.set_xlim(0.1, 1.25)"
+      ],
+      "finding": [
+        "sampling F4",
+        "statistics F3"
+      ],
+      "status": "applied"
+    },
+    {
+      "id": "R2-19",
+      "what": "C15: ledger rows corrected and a round-2 section added",
+      "file": "manuscript/ledger.md",
+      "absent": [
+        "either method (replaces 11.6% in the paper)",
+        "| about 1,250 | buckets resent in round 2"
+      ],
+      "present": [
+        "## Round 2 corrections to the set-sketch section",
+        "the sketch only; the table's trials share hash functions"
+      ],
+      "finding": [
+        "correctness F9",
+        "provenance F7",
+        "completeness Gap 5"
+      ],
+      "status": "applied"
+    }
+  ],
+  "findings": [
+    {
+      "lens": "correctness",
+      "id": "F1",
+      "flaw": "11.3 bytes per difference prices one of the two sketches the scored recovery used"
+    },
+    {
+      "lens": "correctness",
+      "id": "F2",
+      "flaw": "at D/8 both methods degrade about 1.85-fold, so 'because an overflowing bucket is resent alone' is unsupported"
+    },
+    {
+      "lens": "correctness",
+      "id": "F3",
+      "flaw": "'its smaller size comes from the second round' confounds the round with power-of-two doubling"
+    },
+    {
+      "lens": "correctness",
+      "id": "F4",
+      "flaw": "km-peeler's 30 seeds are consecutive integers and share two of three hash functions, so its trials are not independent"
+    },
+    {
+      "lens": "correctness",
+      "id": "F5",
+      "flaw": "'the GigaDB sketch ran before x and lambda were separated' describes a superseded run"
+    },
+    {
+      "lens": "correctness",
+      "id": "F6",
+      "flaw": "the k = 63 run was hashed in C, the 20,000-k-mer check covers other code, and its sizing rule is unstated"
+    },
+    {
+      "lens": "correctness",
+      "id": "F7",
+      "flaw": "the extended-syncmer row is a superseded 5-trial run in the wrong unit against unlike regimes, with deterministic misses"
+    },
+    {
+      "lens": "correctness",
+      "id": "F8",
+      "flaw": "'66 multiplications per element' is the build cost, not recovery"
+    },
+    {
+      "lens": "correctness",
+      "id": "F9",
+      "flaw": "ledger rows that do not say what the paper or their source says"
+    },
+    {
+      "lens": "sampling",
+      "id": "F1",
+      "flaw": "11.3 is the cheapest point of the power-of-two bucket sawtooth, and one pair fixes the phase"
+    },
+    {
+      "lens": "sampling",
+      "id": "F2",
+      "flaw": "'its smaller size comes from the second round' confounds the round with power-of-two doubling"
+    },
+    {
+      "lens": "sampling",
+      "id": "F3",
+      "flaw": "km-peeler's 30 seeds are consecutive integers and share two of three hash functions, so its trials are not independent"
+    },
+    {
+      "lens": "sampling",
+      "id": "F4",
+      "flaw": "the D/2^k estimate grid lands the table on its cheapest case (38.5) and Figure 4B joins step functions"
+    },
+    {
+      "lens": "sampling",
+      "id": "F5",
+      "flaw": "the k = 63 run was hashed in C, the 20,000-k-mer check covers other code, and its sizing rule is unstated"
+    },
+    {
+      "lens": "sampling",
+      "id": "F6",
+      "flaw": "the extended-syncmer row is a superseded 5-trial run in the wrong unit against unlike regimes, with deterministic misses"
+    },
+    {
+      "lens": "sampling",
+      "id": "F7",
+      "flaw": "'almost all from unplaced scaffolds' is asserted, not counted"
+    },
+    {
+      "lens": "statistics",
+      "id": "F1",
+      "flaw": "11.3 is the cheapest point of the power-of-two bucket sawtooth, and one pair fixes the phase"
+    },
+    {
+      "lens": "statistics",
+      "id": "F2",
+      "flaw": "'its smaller size comes from the second round' confounds the round with power-of-two doubling"
+    },
+    {
+      "lens": "statistics",
+      "id": "F3",
+      "flaw": "the D/2^k estimate grid lands the table on its cheapest case (38.5) and Figure 4B joins step functions"
+    },
+    {
+      "lens": "statistics",
+      "id": "F4",
+      "flaw": "km-peeler's 30 seeds are consecutive integers and share two of three hash functions, so its trials are not independent"
+    },
+    {
+      "lens": "statistics",
+      "id": "F5",
+      "flaw": "the k = 63 run was hashed in C, the 20,000-k-mer check covers other code, and its sizing rule is unstated"
+    },
+    {
+      "lens": "provenance",
+      "id": "F1",
+      "flaw": "'the GigaDB sketch ran before x and lambda were separated' describes a superseded run"
+    },
+    {
+      "lens": "provenance",
+      "id": "F2",
+      "flaw": "the k = 63 run was hashed in C, the 20,000-k-mer check covers other code, and its sizing rule is unstated"
+    },
+    {
+      "lens": "provenance",
+      "id": "F3",
+      "flaw": "km-peeler's 30 seeds are consecutive integers and share two of three hash functions, so its trials are not independent"
+    },
+    {
+      "lens": "provenance",
+      "id": "F4",
+      "flaw": "the extended-syncmer row is a superseded 5-trial run in the wrong unit against unlike regimes, with deterministic misses"
+    },
+    {
+      "lens": "provenance",
+      "id": "F5",
+      "flaw": "the sketch's size parameters were selected on the test pair, like the table's"
+    },
+    {
+      "lens": "provenance",
+      "id": "F6",
+      "flaw": "'66 multiplications per element' is the build cost, not recovery"
+    },
+    {
+      "lens": "provenance",
+      "id": "F7",
+      "flaw": "ledger rows that do not say what the paper or their source says"
+    },
+    {
+      "lens": "provenance",
+      "id": "F8",
+      "flaw": "the 2.4x crosses two benchmark programs the paper says not to compare"
+    },
+    {
+      "lens": "provenance",
+      "id": "F9",
+      "flaw": "'almost all from unplaced scaffolds' is asserted, not counted"
+    },
+    {
+      "lens": "inference",
+      "id": "F1",
+      "flaw": "'its smaller size comes from the second round' confounds the round with power-of-two doubling"
+    },
+    {
+      "lens": "inference",
+      "id": "F2",
+      "flaw": "11.3 is the cheapest point of the power-of-two bucket sawtooth, and one pair fixes the phase"
+    },
+    {
+      "lens": "inference",
+      "id": "F3",
+      "flaw": "at D/8 both methods degrade about 1.85-fold, so 'because an overflowing bucket is resent alone' is unsupported"
+    },
+    {
+      "lens": "inference",
+      "id": "F4",
+      "flaw": "an eightfold underestimate is imposed: set sizes give D to 0.05% on these pairs"
+    },
+    {
+      "lens": "inference",
+      "id": "F5",
+      "flaw": "'an IBLT that fails must be resent whole' is km-peeler's protocol, not a property of IBLTs"
+    },
+    {
+      "lens": "inference",
+      "id": "F6",
+      "flaw": "'needs no canonicalization' and 'saw 398 million' and 'values that must be added' overstate what the controls test"
+    },
+    {
+      "lens": "inference",
+      "id": "F7",
+      "flaw": "the 2.4x crosses two benchmark programs the paper says not to compare"
+    },
+    {
+      "lens": "inference",
+      "id": "F8",
+      "flaw": "'66 multiplications per element' is the build cost, not recovery"
+    },
+    {
+      "lens": "inference",
+      "id": "F9",
+      "flaw": "'the GigaDB sketch ran before x and lambda were separated' describes a superseded run"
+    },
+    {
+      "lens": "inference",
+      "id": "F10",
+      "flaw": "the extended-syncmer row is a superseded 5-trial run in the wrong unit against unlike regimes, with deterministic misses"
+    },
+    {
+      "lens": "inference",
+      "id": "F11",
+      "flaw": "'almost all from unplaced scaffolds' is asserted, not counted"
+    },
+    {
+      "lens": "inference",
+      "id": "F12",
+      "flaw": "each party checks with its own data, but acceptance is joint"
+    },
+    {
+      "lens": "prior-art",
+      "id": "F1",
+      "flaw": "'an IBLT that fails must be resent whole' is km-peeler's protocol, not a property of IBLTs"
+    },
+    {
+      "lens": "prior-art",
+      "id": "F2",
+      "flaw": "'its smaller size comes from the second round' confounds the round with power-of-two doubling"
+    },
+    {
+      "lens": "prior-art",
+      "id": "F3",
+      "flaw": "'k-mer table at 1.05 times the difference' is 1.283 cells per difference"
+    },
+    {
+      "lens": "prior-art",
+      "id": "F4",
+      "flaw": "the extended-syncmer row is a superseded 5-trial run in the wrong unit against unlike regimes, with deterministic misses"
+    },
+    {
+      "lens": "prior-art",
+      "id": "F5",
+      "flaw": "'needs no canonicalization' is a property of any strand-symmetric hash"
+    },
+    {
+      "lens": "prior-art",
+      "id": "F6",
+      "flaw": "'66 multiplications per element' is the build cost, not recovery"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F1",
+      "flaw": "11.3 bytes per difference prices one of the two sketches the scored recovery used"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F2",
+      "flaw": "'the GigaDB sketch ran before x and lambda were separated' describes a superseded run"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F3",
+      "flaw": "the k = 63 run was hashed in C, the 20,000-k-mer check covers other code, and its sizing rule is unstated"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F4",
+      "flaw": "'resent about 1,250' counts split buckets; about 2,500 halves were sent"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F5",
+      "flaw": "the extended-syncmer row is a superseded 5-trial run in the wrong unit against unlike regimes, with deterministic misses"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F6",
+      "flaw": "km-peeler's 30 seeds are consecutive integers and share two of three hash functions, so its trials are not independent"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F7",
+      "flaw": "'66 multiplications per element' is the build cost, not recovery"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F8",
+      "flaw": "'an IBLT that fails must be resent whole' is km-peeler's protocol, not a property of IBLTs"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F9",
+      "flaw": "the 9.5% bound and \"neither method returned a wrong difference\" reproduce"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F10",
+      "flaw": "'almost all from unplaced scaffolds' is asserted, not counted"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F11",
+      "flaw": "the 2.4x crosses two benchmark programs the paper says not to compare"
+    },
+    {
+      "lens": "reproduction",
+      "id": "F12",
+      "flaw": "Figure 4B matches the tables, and plotting one sketch run against the table's mean does not mislead"
+    }
+  ],
   "open": [
-    "New and unattacked (carried from round 1, dropped from round 2's scope): reseeded sampling statistics (1,583 long gaps at 151 loci, 147 in repeats, 4 outside with one gap each)"
+    "New and unattacked (carried from round 1, dropped from round 2's scope): reseeded sampling statistics (1,583 long gaps at 151 loci, 147 in repeats, 4 outside with one gap each)",
+    "New and unattacked: round 2's corrected set-sketch text (per-party 11.3, stored-encoding disclosure, 3.5% below a doubling, 1.84/1.87, 'about 20.5' doubling-IBLT arithmetic, 0.05% set-size estimate, below 0.04 silent losses per run, 89/110 vs 205/3.5 CPU-s) has been read by the cold auditor only",
+    "Owed run (laila): a sketch with a non-power-of-two bucket count or m = 88 at 2^16, to measure one-round cost off the power-of-two grid (adjudications L1 F3, L2 F2, L5 F1)",
+    "Owed run (laila): km-peeler with spaced or random seeds, and a held-out check of its 1.05 sizing, so the table's 30/30 bounds something (adjudications L2 F3, L4 F3)",
+    "Owed: packed encodings for both methods (61-bit entries; 62-bit key with a few counter bits, max |counter| measured in d.iblt) before any packed byte count is printed (adjudication-completeness Gap 1)",
+    "Owed: a one-way protocol (one sketch plus a short reply for the other side's differences) or a one-sided acceptance test, before any one-message GigaDB figure is published (adjudication L7 F1)",
+    "Owed run (laila): k = 63 at the stated 0.8m rule (2^9 buckets) through kp10c (adjudications L3 F5, L4 F2, L7 F3)",
+    "Owed run (laila): extended-syncmer rerun on the whole genome, and a trace of the same 7 misses in every trial (adjudications L1 F7, L4 F4, L7 F5)",
+    "Owed: per-record tally of the GigaDB difference (which scaffolds hold the 3,237,326 A-side k-mers) before any attribution to unplaced scaffolds (adjudications L2 F7, L4 F9, L7 F10)",
+    "Owed: a doubling or subtract-and-resend IBLT run, if the paper is to claim any underestimation advantage at D/8 (adjudications L6 F1, L7 F8)"
   ],
   "unchallenged": [],
   "discharges": {
@@ -237,7 +920,20 @@
       }
     ]
   },
-  "decisions": [],
+  "decisions": [
+    {
+      "id": "R2-D1",
+      "question": "Do the set-sketch comparisons with km-peeler (claims 4 and 5) stay in the abstract once 11.3 is one of two crossing messages and the table's 20.5 carries 8-byte counters?",
+      "positions": [
+        "(a) cut them to one uncompared sentence (each party sending 11.3 bytes per difference over two rounds), keeping the comparison in Results; applied by the runner as the concise reading of the writing rules",
+        "(b) keep both comparisons with every endorsed qualifier (per party, 22.5 in all; as km-peeler stores it, half of each cell a 64-bit counter; km-peeler's protocol only)"
+      ],
+      "owner": "user",
+      "status": "open",
+      "taken": "",
+      "note": "adjudication-completeness.md:66-69 names this the user's decision. (a) is in the body now; reverting to (b) is a wording change with no new run."
+    }
+  ],
   "sealed_blobs": {
     "attack-L1-correctness.md": {
       "blob": "367c665353af9f1d4ea790e845309d57d7eff2a8",
@@ -267,5 +963,42 @@
       "blob": "faec7b351fd2dcf828b25063f17b9abac65afd0e",
       "ref": "refs/round/seal/2/attack-L7-reproduction.md"
     }
+  },
+  "diversity": {
+    "attacks": 7,
+    "lenses": [
+      "correctness",
+      "sampling",
+      "statistics",
+      "provenance",
+      "inference",
+      "prior-art",
+      "reproduction"
+    ],
+    "mean_pairwise_similarity": 0.307,
+    "max_pairwise_similarity": 0.382,
+    "most_similar_pair": [
+      "attack-L1-correctness.md",
+      "attack-L4-provenance.md"
+    ],
+    "claims_answered": 15,
+    "claims_corroborated": 15,
+    "claims_single_voter": 0,
+    "claims_unanimous": 1,
+    "verdict_agreement": 0.067,
+    "findings_mode": "synthesized",
+    "findings_filed": 60,
+    "findings_per_attacker": {
+      "attack-L1-correctness.md": 9,
+      "attack-L2-sampling.md": 7,
+      "attack-L3-statistics.md": 5,
+      "attack-L4-provenance.md": 9,
+      "attack-L5-inference.md": 12,
+      "attack-L6-prior-art.md": 6,
+      "attack-L7-reproduction.md": 12
+    },
+    "distinct_flaws": 23,
+    "flaws_named_by_more_than_one_attacker": 14,
+    "duplicate_rate": 0.609
   }
 }
