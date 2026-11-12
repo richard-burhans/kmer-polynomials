@@ -185,7 +185,7 @@ cite results/kp10_vs_shibuya_2026-11-10_prior.md for 11.6%, 15/30, 26/30 and the
 
 Carried caveats, all in the paper: no "equal reliability" (30/30 bounds failure only below 9.5%); overflow detection is
 probabilistic; each KP-10 party recovers only its own differing k-mers, one IBLT listing gives both sides'; one genome,
-two pairs. The compute comparison (326 vs about 460 CPU-s) is not quoted: the results file says it is not a speed claim.
+two pairs. Since round 2 the paper quotes build, recovery and end-to-end CPU for both methods together (89/110 vs 205/3.5; 326 vs about 460), never one phase alone.
 
 ## Round 1's carried open items: what the 2026-11-11/12 results address (reports/adversarial_log.md, "Still open")
 
@@ -223,10 +223,10 @@ unexplained). No optional spaced-seed figure: the text already says what it woul
 | 11.3 per party, 22.5 in all | GigaDB as run: both parties send a sketch and acceptance is joint, so 11.3 is one of two crossing messages (2 × 36,481,232 / 3,238,101) | recon/kp10c.c decode (SA − SB, both checks); round-2 adjudication L7 F1 |
 | 17.3, one sketch | draft pair: all 7,931 differences on the draft's side (A∖B = 0), so one sketch suffices | results/kp10_vs_shibuya_2026-11-11/laila_b69c5c76/run.log:20; adjudication L7 F1 |
 | 16-byte cells, 8-byte counter; 1.28 cells per difference | km-peeler cell = int64 counter + 8-byte key sum; n = 1.05 D × c_3 = 1.222 → 66,477,002 / 16 / D = 1.283 | km-peeler ibflib.h, ibflib.c:121; adjudications L6 F3, completeness Gap 1 |
-| about the same / table smaller | sketch vs table if both were packed (61-bit entries; 62-bit key + few counter bits), GigaDB / draft; neither packing built | round-2 adjudication-completeness.md Gap 1 (arithmetic, not run) |
+| (not published) | packed sketch vs packed table: about equal per message on GigaDB, table smaller on the draft pair; arithmetic only, neither packing built; the paper says only that half the table's bytes are 64-bit counters | round-2 adjudication-completeness.md Gap 1 |
 | 3.5% | GigaDB D below the next power-of-two bucket boundary (D / (2^16 · 0.8m) = 0.965) | round-2 adjudications L2 F1, L3 F1 |
 | seeds 1001–1030, seed + 0, 1, 2 | km-peeler trial seeds and its derived hash functions; neighbouring trials share two | km-peeler ibflib.c:27–29; recon/kp10_vs_iblt_job.sh; adjudications L1 F4, L4 F3 |
-| 1/64 and 4/64 | slices of the GigaDB pair on which the sketch's m and 2^16 (then the 0.8m rule) and the table's 1.05 were chosen | round-2 adjudications L4 F5, L3 F4 |
+| 1/64 and 4/64 | slices of the GigaDB pair on which the sketch's m and 2^16 (then the 0.8m rule) and the table's 1.05 were chosen | results/kp10_vs_shibuya_2026-11-10_prior.md:47–54 (partition 0), :84–92 (partitions 0–3) |
 | 1.84 and 1.87 | each method's cost at D/8 over its own cost at D (20.76/11.27, 38.49/20.53) | tables/kp10_dest.tsv, tables/iblt_protocol.tsv |
 | about 20.5 | a doubling IBLT that sends only new cells, at D/8 (arithmetic, not run) | mitzenmacher_2017_multiparty-reconciliation; adjudication L6 F1 |
 | 0.05% | set sizes alone estimate D: (\|A\| − \|B\|) / D = 3,236,551 / 3,238,101 on GigaDB; exact on the draft pair | results/kp10_vs_shibuya_2026-11-11.md:36–37 |
@@ -234,7 +234,7 @@ unexplained). No optional spaced-seed figure: the text already says what it woul
 | about 50 per element | multiplications recovery adds per element on GigaDB (root flagging) | round-2 adjudication L7 F7 |
 | 89 / 110 vs 205 / 3.5 CPU-s; 326 vs about 460 | build per side / decode: KP-10 vs km-peeler text→build / diff + list; FASTA to recovered k-mers | results/kp10_vs_shibuya_2026-11-11.md section 5 |
 | 2.4 = 2.17 × 1.12 | universal hash vs Eisenstein, chained through each program's own batched ntHash (24.67/11.37 × 11.43/10.24) | results/paper_bench_2026-11-12.md; adjudication L4 F8 |
-| 2^10, at most m/2 | k = 63 bucket count and rule (load 20.9) | results/round1_owed_2026-11-11.md section 3; adjudications L3 F5, L4 F2 |
+| 2^10, mean 20.9 per bucket | k = 63 bucket count, from the true difference (mean load ≤ m/2) | results/round1_owed_2026-11-11.md section 3; adjudications L3 F5, L4 F2 |
 | 2^16 | GigaDB first-round buckets (65,536) | results/kp10_vs_shibuya_2026-11-11.md:118 |
 | about 3 percent | spurious k-mers relative to the true difference in Shibuya et al.'s tests (viral and simulated genomes) | library papers_md/summaries/shibuya_2022_genomic-reconciliation.md:29 |
 | 2,526 | halves sent in round 2 on GigaDB (1,263 splits) | results/kp10_vs_shibuya_2026-11-11.md:104; adjudication L7 F4 |

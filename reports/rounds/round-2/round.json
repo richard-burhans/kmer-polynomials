@@ -246,14 +246,14 @@
     },
     {
       "id": "R2-02",
-      "what": "C1/C6: one table message gives both sides; stored encodings disclosed, packing not built; draft pair one-sided",
+      "what": "C1/C6: one table message gives both sides; stored encodings disclosed, packing not built; draft pair one-sided; cold audit: totals stated (22.5 vs 20.5), per-message packing sentence cut",
       "file": "manuscript/paper.md",
       "absent": [
         "sized to succeed in 30 of 30 trials. Sized for a single round"
       ],
       "present": [
         "One message of km-peeler's table, 20.5 bytes per difference, gave both sides in one round",
-        "We built neither packing",
+        "11.3 bytes per difference over two rounds, 22.5 in all",
         "half of each a 64-bit counter",
         "all lie on the draft's side, so one sketch of 17.3 bytes per difference sufficed"
       ],
@@ -272,7 +272,7 @@
         "Sized for one round, it needed 21.7"
       ],
       "present": [
-        "This pair sits 3.5 percent below a doubling, the cheapest position",
+        "This pair sits 3.5 percent below a doubling",
         "power-sum sketch with twice the buckets"
       ],
       "finding": [
@@ -372,11 +372,12 @@
       "what": "C3: k=63 provenance (C hash, numpy reconcile) and its m/2 sizing",
       "file": "manuscript/paper.md",
       "absent": [
-        "The $k = 63$ run used a numpy prototype, whose hashes match the C code on 20,000 sampled k-mers"
+        "The $k = 63$ run used a numpy prototype, whose hashes match the C code on 20,000 sampled k-mers",
+        "at most $m/2$ true differences each"
       ],
       "present": [
         "The $k = 63$ run hashed with the same C code and reconciled in a numpy prototype",
-        "with buckets sized for at most $m/2$ differences each"
+        "an average of 20.9 differences per bucket"
       ],
       "finding": [
         "correctness F6",
@@ -546,10 +547,11 @@
       "file": "manuscript/paper.md",
       "absent": [
         "where a one-round table spent 20.5",
-        "stayed exact at 20.8 when the difference"
+        "stayed exact at 20.8 when the difference",
+        "packed, km-peeler's table would be about as small"
       ],
       "present": [
-        "packed, km-peeler's table would be about as small"
+        "with 22.5 bytes per difference in all, against 20.5 for one message of km-peeler's table"
       ],
       "finding": [
         "reproduction F1",
@@ -1000,5 +1002,15 @@
     "distinct_flaws": 23,
     "flaws_named_by_more_than_one_attacker": 14,
     "duplicate_rate": 0.609
+  },
+  "outcome": "The user's claims 4-6. Claim 4 (C1) NARROWED: the numbers reproduce, but 11.3 is one of two crossing sketches (joint acceptance; 22.5 in all) set against one km-peeler message whose 16-byte cells are half a 64-bit counter, and 11.3 is the cheapest point of a power-of-two sawtooth (3.5% below a doubling); the abstract keeps only the uncompared per-party figure. Claim 5 (C2) REFUTED as an abstract claim: the 'because' is unsupported on GigaDB (both methods degrade 1.84x and 1.87x; L1 upheld, L5 dissented on the level gap), the 38.5 is km-peeler's resend-whole protocol at its cheapest grid point, a doubling IBLT would total about 20.5 by arithmetic, and per party the sketch's 20.8 is 41.5 in all; cut from the abstract, scoped in Results. Claim 6 (C3) NARROWED: 'needs no canonicalization' stands (L5, L6 F5 overturned), but the k=63 run was hashed in C, not the numpy prototype the 20,000-k-mer check covered, with buckets averaging 20.9 (not the 0.8m rule), so its one round could not fail, and the forward-only control 'faced' rather than 'saw' 398M, in the numpy prototype. Also REFUTED: C11 (the stale x/lambda sentence), C7's 'independent random seeds' (km-peeler seeds 1001-1030 share two of three hash functions; 9.5% holds for the sketch only), C4's 'comes from the second round'. The completeness critic's decisive catch: km-peeler stores 8-byte counters.",
+  "landed": "Nineteen corrections verified by needle (scripts/round corrections 2: 19/19 APPLIED) in manuscript/paper.md, manuscript/figures/make_figures.py and manuscript/ledger.md (4a207c4 and the cold-audit fix commit); Figure 4 redrawn markers-only with a one-party label; Mitzenmacher-Pagh 2018 and Yang-Gilad-Alizadeh 2024 cited (CrossRef-verified); ledger round-2 section; PDF and README rebuilt; the cold audit's seven findings fixed (m/2 was a mean, totals 22.5 vs 20.5 stated, packing sentence cut, 'cheapest position' and 'every bucket overflowed' cut, ledger timing note, turbo clock note). Before brief: round 1's ten endorsed free repairs applied (0ec083f).",
+  "overturned": "L3 F1's 'about 15 on average' and 1.35x headline (prior-dependent model numbers); L3 F2's 1.26x/1.44x split; L2 F2's modelled 14.7 at m = 88 (owed a run); L5 F3's 'drop because' and L5 F4's 'drop claim 5' and 'table resized from counters ~23'; L7 F1's draft-pair 34.6 vs 20.5 (all differences on one side, one sketch suffices); L4 F4's 'listing incomplete' (ibltseq list exits 0); L4 F6's one-phase 110-vs-3.5 contrast; L4 F8's 'about 2.2' (2.4 = 2.17 x 1.12 holds); L6 F5 entirely; L6 F6's cubic-decoding mechanism; L2 F6's 'exact only when' and 'population explains it'; L1 F7's 'probable harness defect'; the critic's packed figures (10.36 fits the wrong table) and its section 3 framing; L7 F11's 'about twice'.",
+  "class": "Comparisons priced from the author's model of the protocol rather than from what crossed the wire: one of two sketches counted against a whole table message, a stored 64-bit counter compared with a field element, a power-of-two grid point reported as the method's cost, km-peeler's resend-whole protocol presented as a property of IBLTs, and the competitor's fixed consecutive seeds called independent. A second class repeats round 1: provenance sentences describing a superseded run (numpy, pre-separation seeds, the 20,000-k-mer check). The cold audit again caught a correction that installed a new error (a mean load written as a maximum) and a misleading per-message packing comparison.",
+  "survived": "C5's 9.5% bound for the sketch and 'neither method returned a wrong difference' (both reproduce); C9, Figure 4B's plotted values against the raw tables; C6's 17.3 vs 20.5 on the draft pair as a genuine one-message comparison; 'needs no canonicalization' as a statement of what ran; every number in the raw tables (summarizer reruns byte-identical); C14's 2.4 (chained 2.42); the round-1 free repairs (Ts/Tv strata reproduce from the json).",
+  "post_round_audit": {
+    "by": "cold auditor agent (did not see the round; read the diff and ran the gate before any round artifact)",
+    "date": "2026-11-12",
+    "evidence": "Gate green (make -C manuscript check; pytest 33 passed via uv); 19/19 corrections applied. Found: 'at most m/2 per bucket' false (a mean of 20.9); packed per-message comparison misleading once totals are 22.5 vs 20.5; ledger said the 326-vs-460 CPU comparison was unquoted; Discussion and Results disagreed on compute; four numbers traced only to adjudications; 'the cheapest position' and 'every sketch bucket overflowed' unsupported; 2.1-3.1 vs 2.2-3.0 GHz between paper and a results note. All fixed by cutting or by pointing the ledger at committed sources."
   }
 }

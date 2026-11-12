@@ -57,7 +57,7 @@ element:
 Laila is a Xeon Gold 6330, job 7fc2a700073c1f4f. Each method ran in its own counted process
 (`bench_e cs10.fa 31 1 only=<name>`). The same-job `__load_only__` baseline (7.00e9 cycles, 20.75e9 instructions)
 was subtracted, then divided by 736,547,799 input k-mers. Raw: `laila_counters_eisenstein_2026-11-10/`. The
-counter cycles are core clock cycles, which ran at about 2.2 to 3.0 GHz with turbo, not at the 2.0 GHz base frequency, so the ratios are what count (round-1 adjudication L4 F3).
+counter cycles are core clock cycles, which ran above the 2.0 GHz base frequency with turbo enabled, so the ratios are what count (round-1 adjudication L4 F3).
 
 | method | cycles/k-mer | instructions | IPC | vs batched ntHash |
 |---|---|---|---|---|
