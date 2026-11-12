@@ -12,7 +12,7 @@ different jobs must not be compared directly in the paper, because between-job v
 | 729 / 6,561 | distinct values of F + R on all 7-mers / 8-mers (Gaussian encoding) | results/kp7_symmetric_check_2026-11-10.txt:2, 7 |
 | 4,160 / 16,362 | distinct values of F·R, k = 7 / 8 (Gaussian) | results/kp7_symmetric_check_2026-11-10.txt:3, 8 |
 | 8,192 / 32,896 | distinct values of (F+λ)(R+λ), k = 7 / 8, equal to the number of double-stranded classes (Gaussian) | results/kp7_symmetric_check_2026-11-10.txt:1, 4, 6, 9 |
-| 8,192 / 32,896 | the same for the Eisenstein hash, with F injective on all 4^k k-mers | results/kp7_eisenstein_2026-11-10.md:33–34 |
+| 8,192 / 32,896 | the same for the Eisenstein hash, with F taking 4^k distinct values on the k-mers | results/kp7_eisenstein_2026-11-10.md:33–34 |
 | 2(k−1)/q ≈ 2.6 × 10⁻¹⁷ | collision bound of the Eisenstein symmetric hash per pair, k = 31, q = 2⁶¹ − 1 (corrected in round 1; was 2.7, which is 2k/q) | results/kp7_eisenstein_2026-11-10.md:29–30 |
 | 2(k−1)/p² ≈ 1.3 × 10⁻¹⁷ | collision bound of the CM31 (x complex) hash per pair, k = 31 (corrected in round 1; was 1.4) | results/kp7_m31_simd_2026-11-10.md (Method paragraph) |
 | 1 / 3 / 4 | squared distances in ℂ: transitions, A–C/G–T transversions, complements (Eisenstein) | results/kp7_eisenstein_2026-11-10.md:35–36 |
@@ -20,9 +20,9 @@ different jobs must not be compared directly in the paper, because between-job v
 | 16 KB | Eisenstein v2 table size (8-byte entries) | results/kp7_eisenstein_2026-11-10.md:22 |
 | θ = π/3 | Das, Nanda & Das 2017 fix θ explicitly | literature/eisenstein_wantlist.md (Resolution section) |
 | eq. (5), eq. (4) | Cristea 2002: the fourth-root map (up to sign) and the θ = π/4 point | library papers_md/summaries/cristea_2002_genomic-signals.md:25–30; literature/eisenstein_wantlist.md:103–104 |
-| rationale restates Cristea's | Das 2017's purine/pyrimidine + complements-sum-to-zero rationale, no distances, θ asserted | library papers_md/summaries/das_2017_trigonometric-mapping.md:23–27, 63–64 |
+| rationale echoes Cristea's eq. (3) remark | Das 2017's printed rationale ("purines -G and pyrimidines-C have identical imaginary" parts, false at θ = π/3) + complements sum to zero, no distances, θ asserted; Cristea's remark sits under his conjugation map (round-1 adjudication L4 F13) | library papers_md/summaries/das_2017_trigonometric-mapping.md:23–27, 63–64 |
 | sensitivity = specificity formula; 3 exon ranges | Das 2017 reliability caveats | library papers_md/summaries/das_2017_trigonometric-mapping.md:34–39, 48–51 |
-| unread | Das, Nanda & Das 2019 Genomics, the mapping's source cited by Gulocak 2022 | literature/eisenstein_wantlist.md:93–96 |
+| A and G swapped, complement is conjugation | Das, Nanda & Das 2019, the mapping's source cited by Gulocak 2022 | library papers_md/summaries/das_2019_adaptive-kaiser-window.md |
 | binary codes with transition-aware distance | Yu, Li & Yu 2018 (narrows the novelty claim) | library papers_md/summaries/yu_2018_encoding-survey.md:24–31 |
 
 ## Speed (laila, Xeon Gold 6330, cycles per input k-mer, cs10, k = 31)
@@ -89,8 +89,8 @@ Superseded (job 08653d9e6a7453a2, mean of 2, results/paper_bench_2026-11-11.md):
 
 | number | meaning | source |
 |---|---|---|
-| 1.58–1.67 (61–63% transitions); 1.85 (65%) between the two haplotypes outside repeats | Ts/Tv, cannabis NC_044378.1 alignments (strata quoted separately after round 1) | results/ideas_eisenstein_2026-11-10.md:23–26 |
-| 61.3–64.9% | fraction of substitutions that are transitions | results/ideas_eisenstein_2026-11-10.md:23–26 |
+| 1.58–1.67 (61–63% transitions) over all columns; 1.77–1.85 (64–65%) outside soft-masked repeats | Ts/Tv, cannabis NC_044378.1 lastz alignments, three pairs, the haplotype pair at shared cs10 positions (strata kept apart since round 1) | results/ideas_eisenstein_2026-11-10.md:23–26 |
+| 61.3–62.5% / 63.9–64.9% | fraction of substitutions that are transitions, all columns / outside soft-masked repeats | results/ideas_eisenstein/kp1_tstv_NC_044378.1.json (all_columns, uppercase_only) |
 
 ## Set reconciliation (KP-9, KP-10)
 
