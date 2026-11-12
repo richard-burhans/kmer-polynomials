@@ -1,0 +1,13 @@
+pair	dest_over_D	dest	bits0	rounds	splits	unresolved	bytes	bytes_per_difference	exact	wall_s_reconcile (8 threads)	src
+giga	0.125	404763	13	5	58602	0	67212256	20.76	True	70.8	run.log:40
+giga	0.25	809525	14	4	50410	0	62821344	19.40	True	53.7	run.log:41
+giga	0.5	1619051	15	3	34026	0	54039520	16.69	True	44.4	run.log:42
+draft	0.124953	991	5	4	142	0	169376	21.36	True	289.9	run.log:43
+giga	1	3238101	16	2	1263	0	36481232	11.27	True	27.5	run.log:44
+giga	2	6476202	17	1	0	0	70254592	21.70	True	21.8	run.log:45
+giga	4	12952404	18	1	0	0	140509184	43.39	True	16.9	run.log:46
+draft	0.250032	1983	6	3	110	0	152224	19.19	True	192.4	run.log:47
+draft	0.500063	3966	7	2	46	0	117920	14.87	True	92.9	run.log:52
+draft	1	7931	8	1	0	0	137216	17.30	True	35.7	run.log:53
+draft	2	15862	9	1	0	0	274432	34.60	True	31.0	run.log:54
+draft	4	31724	10	1	0	0	548864	69.20	True	22.2	run.log:58

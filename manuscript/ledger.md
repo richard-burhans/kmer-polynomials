@@ -85,23 +85,23 @@ results/paper_bench_2026-11-11.md, per-kept section).
 | number | meaning | source |
 |---|---|---|
 | 0.42 \|A\| | KOMPa vs KOMPb chr7 difference (Supplement) | results/kp9_kompa_kompb_2026-11-10.md (section 1 table) |
-| 3,238,101 | canonical 31-mer difference, Cannbio-2 vs Cannbio2_GigaDB | results/kp10_vs_shibuya_2026-11-11.md:21 |
-| 7,931 | difference, Cannbio-2 vs its draft | results/kp10_vs_shibuya_2026-11-11.md:20 |
-| 11.3 (11.27) | KP-10 bytes per difference, GigaDB pair, both fields | results/kp10_vs_shibuya_2026-11-11.md:60 |
-| 36.5 MB | KP-10 sketch size, GigaDB pair, both fields | results/kp10_vs_shibuya_2026-11-11.md:60 |
-| 137 KB, 1 round | KP-10 on the draft pair, exact | results/kp10_vs_shibuya_2026-11-11.md:62 |
-| 20.5 | km-peeler k-mer IBLT bytes per difference at 1.05·D, 30/30 | results/kp10_vs_shibuya_2026-11-11.md:91 |
-| 1.8× | IBLT / KP-10 bytes (20.5 / 11.27) | results/kp10_vs_shibuya_2026-11-11.md:94 |
-| 15/30 | IBLT successes at n = D | results/kp10_vs_shibuya_2026-11-11.md:90 |
-| 26/30 (4 of 30 failed), D = 488 | IBLT on draft partitions 0–3 at 1.05·D | results/kp10_vs_shibuya_2026-11-11.md:92 |
-| 4.2 | extended-syncmer IBLT bytes per true k-mer difference | results/kp10_vs_shibuya_2026-11-11.md:102 |
-| 2.7× | KP-10 / extended syncmers (11.27 / 4.2) | results/kp10_vs_shibuya_2026-11-11.md:102 |
-| 1,986,807 spurious (61% of the true difference D, 38% of the returned set), 7 missed | extended-syncmer recovery, GigaDB | results/kp10_vs_shibuya_2026-11-11.md:105 |
-| 48,293,748 | differing extended syncmers, draft vs final | results/kp10_vs_shibuya_2026-11-11.md:110 |
-| m + c = 66 | field multiplications per element | results/kp10_vs_shibuya_2026-11-11.md:8 |
-| 6.9 million (6,913,034) | elements in the mergeability test | results/kp10_vs_shibuya_2026-11-11.md:68 |
-| 20,000 | sampled k-mers on which the numpy hashes equal the C | results/kp10_vs_shibuya_2026-11-11.md:33 |
-| 3 rounds, 257 splits | draft Gaussian run before the Padé index fix (771092b) | results/kp10_vs_shibuya_2026-11-11.md:73–74 |
+| 3,238,101 | canonical 31-mer difference, Cannbio-2 vs Cannbio2_GigaDB (KMC 3.2.4 agrees element for element) | results/kp10_vs_shibuya_2026-11-11.md:36 |
+| 7,931 | difference, Cannbio-2 vs its draft (KMC 3.2.4 agrees element for element) | results/kp10_vs_shibuya_2026-11-11.md:37 |
+| 11.3 (11.27) | KP-10 bytes per difference, GigaDB pair, 2 rounds: Eisenstein in C, as written (mean 11.26 over 30 OS seeds); both fields in the numpy run | results/kp10_vs_shibuya_2026-11-11.md:104–105; results/kp10_vs_shibuya_2026-11-10_prior.md:60–61 |
+| 36.5 MB | KP-10 sketch size, GigaDB pair (36,481,232 B in C; 36,494,096 B in the numpy run) | results/kp10_vs_shibuya_2026-11-11.md:104; results/kp10_vs_shibuya_2026-11-10_prior.md:60 |
+| 137 KB, 1 round | KP-10 on the draft pair, exact (137,216 B, 30/30 OS seeds) | results/kp10_vs_shibuya_2026-11-11.md:111 |
+| 20.5 | km-peeler k-mer IBLT bytes per difference at 1.05·D, 30/30, whole genome, one round (20.53) | results/kp10_vs_shibuya_2026-11-11.md:108 |
+| 1.8× | IBLT / KP-10 bytes (20.53 / 11.27): a two-round sketch against a one-round table | results/kp10_vs_shibuya_2026-11-11.md:10, :121 |
+| 15/30 | SUPERSEDED: IBLT successes at n = D on partition 0 (numpy-era run); whole genome now 18/30 | results/kp10_vs_shibuya_2026-11-10_prior.md:90; results/kp10_vs_shibuya_2026-11-11.md:109 |
+| 26/30 (4 of 30 failed), D = 488 | SUPERSEDED: IBLT on draft partitions 0–3 at 1.05·D; whole genome (D = 7,931) now 30/30 | results/kp10_vs_shibuya_2026-11-10_prior.md:92; results/kp10_vs_shibuya_2026-11-11.md:112 |
+| 4.2 | extended-syncmer IBLT bytes per true k-mer difference | results/kp10_vs_shibuya_2026-11-10_prior.md:102 |
+| 2.7× | KP-10 / extended syncmers (11.27 / 4.2) | results/kp10_vs_shibuya_2026-11-10_prior.md:102 |
+| 1,986,807 spurious (61% of the true difference D, 38% of the returned set), 7 missed | extended-syncmer recovery, GigaDB | results/kp10_vs_shibuya_2026-11-10_prior.md:105 |
+| 48,293,748 | differing extended syncmers, draft vs final | results/kp10_vs_shibuya_2026-11-10_prior.md:110 |
+| m + c = 66 | field multiplications per element | results/kp10_vs_shibuya_2026-11-10_prior.md:8 |
+| 6.9 million (6,913,034) | elements in the mergeability test | results/kp10_vs_shibuya_2026-11-10_prior.md:68 |
+| 20,000 | sampled k-mers on which the numpy hashes equal the C | results/kp10_vs_shibuya_2026-11-10_prior.md:33 |
+| 3 rounds, 257 splits | draft Gaussian run before the Padé index fix (771092b) | results/kp10_vs_shibuya_2026-11-10_prior.md:73–74 |
 
 ## Supplement: negative and niche results
 
@@ -134,9 +134,17 @@ a numpy prototype and is not timed on laila; the paper quotes its times only as 
 | 45.36% | draft bases on flipped contigs | results/round1_owed_2026-11-11/draft_orientation.json |
 | 1,583 gaps / 151 loci / 147 in repeats / 8–96 per seed | long gaps after reseeding x and λ independently | commit 0db2b6e |
 | 16,512 | reversal orbits of 8-mers (F·R merges further, 16,362) | commit ec9ec66 |
-| 38% / 61% | spurious share of the returned set / of D | results/kp10_vs_shibuya_2026-11-11.md:105 |
-| 1,275 | GigaDB buckets resent in round 2 | results/kp10_vs_shibuya_2026-11-11.md |
+| 38% / 61% | spurious share of the returned set / of D | results/kp10_vs_shibuya_2026-11-10_prior.md:105 |
+| 1,275 | GigaDB buckets resent in round 2 (numpy run; 1,263 in the C run, mean 1,254 over 30 OS seeds) | results/kp10_vs_shibuya_2026-11-10_prior.md:60; results/kp10_vs_shibuya_2026-11-11.md:104–105 |
 | 11.6% | exact 95% upper bound on IBLT failure from 30/30 | adjudication-L2.md (round 1) |
+| 9.5% | one-sided 95% Clopper–Pearson bound from 30/30, both KP-10 (30 OS seeds) and the IBLT (30 seeds), whole genome | results/kp10_vs_shibuya_2026-11-11.md:116 |
+| 21.70 | KP-10 B/diff sized for one round (2^17 buckets), GigaDB, one fixed-seed run | results/kp10_vs_shibuya_2026-11-11.md:107 |
+| 0/30, 18/30 | IBLT successes at n = 0.95·D and n = D, GigaDB, whole genome | results/kp10_vs_shibuya_2026-11-11.md:109–110 |
+| 17.30 vs 20.54 | KP-10 (1 round, 30/30) vs IBLT at 1.05·D (30/30), draft pair B/diff | results/kp10_vs_shibuya_2026-11-11.md:111–112 |
+| 20.76 vs 38.49 | B/diff from D_est = D/8, GigaDB: KP-10 (5 rounds) vs IBLT resend-at-double (4 rounds, 10/10) | results/kp10_vs_shibuya_2026-11-11.md:141 |
+| 326 vs about 460 CPU-s | FASTA to recovered k-mers, GigaDB, one thread, laila: KP-10 (kp10c) vs km-peeler (+ canonical sets) | results/kp10_vs_shibuya_2026-11-11.md (section 5) |
+| 110.3 vs 3.5 CPU-s | decode: KP-10 vs IBLT diff + list, GigaDB | results/kp10_vs_shibuya_2026-11-11.md (section 5) |
+| 1 of 37 | KP-10 runs with an S collision (shared classes, difference still exact), GigaDB | results/kp10_vs_shibuya_2026-11-11.md (section 3, hash collisions) |
 | 2.5 pairs | expected colliding pairs allowed by the bound over 442M classes | adjudication-L3.md (round 1) |
 | 2.2–3.0 GHz | measured core clock in job 08653d9e6a7453a2 (turbo on) | adjudication-L4.md (round 1) |
 | 8 vs 3 | multiplications per k-mer, fourth-root vs Eisenstein | adjudication-L1.md F8 (round 1) |

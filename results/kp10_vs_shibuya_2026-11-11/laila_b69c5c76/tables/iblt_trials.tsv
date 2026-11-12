@@ -1,0 +1,11 @@
+pair	ratio_n_over_D	n	trials	list_exit_0	exact_raw	exact_cancelled	failure_upper95 (cancelled)	undetected_failures	trials_with_both_side_listings	median_bytes	bytes_per_difference	src
+draft	1.0	7931	30	8	8	8	0.860	0	0	155162	19.56	run.log:250-292 (30 lines)
+draft	1.05	8328	30	30	30	30	0.095	0	0	162938	20.54	run.log:293-337 (30 lines)
+draft	1.25	9914	30	30	30	30	0.095	0	0	193946	24.45	run.log:321-352 (30 lines)
+draft	1.5	11897	30	30	30	30	0.095	0	0	232730	29.34	run.log:353-382 (30 lines)
+draft	2.0	15862	30	30	30	30	0.095	0	0	310250	39.12	run.log:383-412 (30 lines)
+giga	0.95	3076196	30	0	0	0	1.000	0	0	60145898	18.57	run.log:132-171 (30 lines)
+giga	1.0	3238101	30	18	18	18	0.566	0	0	63311450	19.55	run.log:113-252 (30 lines)
+giga	1.05	3400006	30	30	30	30	0.095	0	0	66477002	20.53	run.log:129-191 (30 lines)
+giga	1.1	3561911	30	30	30	30	0.095	0	0	69642602	21.51	run.log:189-227 (30 lines)
+giga	1.25	4047626	30	30	30	30	0.095	0	0	79139258	24.44	run.log:228-267 (30 lines)

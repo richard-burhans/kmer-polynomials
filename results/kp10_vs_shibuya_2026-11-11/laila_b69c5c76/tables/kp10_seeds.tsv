@@ -1,0 +1,3 @@
+pair	runs	exact	failure_upper95	runs_finished_in_1_round	bytes_range	mean_bytes_per_difference	bytes_round1	round1_bytes_per_difference	max_rounds	mean_splits	missing_total	spurious_total	src
+giga	30	30	0.095	0	36415840-36547696	11.26	35127296	10.85	2	1253.9666666666667	0	0	run.log:48-105 (30 lines)
+draft	30	30	0.095	30	137216-137216	17.30	137216	17.30	1	0.0	0	0	run.log:61-111 (30 lines)

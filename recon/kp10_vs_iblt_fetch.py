@@ -57,18 +57,28 @@ def main() -> int:
     if cleanup:
         hist = job.get("history_id")
         if hist:
-            name = requests.get(f"{base}/api/histories/{hist}", headers=h, timeout=60).json().get("name", "")
-            if name.startswith("laila-perf ") and name.endswith("(delete me)"):
+            hrec = requests.get(f"{base}/api/histories/{hist}", headers=h, timeout=60).json()
+            name = hrec.get("name", "")
+            if hrec.get("purged"):
+                print(f"  history {hist} already purged")
+            elif name.startswith("laila-perf ") and name.endswith("(delete me)"):
                 r = requests.delete(f"{base}/api/histories/{hist}", headers=h, json={"purge": True}, timeout=120)
                 print(f"  purged history {hist} ({name}): HTTP {r.status_code}")
             else:
                 print(f"  history {hist} is not a laila-perf scratch history ({name!r}); left alone")
-        tid = job.get("tool_uuid") or (job.get("tool_id") if str(job.get("tool_id", "")).count("-") == 4 else None)
-        if tid:
-            r = requests.delete(f"{base}/api/unprivileged_tools/{tid}", headers=h, timeout=60)
-            print(f"  deleted UDT {tid}: HTTP {r.status_code}")
+        # The job record names the UDT only by its tool id, which every laila_perf run shares, and other agents may
+        # have live ones. Take the UDT of that id created in the 60 s BEFORE this job (the driver registers it just
+        # before submitting), and only if exactly one matches.
+        from datetime import datetime
+        jt = datetime.fromisoformat(job["create_time"])
+        tools = requests.get(f"{base}/api/unprivileged_tools", headers=h, timeout=60).json()
+        mine = [t for t in tools if t.get("tool_id") == job.get("tool_id")
+                and 0 <= (jt - datetime.fromisoformat(t["create_time"])).total_seconds() <= 60]
+        if len(mine) == 1:
+            r = requests.delete(f"{base}/api/unprivileged_tools/{mine[0]['uuid']}", headers=h, timeout=60)
+            print(f"  deleted UDT {mine[0]['uuid']} (created {mine[0]['create_time']}): HTTP {r.status_code}")
         else:
-            print(f"  no UDT uuid on the job record (tool_id {job.get('tool_id')!r}); list it with GET /api/unprivileged_tools")
+            print(f"  {len(mine)} UDTs of id {job.get('tool_id')!r} created in the 60 s before the job; none deleted")
     return 0 if state == "ok" else 1
 
 

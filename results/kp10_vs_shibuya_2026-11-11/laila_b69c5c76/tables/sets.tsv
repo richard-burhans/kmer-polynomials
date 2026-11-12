@@ -1,0 +1,4 @@
+genome	records	bases	kmer_windows	distinct_canonical_31mers	kset_wall_s	kset_user_s	src
+Cannbio-2	147	914397426	913232567	442151894	41.481	35.503	run.log:14
+Cannbio2_GigaDB	10	904080375	902939455	438915343	38.913	33.258	run.log:15
+Cannbio-2_draft	8477	913523049	913268739	442159825	41.603	35.653	run.log:16

@@ -1,0 +1,9 @@
+pair	dest_over_D	reps	mean_rounds	max_rounds	exact_cancelled	mean_total_bytes	bytes_per_difference	src
+draft	0.125	10	4.00	4	10	305768	38.55	run.log:426-461 (10 lines)
+draft	0.25	10	3.00	3	10	285294	35.97	run.log:442-473 (10 lines)
+draft	0.5	10	2.00	2	10	244468	30.82	run.log:462-471 (10 lines)
+draft	1	10	1.00	1	10	162938	20.54	run.log:450-460 (10 lines)
+giga	0.125	10	4.00	4	10	124644728	38.49	run.log:477-491 (10 lines)
+giga	0.25	10	3.00	3	10	116334990	35.93	run.log:474-493 (10 lines)
+giga	0.5	10	2.00	2	10	99715540	30.79	run.log:424-441 (10 lines)
+giga	1	10	1.00	1	10	66477002	20.53	run.log:414-423 (10 lines)

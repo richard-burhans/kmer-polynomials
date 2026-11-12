@@ -1,0 +1,3 @@
+pair	kp10_runs	canonical_A	canonical_B	runs_where_distinct_S_values_differ_from_canonical_counts	src
+giga	37	442151894	438915343	1	run.log:28-105 (37 lines)
+draft	37	442151894	442159825	0	run.log:36-111 (37 lines)

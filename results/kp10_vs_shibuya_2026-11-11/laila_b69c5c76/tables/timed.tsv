@@ -1,0 +1,5 @@
+pair	method	bytes_one_side	bytes_per_difference	rounds	exact	cpu_s_sketch_one_side (KP-10: hash+dedup+power sums; IBLT: text|build)	cpu_s_decode (KP-10: all rounds, both sides; IBLT: diff+list)	cpu_s_back_to_kmers	pcount_wall_s_whole_run	pcount_cpu_s_whole_run	src
+giga	KP-10 (kp10c, 1 thread)	36481232	11.27	2	True	6.9+33.0+49.5=89.4	110.3	36.7	326.104	326.0	run.log:28; counters.tsv:27 (run_2)
+draft	KP-10 (kp10c, 1 thread)	137216	17.30	1	True	6.7+33.3+48.9=88.8	67.2	25.1	271.466	271.4	run.log:36; counters.tsv:55 (run_4)
+giga	km-peeler IBLT, n = 1.05 D, seed 1 (1 thread)	66477002	20.53	1	True	204.8 (text alone 10.3)	3.5	-	287.366	389.9	run.log:30; counters.tsv:41 (run_3)
+draft	km-peeler IBLT, n = 1.05 D, seed 1 (1 thread)	162938	20.54	1	True	146.3 (text alone 10.5)	0.0	-	197.675	277.0	run.log:38; counters.tsv:69 (run_5)

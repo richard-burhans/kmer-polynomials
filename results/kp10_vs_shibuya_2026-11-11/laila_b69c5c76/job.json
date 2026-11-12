@@ -1,0 +1,25 @@
+{
+ "host": "laila",
+ "job": "b69c5c76857f93ac",
+ "state": "ok",
+ "exit_code": 0,
+ "tool_id": "laila-perf",
+ "create_time": "2026-11-11T18:48:43.964872",
+ "update_time": "2026-11-11T22:49:26.307703",
+ "history_id": "06cf32e9aa8aad75",
+ "tool_stderr": "",
+ "fetched_by": "recon/kp10_vs_iblt_fetch.py (the laila_perf driver died before fetching)",
+ "metrics": {
+  "container_id": "docker://docker.io/library/gcc:14.2.0",
+  "container_type": "singularity",
+  "galaxy_slots": "16.0000000",
+  "start_epoch": "1794422925.0000000",
+  "end_epoch": "1794437366.0000000",
+  "runtime_seconds": "14441.0000000"
+ },
+ "fetch_errors": {
+  "counters": "HTTP 400",
+  "log": "HTTP 400",
+  "meta": "HTTP 400"
+ }
+}
