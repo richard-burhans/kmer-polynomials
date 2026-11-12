@@ -1,0 +1,19 @@
+{
+ "host": "laila",
+ "job": "c84a395ba84b315e",
+ "state": "ok",
+ "handler": "handler_1",
+ "exit_code": 0,
+ "driver_wait_s": 1655.4,
+ "tool_stderr": "",
+ "metrics": {
+  "container_id": "docker://docker.io/library/gcc:14.2.0",
+  "container_type": "singularity",
+  "galaxy_slots": "16.0000000",
+  "start_epoch": "1794487711.0000000",
+  "end_epoch": "1794489367.0000000",
+  "runtime_seconds": "1656.0000000"
+ },
+ "image": "docker.io/library/gcc:14.2.0",
+ "udt": "laila-perf 0.1.0"
+}
