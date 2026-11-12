@@ -12,6 +12,17 @@
  *                                                 only = A\B, "j,KMER" = B\A) against the truth, raw and with k-mers
  *                                                 listed on both sides cancelled
  *
+ *   kmtools tally K diff.u64 < genome.fa         per record (round-3 run 8): name, length, valid k-mer windows, windows
+ *                                                 whose canonical k-mer is in diff, distinct diff k-mers in the record,
+ *                                                 and those first seen in it (records in file order); TSV on stdout
+ *   kmtools extscore K amb.u64 bma.u64 miss.txt < list   km-peeler's extended-syncmer recovery (their Section 3.5,
+ *                                                 as recon/kmpeeler_run.py ext): canonical k-mers of the "i," and "j,"
+ *                                                 sequences, those in both dropped, scored against amb U bma; the
+ *                                                 missed k-mers are written to miss.txt (one per line)
+ *   kmtools locate K kmers.txt < genome.fa       every occurrence of the given k-mers (either strand): k-mer, record,
+ *                                                 0-based position, strand, and the 20 bases on either side (lowercase
+ *                                                 and non-ACGT as written); TSV on stdout
+ *
  * Every subcommand prints one JSON line on stderr (listscore and same: stdout). Inputs are native uint64. */
 #define _GNU_SOURCE
 #include <inttypes.h>
@@ -254,6 +265,191 @@ static int cmd_listscore(unsigned k, const char* pamb, const char* pbma)
   return 0;
 }
 
+/* ---------- round 3 (2026-11-12) ---------- */
+static long find(const u64* v, size_t n, u64 x)
+{
+  size_t lo = 0, hi = n;
+  while (lo < hi) { size_t m = (lo + hi) / 2; if (v[m] < x) lo = m + 1; else hi = m; }
+  return lo < n && v[lo] == x ? (long)lo : -1;
+}
+
+typedef struct { char* name; char* s; size_t n, cap; } record;
+/* next FASTA record from stdin into r (sequence as written); 0 at EOF */
+static int next_record(record* r, char** line, size_t* lcap, int* have_header)
+{
+  ssize_t l;
+  r->n = 0;
+  if (!*have_header) {
+    while ((l = getline(line, lcap, stdin)) >= 0 && (*line)[0] != '>') {}
+    if (l < 0) return 0;
+  }
+  free(r->name);
+  r->name = strdup(*line + 1);
+  r->name[strcspn(r->name, " \t\r\n")] = 0;
+  *have_header = 0;
+  while ((l = getline(line, lcap, stdin)) >= 0) {
+    if ((*line)[0] == '>') { *have_header = 1; break; }
+    while (l && ((*line)[l - 1] == '\n' || (*line)[l - 1] == '\r')) l--;
+    if (r->n + (size_t)l + 1 > r->cap) {
+      while (r->n + (size_t)l + 1 > r->cap) r->cap = r->cap ? 2 * r->cap : 1 << 20;
+      r->s = realloc(r->s, r->cap);
+      if (!r->s) { perror("realloc"); exit(1); }
+    }
+    memcpy(r->s + r->n, *line, (size_t)l);
+    r->n += (size_t)l;
+  }
+  return 1;
+}
+
+static int cmd_tally(unsigned k, const char* pdiff)
+{
+  code_init();
+  size_t nd;
+  u64* d = read_u64(pdiff, &nd);
+  unsigned* seen_in = calloc(nd + 1, sizeof(unsigned)); /* 1 + last record index that held it; 0 = never */
+  const u64 mask = k == 32 ? ~0ULL : ((1ULL << (2 * k)) - 1);
+  const int top = 2 * (int)(k - 1);
+  record r = {0};
+  char* line = NULL;
+  size_t lcap = 0;
+  int hh = 0;
+  unsigned rec = 0;
+  u64 tot_first = 0;
+  printf("record\tindex\tlength\twindows\twindows_in_diff\tdistinct_in_diff\tdistinct_first_seen\n");
+  while (next_record(&r, &line, &lcap, &hh)) {
+    rec++;
+    u64 f = 0, rv = 0, run = 0, win = 0, hit = 0, dist = 0, first = 0;
+    for (size_t i = 0; i < r.n; i++) {
+      int c = CODE[(unsigned char)r.s[i]];
+      if (c < 0) { run = 0; continue; }
+      f = ((f << 2) | (u64)c) & mask;
+      rv = (rv >> 2) | ((u64)(3 - c) << top);
+      if (++run < k) continue;
+      win++;
+      long j = find(d, nd, f < rv ? f : rv);
+      if (j < 0) continue;
+      hit++;
+      if (seen_in[j] != rec) { if (!seen_in[j]) first++; dist++; seen_in[j] = rec; }
+    }
+    tot_first += first;
+    printf("%s\t%u\t%zu\t%" PRIu64 "\t%" PRIu64 "\t%" PRIu64 "\t%" PRIu64 "\n", r.name, rec, r.n, win, hit, dist, first);
+  }
+  fprintf(stderr, "{\"cmd\": \"tally\", \"k\": %u, \"diff\": \"%s\", \"diff_size\": %zu, \"records\": %u, "
+          "\"diff_kmers_found\": %" PRIu64 "}\n", k, pdiff, nd, rec, tot_first);
+  return 0;
+}
+
+static int cmd_extscore(unsigned k, const char* pamb, const char* pbma, const char* pmiss)
+{
+  code_init();
+  size_t namb, nbma;
+  u64 *amb = read_u64(pamb, &namb), *bma = read_u64(pbma, &nbma);
+  const u64 mask = k == 32 ? ~0ULL : ((1ULL << (2 * k)) - 1);
+  const int top = 2 * (int)(k - 1);
+  vec ka = {0}, kb = {0};
+  char* line = NULL;
+  size_t lcap = 0;
+  ssize_t l;
+  u64 li = 0, lj = 0, bad = 0;
+  while ((l = getline(&line, &lcap, stdin)) >= 0) {
+    if (l < 3 || line[1] != ',' || (line[0] != 'i' && line[0] != 'j')) { bad++; continue; }
+    vec* o = line[0] == 'i' ? &ka : &kb;
+    if (line[0] == 'i') li++; else lj++;
+    u64 f = 0, rv = 0, run = 0;
+    for (ssize_t i = 2; i < l; i++) {
+      int c = CODE[(unsigned char)line[i]];
+      if (line[i] == '\n' || line[i] == '\r') break;
+      if (c < 0) { run = 0; continue; }
+      f = ((f << 2) | (u64)c) & mask;
+      rv = (rv >> 2) | ((u64)(3 - c) << top);
+      if (++run >= k) push(o, f < rv ? f : rv);
+    }
+  }
+  size_t na = sort_unique(ka.v, ka.n), nb = sort_unique(kb.v, kb.n);
+  u64* ga = malloc(na * 8 + 8);
+  u64* gb = malloc(nb * 8 + 8);
+  size_t nga = minus(ka.v, na, kb.v, nb, ga), ngb = minus(kb.v, nb, ka.v, na, gb);
+  /* got = ga U gb (disjoint), truth = amb U bma (disjoint) */
+  vec got = {0}, want = {0};
+  for (size_t i = 0; i < nga; i++) push(&got, ga[i]);
+  for (size_t i = 0; i < ngb; i++) push(&got, gb[i]);
+  for (size_t i = 0; i < namb; i++) push(&want, amb[i]);
+  for (size_t i = 0; i < nbma; i++) push(&want, bma[i]);
+  size_t ng = sort_unique(got.v, got.n), nw = sort_unique(want.v, want.n);
+  u64* miss = malloc(nw * 8 + 8);
+  size_t nmiss = minus(want.v, nw, got.v, ng, miss), nspur = minus(got.v, ng, want.v, nw, NULL);
+  FILE* mf = fopen(pmiss, "w");
+  if (!mf) { perror(pmiss); return 1; }
+  static const char ACGT[4] = {'A', 'C', 'G', 'T'};
+  size_t miss_a = 0;
+  for (size_t i = 0; i < nmiss; i++) {
+    char s[33];
+    for (unsigned t = 0; t < k; t++) s[t] = ACGT[(miss[i] >> (2 * (k - 1 - t))) & 3];
+    s[k] = 0;
+    int in_a = find(amb, namb, miss[i]) >= 0;
+    miss_a += (size_t)in_a;
+    fprintf(mf, "%s\t%s\n", s, in_a ? "A_minus_B" : "B_minus_A");
+  }
+  fclose(mf);
+  printf("{\"cmd\": \"extscore\", \"k\": %u, \"listed_i\": %" PRIu64 ", \"listed_j\": %" PRIu64 ", \"unparsed\": %" PRIu64
+         ", \"kmers_i\": %zu, \"kmers_j\": %zu, \"kmers_in_both\": %zu, \"recovered\": %zu, \"truth\": %zu, "
+         "\"missing\": %zu, \"missing_A_minus_B\": %zu, \"spurious\": %zu}\n", k, li, lj, bad, na, nb, na - nga, ng, nw,
+         nmiss, miss_a, nspur);
+  return 0;
+}
+
+static int cmd_locate(unsigned k, const char* pk)
+{
+  code_init();
+  FILE* f = fopen(pk, "r");
+  if (!f) { perror(pk); return 1; }
+  vec q = {0};
+  char* line = NULL;
+  size_t lcap = 0;
+  ssize_t l;
+  while ((l = getline(&line, &lcap, f)) >= 0) {
+    if (l < (ssize_t)k) continue;
+    u64 c = 0;
+    int ok = 1;
+    for (unsigned t = 0; t < k; t++) {
+      int v = CODE[(unsigned char)line[t]];
+      if (v < 0) { ok = 0; break; }
+      c = (c << 2) | (u64)v;
+    }
+    if (ok) push(&q, c);
+  }
+  fclose(f);
+  size_t nq = sort_unique(q.v, q.n);
+  const u64 mask = k == 32 ? ~0ULL : ((1ULL << (2 * k)) - 1);
+  const int top = 2 * (int)(k - 1);
+  static const char ACGT[4] = {'A', 'C', 'G', 'T'};
+  record r = {0};
+  int hh = 0;
+  u64 hits = 0;
+  printf("kmer\trecord\tpos\tstrand\tleft20\twindow\tright20\n");
+  while (next_record(&r, &line, &lcap, &hh)) {
+    u64 fw = 0, rv = 0, run = 0;
+    for (size_t i = 0; i < r.n; i++) {
+      int c = CODE[(unsigned char)r.s[i]];
+      if (c < 0) { run = 0; continue; }
+      fw = ((fw << 2) | (u64)c) & mask;
+      rv = (rv >> 2) | ((u64)(3 - c) << top);
+      if (++run < k) continue;
+      u64 can = fw < rv ? fw : rv;
+      if (find(q.v, nq, can) < 0) continue;
+      hits++;
+      size_t pos = i + 1 - k, lo = pos >= 20 ? pos - 20 : 0, hi = i + 1 + 20 < r.n ? i + 1 + 20 : r.n;
+      char ks[33];
+      for (unsigned t = 0; t < k; t++) ks[t] = ACGT[(can >> (2 * (k - 1 - t))) & 3];
+      ks[k] = 0;
+      printf("%s\t%s\t%zu\t%c\t%.*s\t%.*s\t%.*s\n", ks, r.name, pos, can == fw ? '+' : '-', (int)(pos - lo), r.s + lo,
+             (int)k, r.s + pos, (int)(hi - i - 1), r.s + i + 1);
+    }
+  }
+  fprintf(stderr, "{\"cmd\": \"locate\", \"k\": %u, \"queries\": %zu, \"occurrences\": %" PRIu64 "}\n", k, nq, hits);
+  return 0;
+}
+
 int main(int argc, char** argv)
 {
   if (argc >= 3 && !strcmp(argv[1], "kset")) return cmd_kset((unsigned)atoi(argv[2]));
@@ -262,6 +458,10 @@ int main(int argc, char** argv)
   if (argc >= 3 && !strcmp(argv[1], "kmcdump")) return cmd_kmcdump((unsigned)atoi(argv[2]));
   if (argc >= 4 && !strcmp(argv[1], "same")) return cmd_same(argv[2], argv[3]);
   if (argc >= 5 && !strcmp(argv[1], "listscore")) return cmd_listscore((unsigned)atoi(argv[2]), argv[3], argv[4]);
-  fprintf(stderr, "usage: kmtools kset K | text K | diff A B AMB BMA | kmcdump K | same X Y | listscore K AMB BMA\n");
+  if (argc >= 4 && !strcmp(argv[1], "tally")) return cmd_tally((unsigned)atoi(argv[2]), argv[3]);
+  if (argc >= 6 && !strcmp(argv[1], "extscore")) return cmd_extscore((unsigned)atoi(argv[2]), argv[3], argv[4], argv[5]);
+  if (argc >= 4 && !strcmp(argv[1], "locate")) return cmd_locate((unsigned)atoi(argv[2]), argv[3]);
+  fprintf(stderr, "usage: kmtools kset K | text K | diff A B AMB BMA | kmcdump K | same X Y | listscore K AMB BMA | "
+                  "tally K DIFF | extscore K AMB BMA MISS | locate K KMERS\n");
   return 2;
 }
