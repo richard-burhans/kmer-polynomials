@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Turn one hash/run_kept_laila.sh job into cycles per input k-mer, per-kept costs and speed-ups.
 
-    python3 hash/kept_table.py <laila_perf results dir>      markdown on stdout
+    python3 hash/kept_table.py <laila_perf results dir> [--min]      markdown on stdout
+
+--min uses each method's MINIMUM over repeats (and the minimum load run) instead of the median (and the mean load):
+interference from other jobs on laila only ADDS cycles, so on a busy host the minimum is the cross-check.
 
 Reads run.log (each run_N's command and its RESULT line) and counters.tsv. The mean of the job's __load_only__ runs
 is subtracted from every method run, and the result divided by the input k-mer count. A method's value is the MEDIAN
@@ -59,6 +62,7 @@ def parse(method: str):
 
 def main() -> int:
     d = pathlib.Path(sys.argv[1])
+    use_min = "--min" in sys.argv[2:]
     cmds, results, ctr, check_ok = load(d)
     errors = []
     if not check_ok:
@@ -69,7 +73,8 @@ def main() -> int:
         if m:
             by[m.group(1)].append(run)
     load_runs = by.pop("__load_only__")
-    base = {ev: statistics.mean(ctr[r][ev] for r in load_runs) for ev in ("cycles", "instructions", "branch-misses")}
+    agg_load = min if use_min else statistics.mean
+    base = {ev: agg_load(ctr[r][ev] for r in load_runs) for ev in ("cycles", "instructions", "branch-misses")}
     load_spread = (max(ctr[r]["cycles"] for r in load_runs) - min(ctr[r]["cycles"] for r in load_runs)) / base["cycles"]
     rows = {}
     for meth, runs in by.items():
@@ -79,7 +84,7 @@ def main() -> int:
         cyc = [(ctr[r]["cycles"] - base["cycles"]) / KMERS for r in runs]
         ins = [(ctr[r]["instructions"] - base["instructions"]) / KMERS for r in runs]
         bm = [(ctr[r]["branch-misses"] - base["branch-misses"]) / KMERS for r in runs]
-        med = statistics.median(cyc)
+        med = min(cyc) if use_min else statistics.median(cyc)
         rows[meth] = dict(cyc=med, spread=(max(cyc) - min(cyc)) / med, n=len(runs), ins=statistics.median(ins),
                           bm=statistics.median(bm), kept=results[runs[0]][1], xor=results[runs[0]][2])
     # shared gate and families
@@ -100,7 +105,7 @@ def main() -> int:
         return 1
 
     nt = rows["ntHash batched"]["cyc"]
-    print(f"Load baseline: {len(load_runs)} runs, mean {base['cycles']:.4g} cycles, spread {load_spread:.1%}. "
+    print(f"Statistic: {'MINIMUM' if use_min else 'median'} over repeats. Load baseline: {len(load_runs)} runs, {'min' if use_min else 'mean'} {base['cycles']:.4g} cycles, spread {load_spread:.1%}. "
           f"Batched ntHash: {nt:.2f} cycles per k-mer.\n")
     print("| method | kept | cycles/k-mer | spread | n | instructions/k-mer | branch misses/k-mer | vs batched ntHash |")
     print("|---|---|---|---|---|---|---|---|")

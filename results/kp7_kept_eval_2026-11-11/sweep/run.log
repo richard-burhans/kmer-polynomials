@@ -1,0 +1,703 @@
+gcc -O3 -march=native -Wall -Wextra -c kp7kept.c -o kp7kept.o
+gcc -O3 -march=native -Wall -Wextra -c kp7e.c -o kp7e.o
+gcc -O3 -march=native -Wall -Wextra -c kp7pack.c -o kp7pack.o
+gcc -O3 -march=native -Wall -Wextra -c kp7.c -o kp7.o
+gcc -O3 -march=native -Wall -Wextra -c kp7m31.c -o kp7m31.o
+g++ -O3 -march=native -std=c++17 bench_kept.cpp kp7kept.o kp7e.o kp7pack.o kp7.o kp7m31.o -o bench_kept
+g++ -O3 -march=native -Wall -Wextra -std=c++17 test_kp7kept.cpp kp7kept.o kp7e.o kp7pack.o kp7.o kp7m31.o -o test_kp7kept
+29880 sampler configurations checked, 59017 reference k-mers kept in total
+all kp7kept tests passed
+kept CONST mutant killed: FAILED: 5760
+kept PLANE mutant killed: FAILED: 2880
+=== run_1: cd kp/hash && ./bench_kept "$DATA" 31 "only=__load_only__"
+loaded 221 records, 876147649 bases; k=31
+RESULT __load_only__	kept=0	xor=0000000000000000	secs=0.000
+=== run_2: cd kp/hash && ./bench_kept "$DATA" 31 "only=ntHash batched"
+loaded 221 records, 876147649 bases; k=31
+RESULT ntHash batched	kept=736547799	xor=bdf82b9251d10d45	secs=3.328
+=== run_3: cd kp/hash && ./bench_kept "$DATA" 31 "only=uh all"
+loaded 221 records, 876147649 bases; k=31
+RESULT uh all	kept=736547799	xor=f5c2c2b833b531ed	secs=2.937
+=== run_4: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 bat 0"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 bat 0	kept=0	xor=0000000000000000	secs=2.499
+=== run_5: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.486
+=== run_6: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.447
+=== run_7: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=2.908
+=== run_8: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=4.291
+=== run_9: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 br 0"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 br 0	kept=0	xor=0000000000000000	secs=2.392
+=== run_10: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 br 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 br 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.302
+=== run_11: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 br 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 br 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.440
+=== run_12: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-m 8 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-m 8 bat 1/16	kept=45892012	xor=15d3148c1b940635	secs=3.183
+=== run_13: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-m 8 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-m 8 bat 1/4	kept=183856486	xor=16218aa7b778d6ec	secs=6.192
+=== run_14: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 8 bat 0"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 8 bat 0	kept=0	xor=0000000000000000	secs=2.328
+=== run_15: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 8 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 8 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.307
+=== run_16: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 8 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 8 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.379
+=== run_17: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 8 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 8 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=2.725
+=== run_18: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 8 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 8 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=4.122
+=== run_19: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 11 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 11 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.466
+=== run_20: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 11 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 11 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.411
+=== run_21: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 11 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 11 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=2.824
+=== run_22: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 11 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 11 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=4.306
+=== run_23: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 13 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 13 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.416
+=== run_24: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 13 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 13 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.434
+=== run_25: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 13 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 13 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=2.780
+=== run_26: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 13 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 13 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=4.100
+=== run_27: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 16 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 16 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.495
+=== run_28: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 16 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 16 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.554
+=== run_29: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 16 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 16 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=2.945
+=== run_30: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 16 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 16 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=4.402
+=== run_31: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 11 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 11 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.421
+=== run_32: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 11 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 11 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.438
+=== run_33: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 11 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 11 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=3.091
+=== run_34: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 11 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 11 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=5.264
+=== run_35: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 16 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 16 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.443
+=== run_36: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 16 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 16 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.948
+=== run_37: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 16 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 16 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=3.186
+=== run_38: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 16 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 16 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=6.246
+=== run_39: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 11 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 11 bat 1/1000	kept=745710	xor=a63cfbca881101c0	secs=2.768
+=== run_40: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 11 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 11 bat 1/100	kept=7382545	xor=4e133451a8254160	secs=2.812
+=== run_41: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 11 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 11 bat 1/16	kept=45892012	xor=0bb0aaf97662ac5a	secs=3.989
+=== run_42: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 11 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 11 bat 1/4	kept=183856486	xor=2599893b294cbdd4	secs=6.652
+=== run_43: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 16 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 16 bat 1/1000	kept=745710	xor=a63cfbca881101c0	secs=2.649
+=== run_44: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 16 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 16 bat 1/100	kept=7382545	xor=4e133451a8254160	secs=2.790
+=== run_45: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 16 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 16 bat 1/16	kept=45892012	xor=0bb0aaf97662ac5a	secs=3.352
+=== run_46: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 16 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 16 bat 1/4	kept=183856486	xor=2599893b294cbdd4	secs=5.929
+=== run_47: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 11 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 11 bat 1/1000	kept=745710	xor=31d375a7b2b83f6d	secs=2.528
+=== run_48: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 11 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 11 bat 1/100	kept=7382545	xor=1d4f76af229e49b8	secs=2.806
+=== run_49: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 11 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 11 bat 1/16	kept=45892012	xor=15d3148c1b940635	secs=3.546
+=== run_50: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 11 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 11 bat 1/4	kept=183856486	xor=16218aa7b778d6ec	secs=6.355
+=== run_51: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 16 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 16 bat 1/1000	kept=745710	xor=31d375a7b2b83f6d	secs=2.495
+=== run_52: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 16 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 16 bat 1/100	kept=7382545	xor=1d4f76af229e49b8	secs=2.605
+=== run_53: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 16 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 16 bat 1/16	kept=45892012	xor=15d3148c1b940635	secs=3.636
+=== run_54: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 16 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 16 bat 1/4	kept=183856486	xor=16218aa7b778d6ec	secs=6.872
+=== run_55: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 8 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 8 bat 1/1000	kept=745710	xor=1eab054eac30f63f	secs=2.407
+=== run_56: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 8 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 8 bat 1/100	kept=7382545	xor=915e5230737cb4a9	secs=2.519
+=== run_57: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 8 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 8 bat 1/16	kept=45892012	xor=2964ff8d6205035e	secs=2.807
+=== run_58: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 8 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 8 bat 1/4	kept=183856486	xor=1cfe1b42e7d998c9	secs=3.961
+=== run_59: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 16 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 16 bat 1/1000	kept=745710	xor=1eab054eac30f63f	secs=2.609
+=== run_60: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 16 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 16 bat 1/100	kept=7382545	xor=915e5230737cb4a9	secs=2.672
+=== run_61: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 16 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 16 bat 1/16	kept=45892012	xor=2964ff8d6205035e	secs=3.111
+=== run_62: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 16 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 16 bat 1/4	kept=183856486	xor=1cfe1b42e7d998c9	secs=3.971
+=== run_63: cd kp/hash && ./bench_kept "$DATA" 31 "only=uh 0 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT uh 0 bat 1/1000	kept=745710	xor=09a96efb2bd4d1da	secs=2.864
+=== run_64: cd kp/hash && ./bench_kept "$DATA" 31 "only=uh 0 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT uh 0 bat 1/100	kept=7382545	xor=7615f777c375e583	secs=2.497
+=== run_65: cd kp/hash && ./bench_kept "$DATA" 31 "only=uh 0 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT uh 0 bat 1/16	kept=45892012	xor=52244e9bf4cc509c	secs=2.632
+=== run_66: cd kp/hash && ./bench_kept "$DATA" 31 "only=uh 0 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT uh 0 bat 1/4	kept=183856486	xor=2c89ffb399b47a14	secs=2.892
+=== run_67: cd kp/hash && ./bench_kept "$DATA" 31 "only=__load_only__"
+loaded 221 records, 876147649 bases; k=31
+RESULT __load_only__	kept=0	xor=0000000000000000	secs=0.000
+=== run_68: cd kp/hash && ./bench_kept "$DATA" 31 "only=uh 0 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT uh 0 bat 1/4	kept=183856486	xor=2c89ffb399b47a14	secs=3.036
+=== run_69: cd kp/hash && ./bench_kept "$DATA" 31 "only=uh 0 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT uh 0 bat 1/16	kept=45892012	xor=52244e9bf4cc509c	secs=2.686
+=== run_70: cd kp/hash && ./bench_kept "$DATA" 31 "only=uh 0 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT uh 0 bat 1/100	kept=7382545	xor=7615f777c375e583	secs=2.666
+=== run_71: cd kp/hash && ./bench_kept "$DATA" 31 "only=uh 0 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT uh 0 bat 1/1000	kept=745710	xor=09a96efb2bd4d1da	secs=2.514
+=== run_72: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 16 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 16 bat 1/4	kept=183856486	xor=1cfe1b42e7d998c9	secs=4.036
+=== run_73: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 16 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 16 bat 1/16	kept=45892012	xor=2964ff8d6205035e	secs=2.999
+=== run_74: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 16 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 16 bat 1/100	kept=7382545	xor=915e5230737cb4a9	secs=2.583
+=== run_75: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 16 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 16 bat 1/1000	kept=745710	xor=1eab054eac30f63f	secs=2.508
+=== run_76: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 8 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 8 bat 1/4	kept=183856486	xor=1cfe1b42e7d998c9	secs=3.833
+=== run_77: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 8 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 8 bat 1/16	kept=45892012	xor=2964ff8d6205035e	secs=4.671
+=== run_78: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 8 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 8 bat 1/100	kept=7382545	xor=915e5230737cb4a9	secs=2.630
+=== run_79: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 8 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 8 bat 1/1000	kept=745710	xor=1eab054eac30f63f	secs=2.806
+=== run_80: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 16 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 16 bat 1/4	kept=183856486	xor=16218aa7b778d6ec	secs=6.711
+=== run_81: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 16 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 16 bat 1/16	kept=45892012	xor=15d3148c1b940635	secs=3.739
+=== run_82: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 16 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 16 bat 1/100	kept=7382545	xor=1d4f76af229e49b8	secs=2.748
+=== run_83: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 16 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 16 bat 1/1000	kept=745710	xor=31d375a7b2b83f6d	secs=2.608
+=== run_84: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 11 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 11 bat 1/4	kept=183856486	xor=16218aa7b778d6ec	secs=6.502
+=== run_85: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 11 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 11 bat 1/16	kept=45892012	xor=15d3148c1b940635	secs=3.618
+=== run_86: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 11 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 11 bat 1/100	kept=7382545	xor=1d4f76af229e49b8	secs=2.828
+=== run_87: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 11 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 11 bat 1/1000	kept=745710	xor=31d375a7b2b83f6d	secs=2.586
+=== run_88: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 16 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 16 bat 1/4	kept=183856486	xor=2599893b294cbdd4	secs=5.914
+=== run_89: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 16 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 16 bat 1/16	kept=45892012	xor=0bb0aaf97662ac5a	secs=3.578
+=== run_90: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 16 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 16 bat 1/100	kept=7382545	xor=4e133451a8254160	secs=2.817
+=== run_91: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 16 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 16 bat 1/1000	kept=745710	xor=a63cfbca881101c0	secs=2.645
+=== run_92: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 11 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 11 bat 1/4	kept=183856486	xor=2599893b294cbdd4	secs=6.034
+=== run_93: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 11 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 11 bat 1/16	kept=45892012	xor=0bb0aaf97662ac5a	secs=3.530
+=== run_94: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 11 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 11 bat 1/100	kept=7382545	xor=4e133451a8254160	secs=2.723
+=== run_95: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 11 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 11 bat 1/1000	kept=745710	xor=a63cfbca881101c0	secs=2.721
+=== run_96: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 16 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 16 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=5.837
+=== run_97: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 16 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 16 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=3.221
+=== run_98: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 16 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 16 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.556
+=== run_99: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 16 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 16 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=3.473
+=== run_100: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 11 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 11 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=5.408
+=== run_101: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 11 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 11 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=3.155
+=== run_102: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 11 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 11 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.604
+=== run_103: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 11 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 11 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.447
+=== run_104: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 16 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 16 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=4.401
+=== run_105: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 16 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 16 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=3.612
+=== run_106: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 16 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 16 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.837
+=== run_107: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 16 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 16 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.667
+=== run_108: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 13 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 13 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=4.009
+=== run_109: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 13 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 13 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=2.922
+=== run_110: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 13 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 13 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.598
+=== run_111: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 13 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 13 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.522
+=== run_112: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 11 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 11 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=4.236
+=== run_113: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 11 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 11 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=2.822
+=== run_114: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 11 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 11 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.502
+=== run_115: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 11 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 11 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.544
+=== run_116: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 8 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 8 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=4.176
+=== run_117: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 8 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 8 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=2.794
+=== run_118: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 8 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 8 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.427
+=== run_119: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 8 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 8 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.397
+=== run_120: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 8 bat 0"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 8 bat 0	kept=0	xor=0000000000000000	secs=2.424
+=== run_121: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-m 8 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-m 8 bat 1/4	kept=183856486	xor=16218aa7b778d6ec	secs=6.049
+=== run_122: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-m 8 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-m 8 bat 1/16	kept=45892012	xor=15d3148c1b940635	secs=3.323
+=== run_123: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 br 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 br 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.526
+=== run_124: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 br 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 br 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.318
+=== run_125: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 br 0"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 br 0	kept=0	xor=0000000000000000	secs=2.492
+=== run_126: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=4.102
+=== run_127: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=2.865
+=== run_128: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.543
+=== run_129: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.505
+=== run_130: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 bat 0"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 bat 0	kept=0	xor=0000000000000000	secs=2.505
+=== run_131: cd kp/hash && ./bench_kept "$DATA" 31 "only=uh all"
+loaded 221 records, 876147649 bases; k=31
+RESULT uh all	kept=736547799	xor=f5c2c2b833b531ed	secs=2.920
+=== run_132: cd kp/hash && ./bench_kept "$DATA" 31 "only=ntHash batched"
+loaded 221 records, 876147649 bases; k=31
+RESULT ntHash batched	kept=736547799	xor=bdf82b9251d10d45	secs=3.597
+=== run_133: cd kp/hash && ./bench_kept "$DATA" 31 "only=__load_only__"
+loaded 221 records, 876147649 bases; k=31
+RESULT __load_only__	kept=0	xor=0000000000000000	secs=0.000
+=== run_134: cd kp/hash && ./bench_kept "$DATA" 31 "only=ntHash batched"
+loaded 221 records, 876147649 bases; k=31
+RESULT ntHash batched	kept=736547799	xor=bdf82b9251d10d45	secs=3.481
+=== run_135: cd kp/hash && ./bench_kept "$DATA" 31 "only=uh all"
+loaded 221 records, 876147649 bases; k=31
+RESULT uh all	kept=736547799	xor=f5c2c2b833b531ed	secs=3.123
+=== run_136: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 bat 0"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 bat 0	kept=0	xor=0000000000000000	secs=2.524
+=== run_137: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.424
+=== run_138: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.498
+=== run_139: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=2.901
+=== run_140: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=3.908
+=== run_141: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 br 0"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 br 0	kept=0	xor=0000000000000000	secs=2.328
+=== run_142: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 br 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 br 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.419
+=== run_143: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-e 8 br 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-e 8 br 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.437
+=== run_144: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-m 8 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-m 8 bat 1/16	kept=45892012	xor=15d3148c1b940635	secs=3.382
+=== run_145: cd kp/hash && ./bench_kept "$DATA" 31 "only=lib-m 8 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT lib-m 8 bat 1/4	kept=183856486	xor=16218aa7b778d6ec	secs=6.028
+=== run_146: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 8 bat 0"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 8 bat 0	kept=0	xor=0000000000000000	secs=2.471
+=== run_147: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 8 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 8 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.494
+=== run_148: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 8 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 8 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.572
+=== run_149: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 8 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 8 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=2.972
+=== run_150: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 8 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 8 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=4.218
+=== run_151: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 11 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 11 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.406
+=== run_152: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 11 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 11 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.669
+=== run_153: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 11 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 11 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=3.066
+=== run_154: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 11 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 11 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=4.194
+=== run_155: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 13 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 13 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.498
+=== run_156: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 13 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 13 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.642
+=== run_157: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 13 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 13 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=2.996
+=== run_158: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 13 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 13 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=4.442
+=== run_159: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 16 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 16 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.938
+=== run_160: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 16 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 16 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.627
+=== run_161: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 16 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 16 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=2.947
+=== run_162: cd kp/hash && ./bench_kept "$DATA" 31 "only=ec 16 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT ec 16 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=4.308
+=== run_163: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 11 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 11 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.535
+=== run_164: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 11 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 11 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.633
+=== run_165: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 11 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 11 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=3.096
+=== run_166: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 11 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 11 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=5.284
+=== run_167: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 16 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 16 bat 1/1000	kept=745710	xor=06a589df78b2d850	secs=2.518
+=== run_168: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 16 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 16 bat 1/100	kept=7382545	xor=066b4f155ea901a5	secs=2.627
+=== run_169: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 16 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 16 bat 1/16	kept=45892012	xor=0629794f4d08d077	secs=3.250
+=== run_170: cd kp/hash && ./bench_kept "$DATA" 31 "only=ep 16 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT ep 16 bat 1/4	kept=183856486	xor=0e7b77376969f7eb	secs=5.583
+=== run_171: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 11 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 11 bat 1/1000	kept=745710	xor=a63cfbca881101c0	secs=2.569
+=== run_172: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 11 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 11 bat 1/100	kept=7382545	xor=4e133451a8254160	secs=2.805
+=== run_173: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 11 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 11 bat 1/16	kept=45892012	xor=0bb0aaf97662ac5a	secs=3.483
+=== run_174: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 11 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 11 bat 1/4	kept=183856486	xor=2599893b294cbdd4	secs=5.612
+=== run_175: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 16 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 16 bat 1/1000	kept=745710	xor=a63cfbca881101c0	secs=2.563
+=== run_176: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 16 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 16 bat 1/100	kept=7382545	xor=4e133451a8254160	secs=2.676
+=== run_177: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 16 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 16 bat 1/16	kept=45892012	xor=0bb0aaf97662ac5a	secs=3.356
+=== run_178: cd kp/hash && ./bench_kept "$DATA" 31 "only=gp 16 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT gp 16 bat 1/4	kept=183856486	xor=2599893b294cbdd4	secs=6.044
+=== run_179: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 11 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 11 bat 1/1000	kept=745710	xor=31d375a7b2b83f6d	secs=2.566
+=== run_180: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 11 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 11 bat 1/100	kept=7382545	xor=1d4f76af229e49b8	secs=2.708
+=== run_181: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 11 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 11 bat 1/16	kept=45892012	xor=15d3148c1b940635	secs=3.465
+=== run_182: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 11 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 11 bat 1/4	kept=183856486	xor=16218aa7b778d6ec	secs=6.300
+=== run_183: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 16 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 16 bat 1/1000	kept=745710	xor=31d375a7b2b83f6d	secs=3.513
+=== run_184: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 16 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 16 bat 1/100	kept=7382545	xor=1d4f76af229e49b8	secs=2.732
+=== run_185: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 16 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 16 bat 1/16	kept=45892012	xor=15d3148c1b940635	secs=3.587
+=== run_186: cd kp/hash && ./bench_kept "$DATA" 31 "only=mp 16 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT mp 16 bat 1/4	kept=183856486	xor=16218aa7b778d6ec	secs=6.723
+=== run_187: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 8 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 8 bat 1/1000	kept=745710	xor=1eab054eac30f63f	secs=2.721
+=== run_188: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 8 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 8 bat 1/100	kept=7382545	xor=915e5230737cb4a9	secs=2.582
+=== run_189: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 8 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 8 bat 1/16	kept=45892012	xor=2964ff8d6205035e	secs=2.996
+=== run_190: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 8 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 8 bat 1/4	kept=183856486	xor=1cfe1b42e7d998c9	secs=3.878
+=== run_191: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 16 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 16 bat 1/1000	kept=745710	xor=1eab054eac30f63f	secs=2.556
+=== run_192: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 16 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 16 bat 1/100	kept=7382545	xor=915e5230737cb4a9	secs=2.594
+=== run_193: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 16 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 16 bat 1/16	kept=45892012	xor=2964ff8d6205035e	secs=2.816
+=== run_194: cd kp/hash && ./bench_kept "$DATA" 31 "only=nt 16 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT nt 16 bat 1/4	kept=183856486	xor=1cfe1b42e7d998c9	secs=3.981
+=== run_195: cd kp/hash && ./bench_kept "$DATA" 31 "only=uh 0 bat 1/1000"
+loaded 221 records, 876147649 bases; k=31
+RESULT uh 0 bat 1/1000	kept=745710	xor=09a96efb2bd4d1da	secs=2.588
+=== run_196: cd kp/hash && ./bench_kept "$DATA" 31 "only=uh 0 bat 1/100"
+loaded 221 records, 876147649 bases; k=31
+RESULT uh 0 bat 1/100	kept=7382545	xor=7615f777c375e583	secs=2.517
+=== run_197: cd kp/hash && ./bench_kept "$DATA" 31 "only=uh 0 bat 1/16"
+loaded 221 records, 876147649 bases; k=31
+RESULT uh 0 bat 1/16	kept=45892012	xor=52244e9bf4cc509c	secs=2.606
+=== run_198: cd kp/hash && ./bench_kept "$DATA" 31 "only=uh 0 bat 1/4"
+loaded 221 records, 876147649 bases; k=31
+RESULT uh 0 bat 1/4	kept=183856486	xor=2c89ffb399b47a14	secs=4.183
+=== run_199: cd kp/hash && ./bench_kept "$DATA" 31 "only=__load_only__"
+loaded 221 records, 876147649 bases; k=31
+RESULT __load_only__	kept=0	xor=0000000000000000	secs=0.000
+=== run_200: cd kp/hash && ./bench_kept "$DATA" 31 check
+loaded 221 records, 876147649 bases; k=31
+  1/16: reference kept 45892012 (Eisenstein xor 0629794f4d08d077)
+  lib-e 8 br 1/16          kept 45892012 xor 0629794f4d08d077: identical
+  ec 8 bat 1/16            kept 45892012 xor 0629794f4d08d077: identical
+  ec 8 br 1/16             kept 45892012 xor 0629794f4d08d077: identical
+  ec 10 bat 1/16           kept 45892012 xor 0629794f4d08d077: identical
+  ec 10 br 1/16            kept 45892012 xor 0629794f4d08d077: identical
+  ec 11 bat 1/16           kept 45892012 xor 0629794f4d08d077: identical
+  ec 11 br 1/16            kept 45892012 xor 0629794f4d08d077: identical
+  ec 12 bat 1/16           kept 45892012 xor 0629794f4d08d077: identical
+  ec 12 br 1/16            kept 45892012 xor 0629794f4d08d077: identical
+  ec 13 bat 1/16           kept 45892012 xor 0629794f4d08d077: identical
+  ec 13 br 1/16            kept 45892012 xor 0629794f4d08d077: identical
+  ec 16 bat 1/16           kept 45892012 xor 0629794f4d08d077: identical
+  ec 16 br 1/16            kept 45892012 xor 0629794f4d08d077: identical
+  ep 8 bat 1/16            kept 45892012 xor 0629794f4d08d077: identical
+  ep 8 br 1/16             kept 45892012 xor 0629794f4d08d077: identical
+  ep 11 bat 1/16           kept 45892012 xor 0629794f4d08d077: identical
+  ep 11 br 1/16            kept 45892012 xor 0629794f4d08d077: identical
+  ep 16 bat 1/16           kept 45892012 xor 0629794f4d08d077: identical
+  ep 16 br 1/16            kept 45892012 xor 0629794f4d08d077: identical
+  gp 8 bat 1/16            kept 45892012 xor 0bb0aaf97662ac5a: identical
+  gp 8 br 1/16             kept 45892012 xor 0bb0aaf97662ac5a: identical
+  gp 11 bat 1/16           kept 45892012 xor 0bb0aaf97662ac5a: identical
+  gp 11 br 1/16            kept 45892012 xor 0bb0aaf97662ac5a: identical
+  gp 16 bat 1/16           kept 45892012 xor 0bb0aaf97662ac5a: identical
+  gp 16 br 1/16            kept 45892012 xor 0bb0aaf97662ac5a: identical
+  mp 8 bat 1/16            kept 45892012 xor 15d3148c1b940635: identical
+  mp 8 br 1/16             kept 45892012 xor 15d3148c1b940635: identical
+  mp 11 bat 1/16           kept 45892012 xor 15d3148c1b940635: identical
+  mp 11 br 1/16            kept 45892012 xor 15d3148c1b940635: identical
+  mp 16 bat 1/16           kept 45892012 xor 15d3148c1b940635: identical
+  mp 16 br 1/16            kept 45892012 xor 15d3148c1b940635: identical
+  mc 8 bat 1/16            kept 45892012 xor 15d3148c1b940635: identical
+  mc 8 br 1/16             kept 45892012 xor 15d3148c1b940635: identical
+  mc 11 bat 1/16           kept 45892012 xor 15d3148c1b940635: identical
+  mc 11 br 1/16            kept 45892012 xor 15d3148c1b940635: identical
+  mc 16 bat 1/16           kept 45892012 xor 15d3148c1b940635: identical
+  mc 16 br 1/16            kept 45892012 xor 15d3148c1b940635: identical
+  lib-m 8 bat 1/16         kept 45892012 xor 15d3148c1b940635: identical
+  lib-m 8 br 1/16          kept 45892012 xor 15d3148c1b940635: identical
+  nt 8 bat 1/16            kept 45892012 xor 2964ff8d6205035e: identical
+  nt 8 br 1/16             kept 45892012 xor 2964ff8d6205035e: identical
+  nt 16 bat 1/16           kept 45892012 xor 2964ff8d6205035e: identical
+  nt 16 br 1/16            kept 45892012 xor 2964ff8d6205035e: identical
+  uh 0 bat 1/16            kept 45892012 xor 52244e9bf4cc509c: identical
+  uh 0 br 1/16             kept 45892012 xor 52244e9bf4cc509c: identical
+  1/1000: reference kept 745710 (Eisenstein xor 06a589df78b2d850)
+  lib-e 8 br 1/1000        kept 745710 xor 06a589df78b2d850: identical
+  ec 8 bat 1/1000          kept 745710 xor 06a589df78b2d850: identical
+  ec 8 br 1/1000           kept 745710 xor 06a589df78b2d850: identical
+  ec 10 bat 1/1000         kept 745710 xor 06a589df78b2d850: identical
+  ec 10 br 1/1000          kept 745710 xor 06a589df78b2d850: identical
+  ec 11 bat 1/1000         kept 745710 xor 06a589df78b2d850: identical
+  ec 11 br 1/1000          kept 745710 xor 06a589df78b2d850: identical
+  ec 12 bat 1/1000         kept 745710 xor 06a589df78b2d850: identical
+  ec 12 br 1/1000          kept 745710 xor 06a589df78b2d850: identical
+  ec 13 bat 1/1000         kept 745710 xor 06a589df78b2d850: identical
+  ec 13 br 1/1000          kept 745710 xor 06a589df78b2d850: identical
+  ec 16 bat 1/1000         kept 745710 xor 06a589df78b2d850: identical
+  ec 16 br 1/1000          kept 745710 xor 06a589df78b2d850: identical
+  ep 8 bat 1/1000          kept 745710 xor 06a589df78b2d850: identical
+  ep 8 br 1/1000           kept 745710 xor 06a589df78b2d850: identical
+  ep 11 bat 1/1000         kept 745710 xor 06a589df78b2d850: identical
+  ep 11 br 1/1000          kept 745710 xor 06a589df78b2d850: identical
+  ep 16 bat 1/1000         kept 745710 xor 06a589df78b2d850: identical
+  ep 16 br 1/1000          kept 745710 xor 06a589df78b2d850: identical
+  gp 8 bat 1/1000          kept 745710 xor a63cfbca881101c0: identical
+  gp 8 br 1/1000           kept 745710 xor a63cfbca881101c0: identical
+  gp 11 bat 1/1000         kept 745710 xor a63cfbca881101c0: identical
+  gp 11 br 1/1000          kept 745710 xor a63cfbca881101c0: identical
+  gp 16 bat 1/1000         kept 745710 xor a63cfbca881101c0: identical
+  gp 16 br 1/1000          kept 745710 xor a63cfbca881101c0: identical
+  mp 8 bat 1/1000          kept 745710 xor 31d375a7b2b83f6d: identical
+  mp 8 br 1/1000           kept 745710 xor 31d375a7b2b83f6d: identical
+  mp 11 bat 1/1000         kept 745710 xor 31d375a7b2b83f6d: identical
+  mp 11 br 1/1000          kept 745710 xor 31d375a7b2b83f6d: identical
+  mp 16 bat 1/1000         kept 745710 xor 31d375a7b2b83f6d: identical
+  mp 16 br 1/1000          kept 745710 xor 31d375a7b2b83f6d: identical
+  mc 8 bat 1/1000          kept 745710 xor 31d375a7b2b83f6d: identical
+  mc 8 br 1/1000           kept 745710 xor 31d375a7b2b83f6d: identical
+  mc 11 bat 1/1000         kept 745710 xor 31d375a7b2b83f6d: identical
+  mc 11 br 1/1000          kept 745710 xor 31d375a7b2b83f6d: identical
+  mc 16 bat 1/1000         kept 745710 xor 31d375a7b2b83f6d: identical
+  mc 16 br 1/1000          kept 745710 xor 31d375a7b2b83f6d: identical
+  lib-m 8 bat 1/1000       kept 745710 xor 31d375a7b2b83f6d: identical
+  lib-m 8 br 1/1000        kept 745710 xor 31d375a7b2b83f6d: identical
+  nt 8 bat 1/1000          kept 745710 xor 1eab054eac30f63f: identical
+  nt 8 br 1/1000           kept 745710 xor 1eab054eac30f63f: identical
+  nt 16 bat 1/1000         kept 745710 xor 1eab054eac30f63f: identical
+  nt 16 br 1/1000          kept 745710 xor 1eab054eac30f63f: identical
+  uh 0 bat 1/1000          kept 745710 xor 09a96efb2bd4d1da: identical
+  uh 0 br 1/1000           kept 745710 xor 09a96efb2bd4d1da: identical
+check: every evaluator identical to its reference
