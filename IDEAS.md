@@ -381,6 +381,12 @@ The FFT all-offset correlation is already KP-13.)
 
 **Eisenstein novelty (2026-11-10, literature/eisenstein_wantlist.md):** the map is the θ = π/3 member of Das et al.'s trigonometric mapping, up to rotation, and must be credited as such. The transition-cheapest criterion and the F_q-hash use look new, pending the 2017/2018 Das papers. **Resolved 2026-11-11:** Das, Nanda & Das 2017 (MAMI) set θ = π/3 explicitly, so the exact map (complement = negation, squared distances 1/3/4) is published. **Narrowed 2026-11-11** after the second reads: designing an encoding so that distance reflects transitions vs transversions is established for binary codes (Yu et al. 2018 survey, Fig. 3). Ours to claim is only (a) the specific criterion for complement-as-negation complex maps, Re(A·C̄) ≠ 0 (no fourth-root map satisfies it, θ = π/3 does), and (b) the use as polynomial-hash coefficients over F_q with the strand-symmetric product. Das, Nanda & Das 2019 (Genomics), which Gulocak 2022 cites as the mapping's source, is unread and could state a rationale for θ (literature/eisenstein_wantlist.md).
 
+**KP-15 to KP-18 prior art (2026-11-12, literature/kp15_kp18_prior_art_2026-11-12.md):**
+- KP-15: partly published. Syndrome (Peterson–Gorenstein–Zierler) decoding of mismatches from 2k + 1 power sums is Clifford, Kociumaka & Porat 2019 (doi:10.1137/1.9781611975482.68), with integer positions as locators. Ours is only the genomic use; the "mismatch-tolerant index" does not follow from syndromes, and neighbour enumeration needs only a linear hash.
+- KP-16: the algebra is published (reciprocal polynomials, reversible DNA codes). As a hash it is KP-7: F(1/x) = −x^{−(k−1)}R(x), so the {x, 1/x} pair gives KP-7's degenerate e₁ and e₂ and the same exact (F + λ)(R + λ) (checked exhaustively at k = 4–6, literature/kp16_moebius_check.py). Drop it.
+- KP-17: published. The Klein four-group on the bases, with the RY/MK/SW Z-curve components and the complement fixing only SW, is in Zhang & Zhang 2014 (doi:10.2174/1389202915999140328162433) and Jiménez-Montaño et al. 1996. Cite it.
+- KP-18: published. Wittler 2023 (doi:10.24072/pcjournal.323) gives 4^k/2 for odd k and (4^k + 4^{k/2})/2 for even k. Cite it.
+
 ## 7. Open questions
 
 - Which ideas give an algorithm that is actually faster or smaller, rather than an elegant restatement?
