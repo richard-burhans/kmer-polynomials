@@ -25,33 +25,45 @@ different jobs must not be compared directly in the paper, because between-job v
 | unread | Das, Nanda & Das 2019 Genomics, the mapping's source cited by Gulocak 2022 | literature/eisenstein_wantlist.md:93–96 |
 | binary codes with transition-aware distance | Yu, Li & Yu 2018 (narrows the novelty claim) | library papers_md/summaries/yu_2018_encoding-survey.md:24–31 |
 
-## Speed (laila, Xeon Gold 6330 at 2.0 GHz, cycles per input k-mer, cs10, k = 31)
+## Speed (laila, Xeon Gold 6330, cycles per input k-mer, cs10, k = 31)
 
-Input: 736,547,799 k-mers (results/paper_bench_2026-11-11.md:8). Every timing below comes from ONE job, 08653d9e6a7453a2, run by
-`manuscript/run_paper_bench.sh`; the table is `manuscript/paper_bench_table.py` on its raw counters.
+Every timing in the paper comes from ONE job, c84a395ba84b315e, at ONE commit (5bee54c), median of 5 interleaved repeats, run by
+`manuscript/run_paper_bench.sh`; the table is `manuscript/paper_bench_table.py` on its raw counters
+(results/paper_bench_2026-11-12/). Input: 736,547,799 k-mers (results/paper_bench_2026-11-12.md:14).
 
 | number | meaning | job | source |
 |---|---|---|---|
-| 11.37 | batched ntHash | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:22 |
-| 23.53 (0.48×) | ntHash library roll() | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:23 |
-| 24.69 (0.46×) | Eisenstein, every k-mer, 2 lanes | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:26 |
-| 27.82 (0.41×) | Eisenstein, every k-mer, 1 lane | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:25 |
-| 47.37 (0.24×) | Gaussian 61-bit, every k-mer, 2 lanes | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:28 |
-| 26.43 (0.43×) | CM31 AVX2, every k-mer, 8 lanes | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:42 |
-| 25.86 (0.44×) | CM31 AVX-512, every k-mer, 16 lanes | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:43 |
-| 9.40 (1.21×) | Eisenstein sampler, branchy, 1/1000 | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:30 |
-| 10.01 (1.14×) | Eisenstein sampler, branchy, 1/100 | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:31 |
-| 11.74 (0.97×) | Eisenstein sampler, batched, 1/16 | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:36 |
-| 17.08 (0.67×) | Eisenstein sampler, batched, 1/4 | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:37 |
-| ≈ 28.5 | Eisenstein cycles per kept k-mer (slope 1/16 to 1/4) | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:47 |
-| ≈ 1/20 (1/20.3) | Eisenstein sampler break-even against batched ntHash | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:47 |
-| 2.07× | batched ntHash against the library roll() (23.53 / 11.37), "about twice" | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:22–23 |
-| 64.3 | CM31 v2 cycles per kept k-mer (batched), previous best | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:49 |
-| ≤ 1.3% | spread between the two repeats, every row in the paper's table | 08653d9e6a7453a2 | results/paper_bench_2026-11-11.md:12 |
+| 11.37 | batched ntHash (bench_e) | c84a395ba84b315e | results/paper_bench_2026-11-12.md:30 |
+| 23.92 (0.48×) | ntHash library roll() | c84a395ba84b315e | results/paper_bench_2026-11-12.md:31 |
+| 24.67 (0.46×) | Eisenstein, every k-mer, 2 lanes | c84a395ba84b315e | results/paper_bench_2026-11-12.md:33 |
+| 27.85 (0.41×) | Eisenstein, every k-mer, 1 lane | c84a395ba84b315e | results/paper_bench_2026-11-12.md:32 |
+| 47.19 (0.24×) | Gaussian 61-bit, every k-mer, 2 lanes | c84a395ba84b315e | results/paper_bench_2026-11-12.md:34 |
+| 26.44 (0.43×) | CM31 AVX2, every k-mer, 8 lanes | c84a395ba84b315e | results/paper_bench_2026-11-12.md:35 |
+| 25.94 (0.44×) | CM31 AVX-512, every k-mer, 16 lanes | c84a395ba84b315e | results/paper_bench_2026-11-12.md:36 |
+| 9.43 (1.21×) | Eisenstein sampler, branchy, 1/1000 | c84a395ba84b315e | results/paper_bench_2026-11-12.md:37 |
+| 9.94 (1.14×) | Eisenstein sampler, branchy, 1/100 | c84a395ba84b315e | results/paper_bench_2026-11-12.md:38 |
+| 11.74 (0.97×) | Eisenstein sampler, batched, 1/16 | c84a395ba84b315e | results/paper_bench_2026-11-12.md:39 |
+| 17.12 (0.66×) | Eisenstein sampler, batched, 1/4 | c84a395ba84b315e | results/paper_bench_2026-11-12.md:40 |
+| 28.7 | Eisenstein cycles per kept k-mer, bench_e (slope 1/16 to 1/4) | c84a395ba84b315e | results/paper_bench_2026-11-12.md:42 |
+| 1/20.2 | Eisenstein sampler break-even against batched ntHash, bench_e | c84a395ba84b315e | results/paper_bench_2026-11-12.md:42 |
+| 2.1× ("about twice") | library roll() / batched ntHash, 23.92 / 11.37 | c84a395ba84b315e | results/paper_bench_2026-11-12.md:30–31 |
+| 11.43 | batched ntHash in bench_kept (reference for the second table) | c84a395ba84b315e | results/paper_bench_2026-11-12.md:50 |
+| 10.24 (1.12×) | canonical code + universal hash, every k-mer | c84a395ba84b315e | results/paper_bench_2026-11-12.md:51 |
+| 1.22 / 1.15 | Eisenstein sampler, branchy, 1/1000 / 1/100, bench_kept | c84a395ba84b315e | results/paper_bench_2026-11-12.md:52 |
+| 1.18 / 1.12 | gate + ntHash on kept, branchy, 1/1000 / 1/100 | c84a395ba84b315e | results/paper_bench_2026-11-12.md:55 |
+| 1.25 / 1.20 | gate + universal hash on kept, branchy, 1/1000 / 1/100 | c84a395ba84b315e | results/paper_bench_2026-11-12.md:56 |
+| 22.5 / 19.3 / 5.9 | cycles per kept k-mer, bench_kept: Eisenstein / gate + ntHash / gate + universal hash | c84a395ba84b315e | results/paper_bench_2026-11-12.md:60 |
+| 22.5 vs 28.7 | per-kept cost of the same sampler code in the two programs, unexplained | c84a395ba84b315e | results/paper_bench_2026-11-12.md:70–77 |
+| 2.4× | 24.67 / 10.24: universal hash every k-mer vs Eisenstein 2 lanes (Discussion; across the two programs) | c84a395ba84b315e | results/paper_bench_2026-11-12.md:33, 51 |
+| 2.2× | 24.67 / 11.37: every-k-mer Eisenstein time over batched ntHash (abstract) | c84a395ba84b315e | results/paper_bench_2026-11-12.md:30, 33 |
+| 2.1–3.1 GHz | measured core clock range over all 165 runs (cycles / ref-cycles × 2.0) | c84a395ba84b315e | results/paper_bench_2026-11-12.md:counters.tsv |
+| median of 5; 6 load runs | statistic and load baselines | c84a395ba84b315e | results/paper_bench_2026-11-12.md:17–24 |
+| 0.75× per hash (0.76× wall-clock) | Eisenstein spaced seeds vs SeedNtHash, one mask, median of 5 rounds | c84a395ba84b315e | results/paper_bench_2026-11-12.md:83 |
+| 0.747 / 0.818 | windows unchanged at 1% substitutions, ours vs SeedNtHash | c84a395ba84b315e | results/paper_bench_2026-11-12.md:86 |
 
-Superseded (earlier drafts, other jobs): 11.41 / 23.44 / 24.59 / 27.95 / 47.51 / 25.83 / 9.41 / 9.97 / 11.87 / 17.21
-from 7fc2a700073c1f4f, and the break-even "≈ 1/19", which was an arithmetic slip (intercept 9.9 for 10.09; see
-results/paper_bench_2026-11-11.md, per-kept section).
+Superseded (job 08653d9e6a7453a2, mean of 2, results/paper_bench_2026-11-11.md): 23.53 / 24.69 / 27.82 / 47.37 / 26.43 /
+25.86 / 9.40 / 10.01 / 17.08 (0.67×) / 28.5 / 1/20.3, and the CM31 per-kept 64.3 (no longer quoted). Earlier: 11.41 /
+23.44 / 24.59 / 27.95 / 47.51 / 25.83 / 9.41 / 9.97 / 11.87 / 17.21 from 7fc2a700073c1f4f, and the break-even "≈ 1/19".
 
 ## Sampling quality (local, full cs10, 5 seeds per method, no job)
 
@@ -65,13 +77,13 @@ results/paper_bench_2026-11-11.md, per-kept section).
 | within 0.4% (max 0.40%, ntHash) | minimizer density deviation, w = 10, 20, 50, every method | results/kp7_stats_seeds_eisenstein_2026-11-11.md:19–23 |
 | 47.7% | soft-masked fraction of cs10 | results/kp7_next_steps_2026-11-10.md:50 |
 
-## Spaced seeds (consolidated job 08653d9e6a7453a2)
+## Spaced seeds (frozen job c84a395ba84b315e; numbers unchanged from 08653d9e6a7453a2)
 
 | number | meaning | source |
 |---|---|---|
-| 0.75× per hash (0.76× wall-clock; single wall-clock run) | Eisenstein spaced-seed hash against ntHash2 SeedNtHash, one mask, first 60 Mb of cs10 (was 0.78× in job af1eb52f65c6d471) | results/paper_bench_2026-11-11.md:58 |
-| 0.747 (0.74722) | fraction of windows unchanged at 1% SNPs, non-palindromic mask: exact double-stranded value, matched by ours | results/paper_bench_2026-11-11.md:61 |
-| 0.818 (0.81794) | SeedNtHash's value on the same test | results/paper_bench_2026-11-11.md:62 |
+| 0.75× per hash (0.76× wall-clock; median of 5 rounds) | Eisenstein spaced-seed hash against ntHash2 SeedNtHash, one mask, first 60 Mb of cs10 (was 0.78× in job af1eb52f65c6d471) | results/paper_bench_2026-11-12.md:83 |
+| 0.747 (0.74722) | fraction of windows unchanged at 1% SNPs, non-palindromic mask: exact double-stranded value, matched by ours | results/paper_bench_2026-11-12.md:86 |
+| 0.818 (0.81794) | SeedNtHash's value on the same test | results/paper_bench_2026-11-12.md:86 |
 
 ## Transition frequency (KP-1)
 
@@ -115,7 +127,7 @@ results/paper_bench_2026-11-11.md, per-kept section).
 | 7,760 / 34,736 | KP-5 palindromic 20-mers / inverted repeats (arm 20, spacer ≤ 100) on NC_044378.1 | results/ideas_kp5_kp11_2026-11-11.md:27–28 |
 | 1,370× | KP-11 mismatch-counting transform against direct, k = 12, d = 3 | results/ideas_kp5_kp11_2026-11-11.md:74 |
 
-## Consolidated benchmark: DONE (job 08653d9e6a7453a2, 2026-11-11)
+## Consolidated benchmark: SUPERSEDED by the frozen job c84a395ba84b315e (2026-11-12, see Speed); first done as job 08653d9e6a7453a2 (2026-11-11)
 
 Items 1–6 of the earlier requirement (ntHash batched and library; Eisenstein scalar, 1 and 2 lanes; Gaussian 61-bit;
 CM31 AVX2 and AVX-512; Eisenstein and CM31 samplers at 1/1000 to 1/4; spaced seeds with one and two masks) ran in
@@ -146,8 +158,42 @@ a numpy prototype and is not timed on laila; the paper quotes its times only as 
 | 110.3 vs 3.5 CPU-s | decode: KP-10 vs IBLT diff + list, GigaDB | results/kp10_vs_shibuya_2026-11-11.md (section 5) |
 | 1 of 37 | KP-10 runs with an S collision (shared classes, difference still exact), GigaDB | results/kp10_vs_shibuya_2026-11-11.md (section 3, hash collisions) |
 | 2.5 pairs | expected colliding pairs allowed by the bound over 442M classes | adjudication-L3.md (round 1) |
-| 2.2–3.0 GHz | measured core clock in job 08653d9e6a7453a2 (turbo on) | adjudication-L4.md (round 1) |
+| ~~2.2–3.0 GHz~~ SUPERSEDED: 2.1–3.1 GHz in job c84a395ba84b315e (see Speed) | measured core clock in job 08653d9e6a7453a2 (turbo on) | adjudication-L4.md (round 1) |
 | 8 vs 3 | multiplications per k-mer, fourth-root vs Eisenstein | adjudication-L1.md F8 (round 1) |
 | 35% | haplotype 31-mer difference over the union (42% over one haplotype) | adjudication-L4.md F12 (round 1) |
 | 0.6% | max minimizer-density deviation after reseeding (v1gate seed 1, w = 50) | results/kp7_stats_seeds_2026-11-11.gaps.tsv |
 | 62 | loci hit by all five methods after reseeding | results/round1_owed_2026-11-11.md |
+
+## KP-10 vs km-peeler, whole genome (paper section "Set sketches", 2026-11-12; results/kp10_vs_shibuya_2026-11-11.md, b082197)
+
+The paper's sketch numbers now come from the C run (laila job b69c5c76857f93ac), not the numpy-era run. Rows above that
+cite results/kp10_vs_shibuya_2026-11-10_prior.md for 11.6%, 15/30, 26/30 and the numpy-only hour are superseded here.
+
+| number | meaning | source |
+|---|---|---|
+| 0.73% (3.2 million) | GigaDB difference over \|A\| | results/kp10_vs_shibuya_2026-11-11.md:36 |
+| 11.3, 30/30, 2 rounds | KP-10 B/diff on GigaDB, 30 OS seeds (11.26 mean; 11.27 fixed seed) | results/kp10_vs_shibuya_2026-11-11.md:105 |
+| 20.5, 30/30, 1 round | IBLT at 1.05·D, GigaDB | results/kp10_vs_shibuya_2026-11-11.md:108 |
+| 21.7 | KP-10 sized for one round (2^17 buckets), one fixed-seed run | results/kp10_vs_shibuya_2026-11-11.md:107 |
+| about 1,250 | buckets resent in round 2 (mean 1,254 over 30 seeds) | results/kp10_vs_shibuya_2026-11-11.md:118 |
+| 9.5% | one-sided 95% bound from 30/30, either method (replaces 11.6% in the paper) | results/kp10_vs_shibuya_2026-11-11.md:115–117 |
+| 20.8 vs 38.5 | B/diff from D_est = D/8, GigaDB: KP-10 vs IBLT resend at double size | results/kp10_vs_shibuya_2026-11-11.md:141 |
+| 17.3 vs 20.5 | draft pair, one round each, 30/30 each | results/kp10_vs_shibuya_2026-11-11.md:111–112 |
+| 0.8m, D/8 to 4D | sizing rule and the D_est sweep | results/kp10_vs_shibuya_2026-11-11.md (section 2, sizing rule; section 4) |
+| 3 hash functions | km-peeler default r = 3, source unmodified | results/kp10_vs_shibuya_2026-11-11.md (section 2) |
+| 45% | draft bases on flipped contigs (45.36%) | results/round1_owed_2026-11-11/draft_orientation.json |
+
+Carried caveats, all in the paper: no "equal reliability" (30/30 bounds failure only below 9.5%); overflow detection is
+probabilistic; each KP-10 party recovers only its own differing k-mers, one IBLT listing gives both sides'; one genome,
+two pairs. The compute comparison (326 vs about 460 CPU-s) is not quoted: the results file says it is not a speed claim.
+
+## Round 1's carried open items: what the 2026-11-11/12 results address (reports/adversarial_log.md, "Still open")
+
+| open item | status after this pass |
+|---|---|
+| as-written k = 31 sketch (7,931 exact, 137 KB) and the forward-only control (398,217,248) | REPRODUCED, not attacked: the C run hashed k-mers as written on both pairs, 30/30 OS seeds each, with each side checking only its own data (results/kp10_vs_shibuya_2026-11-11.md). The forward-only control was not rerun. |
+| k = 63 sketch (21,382 exact, 549 KB), buckets sized from the true difference | OPEN: no new k = 63 run. The D_est sweep (sizing from D/8 to 4D) was at k = 31 only. |
+| the reframing (k ≤ 32: canonical code + universal hash is the cheaper provable baseline) | SUPPORTED by measurement: universal hash on every k-mer faster than batched ntHash (results/kp7_kept_eval_2026-11-11.md, re-timed in results/paper_bench_2026-11-12.md). Not attacked. |
+| reseeded sampling statistics (1,583 gaps, 151 loci, 147 in repeats) | OPEN: unchanged, not re-examined. |
+| unmeasured baselines: canonical code + universal hash row, and gate + ntHash on kept k-mers (critic gaps 2–3) | MEASURED: results/kp7_kept_eval_2026-11-11.md, and in the frozen job (results/paper_bench_2026-11-12.md). |
+| km-peeler extended syncmers, 61% spurious vs about 3% in the authors' tests; harness error not ruled out (critic gap 5) | OPEN: the extended-syncmer method was not rerun (results/kp10_vs_shibuya_2026-11-11.md, section 6). The paper still quotes it as measured. |
